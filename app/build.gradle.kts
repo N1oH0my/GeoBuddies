@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    kotlin("kapt")
+    //id("com.google.dagger.hilt.android")
+    //id("com.google.dagger.hilt.android") version "2.44" apply false
 }
 
 android {
@@ -36,6 +39,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    /*packagingOptions {
+        pickFirst("META-INF/gradle/incremental.annotation.processors")
+    }*/
 }
 
 dependencies {
@@ -45,14 +51,28 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.rxjava)
+
     implementation(libs.viewbindingpropertydelegate.full)
     implementation(libs.dagger)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.parent)
+    implementation(libs.cicerone)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+    //kapt("com.google.dagger:hilt-android-compiler:2.44")
+    kapt(libs.androidx.room.compiler)
+    implementation(libs.rxandroid)
+    implementation(libs.androidx.room.runtime)
+
+    implementation(libs.androidx.room.rxjava3)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+}
+kapt {
+    correctErrorTypes = true
 }

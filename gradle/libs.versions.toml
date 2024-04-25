@@ -17,6 +17,16 @@ retrofit = "2.11.0"
 converterGson = "2.11.0"
 lifecycleViewmodelKtx = "2.7.0"
 lifecycleLivedataKtx = "2.7.0"
+parent = "3.14.9"
+cicerone = "7.1"
+roomRuntime = "2.6.0"
+roomCompiler = "2.6.0"
+roomRxjava2 = "2.6.0"
+hiltAndroid = "2.51.1"
+hiltAndroidCompiler = "2.51.1"
+rxandroid = "3.0.2"
+roomRxjava3 = "2.6.1"
+hiltCompiler = "2.51.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -35,6 +45,16 @@ retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = 
 converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "converterGson" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
+parent = { group = "com.squareup.okhttp3", name = "parent", version.ref = "parent" }
+cicerone = { group = "com.github.terrakok", name = "cicerone", version.ref = "cicerone" }
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomRuntime" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomCompiler" }
+androidx-room-rxjava2 = { group = "androidx.room", name = "room-rxjava2", version.ref = "roomRxjava2" }
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version = "2.44" }
+hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version = "2.44" }
+rxandroid = { group = "io.reactivex.rxjava3", name = "rxandroid", version.ref = "rxandroid" }
+androidx-room-rxjava3 = { group = "androidx.room", name = "room-rxjava3", version = "2.6.0" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hiltCompiler" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
