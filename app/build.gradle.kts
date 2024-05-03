@@ -62,7 +62,6 @@ dependencies {
     implementation(libs.cicerone)
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
-    //kapt("com.google.dagger:hilt-android-compiler:2.44")
     kapt(libs.androidx.room.compiler)
     implementation(libs.rxandroid)
     implementation(libs.androidx.room.runtime)

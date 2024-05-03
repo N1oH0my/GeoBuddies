@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">GeoBuddies</string>
+
+    <string name="api_url">http://80.82.46.33:8080</string>
 </resources>
