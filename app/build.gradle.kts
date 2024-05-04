@@ -1,9 +1,10 @@
+import com.android.build.api.variant.BuildConfigField
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     kotlin("kapt")
-    //id("com.google.dagger.hilt.android")
-    //id("com.google.dagger.hilt.android") version "2.44" apply false
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -31,20 +32,30 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
-    /*packagingOptions {
-        pickFirst("META-INF/gradle/incremental.annotation.processors")
-    }*/
+}
+
+androidComponents {
+    onVariants {
+        it.buildConfigFields.put(
+            "API_BASE_URL", BuildConfigField(
+                "String", "\"${properties["API_BASE_URL"]}\"", "API_BASE_URL"
+            )
+        )
+    }
 }
 
 dependencies {
+
+    val activity_version = "1.9.0"
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -65,8 +76,13 @@ dependencies {
     kapt(libs.androidx.room.compiler)
     implementation(libs.rxandroid)
     implementation(libs.androidx.room.runtime)
-
     implementation(libs.androidx.room.rxjava3)
+
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+
+    // Activity ktx
+    implementation("androidx.activity:activity-ktx:$activity_version")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

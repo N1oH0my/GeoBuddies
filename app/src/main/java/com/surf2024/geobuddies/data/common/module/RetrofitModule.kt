@@ -1,6 +1,6 @@
 package com.surf2024.geobuddies.data.common.module
 
-import com.surf2024.geobuddies.R
+import com.surf2024.geobuddies.BuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -11,13 +11,15 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class RetrofitModule {
+object RetrofitModule {
+
     @Provides
     @Singleton
     fun provideRetrofitClient(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(R.string.api_url.toString())
+            .baseUrl(BuildConfig.API_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
+
 }

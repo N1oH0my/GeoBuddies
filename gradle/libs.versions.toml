@@ -1,5 +1,5 @@
 [versions]
-agp = "8.3.2"
+agp = "8.4.0"
 kotlin = "1.9.0"
 coreKtx = "1.12.0"
 junit = "4.13.2"
@@ -52,9 +52,10 @@ androidx-room-compiler = { group = "androidx.room", name = "room-compiler", vers
 androidx-room-rxjava2 = { group = "androidx.room", name = "room-rxjava2", version.ref = "roomRxjava2" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version = "2.46" }
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version = "2.46" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hiltCompiler" }
 rxandroid = { group = "io.reactivex.rxjava3", name = "rxandroid", version.ref = "rxandroid" }
 androidx-room-rxjava3 = { group = "androidx.room", name = "room-rxjava3", version = "2.6.0" }
-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hiltCompiler" }
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

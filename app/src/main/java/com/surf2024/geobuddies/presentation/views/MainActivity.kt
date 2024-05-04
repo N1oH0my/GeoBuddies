@@ -32,6 +32,8 @@ class MainActivity : AppCompatActivity() {
 
         setSubmitButton()
 
+        setRegisterButton()
+
         setVMObserve()
 
     }
@@ -47,6 +49,13 @@ class MainActivity : AppCompatActivity() {
             val name = editTextName.text.toString()
 
             viewModel.updateName(name)
+        }
+    }
+
+    private fun setRegisterButton(){
+        val registerButton = binding.buttonRegister
+        registerButton.setOnClickListener{
+            viewModel.registration()
         }
     }
 
