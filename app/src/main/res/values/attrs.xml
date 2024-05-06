@@ -1,0 +1,8 @@
+<resources>
+    <declare-styleable name="GradientTextView">
+        <attr name="startColor" format="color"/>
+        <attr name="centerColor" format="color"/>
+        <attr name="endColor" format="color"/>
+        <attr name="angle" format="integer"/>
+    </declare-styleable>
+</resources>

@@ -62,31 +62,29 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+
 
     implementation(libs.viewbindingpropertydelegate.full)
-    implementation(libs.dagger)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.parent)
     implementation(libs.cicerone)
+    implementation(libs.rxandroid)
+    implementation(libs.adapter.rxjava3)
+    implementation(libs.gson)
+    implementation(libs.circle.view)
+
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
-    kapt(libs.androidx.room.compiler)
-    implementation(libs.rxandroid)
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.rxjava3)
-
-    implementation("com.google.dagger:hilt-android:2.51.1")
-    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
 
     // Activity ktx
     implementation("androidx.activity:activity-ktx:$activity_version")
 
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 }
 kapt {
     correctErrorTypes = true

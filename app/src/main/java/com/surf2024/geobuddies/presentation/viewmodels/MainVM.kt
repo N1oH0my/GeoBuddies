@@ -9,6 +9,7 @@ import com.surf2024.geobuddies.domain.registration.entity.RegistrationEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import retrofit2.Retrofit
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -27,12 +28,14 @@ class MainVM @Inject constructor(
 
     fun registration(){
         viewModelScope.launch(Dispatchers.IO) {
-          /*  registrationRepositoryImpl.registration(RegistrationEntity(
+            registrationRepositoryImpl.registration(
+                RegistrationEntity(
                 "asd@mail.ru",
                 "asd",
-                "12331",
-                LocalDate.now()))
-            TODO()*/
+                "12331"
+                )
+            )
+            TODO()
         }
     }
 

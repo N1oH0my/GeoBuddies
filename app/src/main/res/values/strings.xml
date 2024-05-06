@@ -2,7 +2,26 @@
     <string name="app_name">GeoBuddies</string>
 
     <!--> Api strings <-->
-    <string name="api_url">http://80.82.46.33:8080</string>
-    <string name="register_url">/api/v1/auth/register</string>
+    <string name="register_url">api/v1/auth/register</string>
+
+    <string name="brand_name">GeoBuddies</string>
+
+    <!--> registration fragment <-->
+    <string name="create_account">Create\naccount</string>
+    <string name="sign_up">Sign up</string>
+    <string name="email">email</string>
+    <string name="your_name">your name</string>
+    <string name="password">password</string>
+    <string name="confirm_password">confirm password</string>
+
+    <!--> login fragment <-->
+    <string name="login_button">Login</string>
+    <string name="or_connect_with">Or connect with</string>
+    <string name="forgot_password">Forgot password</string>
+    <string name="google">Google</string>
+    <string name="yandex">Яндекс</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 
 </resources>

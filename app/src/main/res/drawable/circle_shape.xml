@@ -1,0 +1,6 @@
+<!-- res/drawable/oval_shape.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/field_background_dark_theme"/>
+    <corners android:radius="300dp" />
+</shape>
