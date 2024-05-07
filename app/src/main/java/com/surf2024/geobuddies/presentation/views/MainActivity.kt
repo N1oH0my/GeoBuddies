@@ -3,20 +3,24 @@ package com.surf2024.geobuddies.presentation.views
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.databinding.ActivityMainBinding
 import com.surf2024.geobuddies.presentation.viewmodels.MainVM
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private val binding by viewBinding(ActivityMainBinding::bind)
-    private lateinit var viewModel: MainVM
+    private val viewModel: MainVM by viewModels()
+    private val secondFragment = SplashScreenFragment()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,16 +32,12 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        getVM()
-
         setSubmitButton()
+
+        setRegisterButton()
 
         setVMObserve()
 
-    }
-
-    private fun getVM(){
-        viewModel = ViewModelProvider(this).get(MainVM::class.java)
     }
 
     private fun setSubmitButton(){
@@ -47,6 +47,17 @@ class MainActivity : AppCompatActivity() {
             val name = editTextName.text.toString()
 
             viewModel.updateName(name)
+        }
+    }
+
+    private fun setRegisterButton(){
+        val registerButton = binding.buttonRegister
+        registerButton.setOnClickListener{
+            //viewModel.registration()
+            showToast("click")
+            supportFragmentManager.beginTransaction()
+                .add(R.id.main, secondFragment)
+                .commit()
         }
     }
 
