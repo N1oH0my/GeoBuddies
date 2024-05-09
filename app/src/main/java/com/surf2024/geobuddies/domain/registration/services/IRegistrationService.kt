@@ -8,5 +8,5 @@ import retrofit2.http.POST
 
 interface IRegistrationService {
     @POST("/api/v1/auth/register")
-    suspend fun register(@Body registration: RegistrationModel): Single<Response<Unit>>
+    fun register(@Body registration: RegistrationModel): Single<Response<Unit>>
 }

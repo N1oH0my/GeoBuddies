@@ -12,7 +12,8 @@ import javax.inject.Inject
 class RegistrationRepositoryImpl @Inject constructor(
     private val registrationService: IRegistrationService
 ): IRegistrationRepository {
-    override suspend fun register(registration: RegistrationModel): Single<Response<Unit>> {
-        return registrationService.register(registration).subscribeOn(Schedulers.io())
+    override fun register(registration: RegistrationModel): Single<Response<Unit>> {
+        return registrationService.register(registration)
+            .subscribeOn(Schedulers.io())
     }
 }
