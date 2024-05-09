@@ -26,17 +26,6 @@ class MainVM @Inject constructor(
         _userNameLiveData.value = name
     }
 
-    fun registration(){
-        viewModelScope.launch(Dispatchers.IO) {
-            registrationRepositoryImpl.registration(
-                RegistrationEntity(
-                "asd@mail.ru",
-                "asd",
-                "12331"
-                )
-            )
-            TODO()
-        }
-    }
+
 
 }

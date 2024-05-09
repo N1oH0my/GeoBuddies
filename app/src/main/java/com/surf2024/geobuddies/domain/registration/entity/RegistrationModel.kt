@@ -1,8 +1,6 @@
 package com.surf2024.geobuddies.domain.registration.entity
 
-import java.time.LocalDate
-
-data class RegistrationEntity(
+data class RegistrationModel(
     val email: String,
     val name: String,
     val password: String

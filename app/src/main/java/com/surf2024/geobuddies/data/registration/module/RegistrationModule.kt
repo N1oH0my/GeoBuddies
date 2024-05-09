@@ -1,7 +1,8 @@
 package com.surf2024.geobuddies.data.registration.module
 
 import com.surf2024.geobuddies.data.registration.repositoryimpl.RegistrationRepositoryImpl
-import com.surf2024.geobuddies.domain.registration.repository.RegistrationRepository
+import com.surf2024.geobuddies.domain.registration.repository.IRegistrationRepository
+import com.surf2024.geobuddies.domain.registration.services.IRegistrationService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,18 +16,17 @@ object RegistrationModule {
 
     @Provides
     @Singleton
-    fun provideRegistrationRepository(
+    fun provideRegistrationService(
         retrofit: Retrofit
-    ):RegistrationRepository{
-        return retrofit.create(RegistrationRepository::class.java)
+    ): IRegistrationService {
+        return retrofit.create(IRegistrationService::class.java)
     }
 
     @Provides
     @Singleton
     fun provideRegistrationRepositoryImpl(
-        registrationRepository: RegistrationRepository
-    ): RegistrationRepositoryImpl {
-        return RegistrationRepositoryImpl(registrationRepository)
+        registrationService: IRegistrationService
+    ): IRegistrationRepository {
+        return RegistrationRepositoryImpl(registrationService)
     }
-
 }
