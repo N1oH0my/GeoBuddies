@@ -4,7 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.surf2024.geobuddies.data.login.repositoryimpl.LoginRepositoryImpl
 import com.surf2024.geobuddies.data.registration.repositoryimpl.RegistrationRepositoryImpl
+import com.surf2024.geobuddies.domain.login.entity.LoginEntity
 import com.surf2024.geobuddies.domain.registration.entity.RegistrationEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainVM @Inject constructor(
-    private val registrationRepositoryImpl: RegistrationRepositoryImpl
+    private val registrationRepositoryImpl: RegistrationRepositoryImpl,
+    private val loginRepositoryImpl: LoginRepositoryImpl
 ): ViewModel() {
 
     private val _userNameLiveData = MutableLiveData<String>()
@@ -33,6 +36,18 @@ class MainVM @Inject constructor(
                 "asd@mail.ru",
                 "asd",
                 "12331"
+                )
+            )
+            TODO()
+        }
+    }
+
+    fun login(){
+        viewModelScope.launch(Dispatchers.IO) {
+            loginRepositoryImpl.login(
+                LoginEntity(
+                    "asd@mail.ru",
+                    "12331"
                 )
             )
             TODO()
