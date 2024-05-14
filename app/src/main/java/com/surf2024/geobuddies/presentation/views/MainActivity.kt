@@ -1,6 +1,8 @@
 package com.surf2024.geobuddies.presentation.views
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -17,9 +19,9 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private val binding by viewBinding(ActivityMainBinding::bind)
-    private val viewModel: MainVM by viewModels()
-    private val secondFragment = SplashScreenFragment()
+    //private val binding by viewBinding(ActivityMainBinding::bind)
+    private val splashScreenFragment = SplashScreenFragment()
+    private val registrationFragment = RegistrationFragment()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,40 +34,19 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        setSubmitButton()
+        supportFragmentManager.beginTransaction()
+            .add(R.id.fragmentHolderId, splashScreenFragment)
+            .commit()
 
-        setRegisterButton()
+        showToast("Hello!")
+        showToast("Welcome to the GeoBuddies!")
 
-        setVMObserve()
-
-    }
-
-    private fun setSubmitButton(){
-        val buttonSubmit = binding.submitButton
-        buttonSubmit.setOnClickListener {
-            val editTextName = binding.editText
-            val name = editTextName.text.toString()
-
-            viewModel.updateName(name)
-        }
-    }
-
-    private fun setRegisterButton(){
-        val registerButton = binding.buttonRegister
-        registerButton.setOnClickListener{
-            //viewModel.registration()
-            showToast("click")
+        Handler(Looper.getMainLooper()).postDelayed({
             supportFragmentManager.beginTransaction()
-                .add(R.id.main, secondFragment)
+                .replace(R.id.fragmentHolderId, registrationFragment)
                 .commit()
-        }
-    }
+        }, 3000)
 
-    private fun setVMObserve(){
-        viewModel.userNameLiveData.observe(this, Observer { name ->
-            showToast("Hello, $name!")
-            showToast("Welcome to the GeoBuddies!")
-        })
     }
 
     private fun showToast(message: String) {

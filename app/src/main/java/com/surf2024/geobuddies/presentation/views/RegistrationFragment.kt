@@ -1,21 +1,21 @@
 package com.surf2024.geobuddies.presentation.views
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.google.android.material.textfield.TextInputLayout
 import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.databinding.FragmentRegistrationBinding
 import com.surf2024.geobuddies.domain.registration.entity.RegistrationModel
 import com.surf2024.geobuddies.domain.registration.usecases.getRegistrationModel
 import com.surf2024.geobuddies.presentation.viewmodels.RegistrationViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class RegistrationFragment : Fragment() {
 
     private val binding by viewBinding(FragmentRegistrationBinding::bind)
@@ -37,6 +37,7 @@ class RegistrationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        Log.d("Hilt", "Creating registrationViewModel client instance")
         registrationViewModel = ViewModelProvider(this)[RegistrationViewModel::class.java]
 
         initObserversRegistrationViewModel()
@@ -46,16 +47,17 @@ class RegistrationFragment : Fragment() {
 
     private fun initListenerSignUpButton(){
         binding.signUpRegistrationButton.setOnClickListener {
-            registrationViewModel.setLoading(true)
+            /*registrationViewModel.setLoading(true)*/
+            registerUser()
         }
     }
 
     private  fun initObserversRegistrationViewModel(){
-        registrationViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+        /*registrationViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             if (isLoading) {
                 registerUser()
             }
-        }
+        }*/
 
         registrationViewModel.isRegistrationSuccess.observe(viewLifecycleOwner) { isSuccess ->
             if (isSuccess) {
@@ -78,7 +80,11 @@ class RegistrationFragment : Fragment() {
     private fun registerUser() {
         val user: RegistrationModel? = getRegistrationModel(requireContext(), binding)
         if(user != null){
-            registrationViewModel.register(user)
+            Log.d("FieldData", "value: ${user.email}," +
+                    "${user.password}," +
+                    "${user.name}")
+            //registrationViewModel.register(user)
+
         }
     }
 

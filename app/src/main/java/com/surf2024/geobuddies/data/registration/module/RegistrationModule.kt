@@ -1,5 +1,6 @@
 package com.surf2024.geobuddies.data.registration.module
 
+import android.util.Log
 import com.surf2024.geobuddies.data.registration.repositoryimpl.RegistrationRepositoryImpl
 import com.surf2024.geobuddies.domain.registration.repository.IRegistrationRepository
 import com.surf2024.geobuddies.domain.registration.services.IRegistrationService
@@ -19,6 +20,7 @@ object RegistrationModule {
     fun provideRegistrationService(
         retrofit: Retrofit
     ): IRegistrationService {
+        Log.d("Hilt", "Creating IRegistrationService client instance")
         return retrofit.create(IRegistrationService::class.java)
     }
 
@@ -27,6 +29,7 @@ object RegistrationModule {
     fun provideRegistrationRepositoryImpl(
         registrationService: IRegistrationService
     ): IRegistrationRepository {
+        Log.d("Hilt", "Creating RegistrationRepositoryImpl client instance")
         return RegistrationRepositoryImpl(registrationService)
     }
 }
