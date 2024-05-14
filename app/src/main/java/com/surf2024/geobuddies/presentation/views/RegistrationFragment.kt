@@ -1,15 +1,18 @@
 package com.surf2024.geobuddies.presentation.views
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.databinding.FragmentRegistrationBinding
+import com.surf2024.geobuddies.domain.main.usecase.FragmentChangeListener
 import com.surf2024.geobuddies.domain.registration.entity.RegistrationModel
 import com.surf2024.geobuddies.domain.registration.usecases.getRegistrationModel
 import com.surf2024.geobuddies.presentation.viewmodels.RegistrationViewModel
@@ -21,6 +24,13 @@ class RegistrationFragment : Fragment() {
     private val binding by viewBinding(FragmentRegistrationBinding::bind)
 
     private lateinit var registrationViewModel: RegistrationViewModel
+
+    private lateinit var registrationCompleteListener: FragmentChangeListener
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        registrationCompleteListener = context as FragmentChangeListener
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -47,31 +57,21 @@ class RegistrationFragment : Fragment() {
 
     private fun initListenerSignUpButton(){
         binding.signUpRegistrationButton.setOnClickListener {
-            /*registrationViewModel.setLoading(true)*/
             registerUser()
         }
     }
 
     private  fun initObserversRegistrationViewModel(){
-        /*registrationViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            if (isLoading) {
-                registerUser()
-            }
-        }*/
 
         registrationViewModel.isRegistrationSuccess.observe(viewLifecycleOwner) { isSuccess ->
             if (isSuccess) {
-                /**
-                 * TODO:
-                 *  уведомление что регистрация не успешна
-                 *  перенаправить на фрагмент логина
-                 */
+                showToast("Hi!")
+                showToast("u ve been successfully registered!")
+                onRegistrationComplete()
             }
             else{
-                /**
-                 * TODO:
-                 *  уведомление что регистрация не успешна
-                 */
+                showToast("smth went wrong...")
+                showToast("try later or check info")
             }
         }
     }
@@ -83,11 +83,18 @@ class RegistrationFragment : Fragment() {
             Log.d("FieldData", "value: ${user.email}," +
                     "${user.password}," +
                     "${user.name}")
-            //registrationViewModel.register(user)
+            registrationViewModel.register(user)
 
         }
     }
 
+    fun onRegistrationComplete() {
+        registrationCompleteListener.onRegistrationComplete()
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
     companion object {
         @JvmStatic
         fun newInstance(){}

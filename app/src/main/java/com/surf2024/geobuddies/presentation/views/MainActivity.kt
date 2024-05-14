@@ -5,24 +5,18 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.Observer
-import by.kirich1409.viewbindingdelegate.viewBinding
 import com.surf2024.geobuddies.R
-import com.surf2024.geobuddies.databinding.ActivityMainBinding
-import com.surf2024.geobuddies.presentation.viewmodels.MainVM
+import com.surf2024.geobuddies.domain.main.usecase.FragmentChangeListener
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), FragmentChangeListener {
 
-    //private val binding by viewBinding(ActivityMainBinding::bind)
     private val splashScreenFragment = SplashScreenFragment()
     private val registrationFragment = RegistrationFragment()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,5 +45,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onRegistrationComplete() {
+        val loginFragment = LoginFragment()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentHolderId, loginFragment)
+            .commit()
     }
 }
