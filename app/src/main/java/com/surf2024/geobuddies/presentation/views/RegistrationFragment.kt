@@ -88,7 +88,7 @@ class RegistrationFragment : Fragment() {
         }
     }
 
-    fun onRegistrationComplete() {
+    private fun onRegistrationComplete() {
         registrationCompleteListener.onRegistrationComplete()
     }
 

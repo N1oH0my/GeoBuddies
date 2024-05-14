@@ -11,6 +11,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import retrofit2.HttpException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,14 +21,8 @@ class RegistrationViewModel @Inject constructor(
 
     private val disposables = CompositeDisposable()
 
-    private val _isLoading = MutableLiveData<Boolean>()
     private val _isRegistrationSuccess = MutableLiveData<Boolean>()
 
-    val isLoading: LiveData<Boolean>
-        get() = _isLoading
-        fun setLoading(isLoading: Boolean) {
-            _isLoading.value = isLoading
-        }
 
     val isRegistrationSuccess: LiveData<Boolean>
         get() = _isRegistrationSuccess
@@ -36,32 +31,23 @@ class RegistrationViewModel @Inject constructor(
         }
 
     fun register(registrationModel: RegistrationModel) {
-        _isLoading.value = true
-        disposables.add(
-            Observable.create<Boolean> { emitter ->
-                try {
-                    Log.d("RegistrationProcess", "Sending registration request...")
-                    val response = registrationRepository.register(registrationModel)
-                    Log.d("RegistrationProcess", "Registration successful")
-                    emitter.onNext(true)
-                    emitter.onComplete()
-                } catch (error: Throwable) {
-                    Log.e("RegistrationProcess", "Registration failed", error)
-                    emitter.onError(error)
-                }
-            }
+        disposables.clear()
+        val disposable = registrationRepository.register(registrationModel)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ isSuccess ->
                     Log.d("RegistrationProcess", "Registration successful: $isSuccess")
-                    _isLoading.value = false
-                    setRegistrationSuccess(isSuccess)
+                    setRegistrationSuccess(true)
                 }, { error ->
                     Log.e("RegistrationProcess", "Registration failed", error)
-                    _isLoading.value = false
+                    if (error is HttpException) {
+                        Log.d("RegistrationProcess", "HTTP Error: ${error.code()}")
+                    } else {
+                        Log.d("RegistrationProcess", "Error: ${error.message}")
+                    }
                     setRegistrationSuccess(false)
                 })
-        )
+        disposables.add(disposable)
     }
 
 
