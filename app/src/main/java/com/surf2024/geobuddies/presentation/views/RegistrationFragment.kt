@@ -13,8 +13,8 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.databinding.FragmentRegistrationBinding
 import com.surf2024.geobuddies.domain.main.usecase.FragmentChangeListener
-import com.surf2024.geobuddies.domain.registration.entity.RegistrationModel
-import com.surf2024.geobuddies.domain.registration.usecases.getRegistrationModel
+import com.surf2024.geobuddies.domain.registration.repository.IRegistrationInputReadHelperRepository
+import com.surf2024.geobuddies.domain.registration.repositoryimpl.RegistrationInputReadHelperRepositoryImpl
 import com.surf2024.geobuddies.presentation.viewmodels.RegistrationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -78,14 +78,27 @@ class RegistrationFragment : Fragment() {
 
 
     private fun registerUser() {
-        val user: RegistrationModel? = getRegistrationModel(requireContext(), binding)
-        if(user != null){
-            Log.d("FieldData", "value: ${user.email}," +
-                    "${user.password}," +
-                    "${user.name}")
-            registrationViewModel.register(user)
 
-        }
+        val registrationInputReadHelper: IRegistrationInputReadHelperRepository =
+            RegistrationInputReadHelperRepositoryImpl(requireContext(), binding)
+
+        val email = registrationInputReadHelper.getEmail()
+        val name = registrationInputReadHelper.getName()
+        val password = registrationInputReadHelper.getPassword()
+        val confirmedPassword = registrationInputReadHelper.getConfirmedPassword()
+
+        Log.d("FieldData", "email: ${email}," +
+                "password: ${password}," +
+                "confirmed password: ${confirmedPassword}," +
+                "name: ${name}")
+
+        registrationViewModel.register(
+            email,
+            password,
+            confirmedPassword,
+            name
+            )
+
     }
 
     private fun onRegistrationComplete() {

@@ -5,5 +5,11 @@ import io.reactivex.rxjava3.core.Single
 import retrofit2.Response
 
 interface IRegistrationRepository {
-    fun register(registration: RegistrationModel): Single<Response<Unit>>
+    fun register(
+        email: String?,
+        password: String?,
+        confirmedPassword: String?,
+        name: String?,
+
+    ): Single<Response<Unit>>
 }

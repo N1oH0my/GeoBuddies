@@ -2,7 +2,11 @@ package com.surf2024.geobuddies.data.registration.module
 
 import android.util.Log
 import com.surf2024.geobuddies.data.registration.repositoryimpl.RegistrationRepositoryImpl
+import com.surf2024.geobuddies.domain.registration.repository.IInputLayoutFactoryRepository
 import com.surf2024.geobuddies.domain.registration.repository.IRegistrationRepository
+import com.surf2024.geobuddies.domain.registration.repository.IRegistrationValidatorRepository
+import com.surf2024.geobuddies.domain.registration.repositoryimpl.InputLayoutFactoryRepositoryImpl
+import com.surf2024.geobuddies.domain.registration.repositoryimpl.RegistrationValidatorRepositoryImpl
 import com.surf2024.geobuddies.domain.registration.services.IRegistrationService
 import dagger.Module
 import dagger.Provides
@@ -27,9 +31,23 @@ object RegistrationModule {
     @Provides
     @Singleton
     fun provideRegistrationRepositoryImpl(
-        registrationService: IRegistrationService
+        registrationService: IRegistrationService,
+        registrationValidator: IRegistrationValidatorRepository
     ): IRegistrationRepository {
         Log.d("Hilt", "Creating RegistrationRepositoryImpl client instance")
-        return RegistrationRepositoryImpl(registrationService)
+        return RegistrationRepositoryImpl(registrationService, registrationValidator)
     }
+
+    @Provides
+    fun provideInputLayoutFactory(): IInputLayoutFactoryRepository {
+        Log.d("Hilt", "Creating InputLayoutRepositoryFactoryImpl client instance")
+        return InputLayoutFactoryRepositoryImpl()
+    }
+
+    @Provides
+    fun provideRegistrationValidator(): IRegistrationValidatorRepository {
+        Log.d("Hilt", "Creating RegistrationValidator client instance")
+        return RegistrationValidatorRepositoryImpl()
+    }
+
 }

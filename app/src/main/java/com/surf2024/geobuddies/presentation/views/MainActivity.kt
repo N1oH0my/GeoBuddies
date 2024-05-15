@@ -15,9 +15,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), FragmentChangeListener {
 
-    private val splashScreenFragment = SplashScreenFragment()
-    private val registrationFragment = RegistrationFragment()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -29,7 +26,7 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
         }
 
         supportFragmentManager.beginTransaction()
-            .add(R.id.fragmentHolderId, splashScreenFragment)
+            .add(R.id.fragmentHolderId, SplashScreenFragment())
             .commit()
 
         showToast("Hello!")
@@ -37,7 +34,7 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
 
         Handler(Looper.getMainLooper()).postDelayed({
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentHolderId, registrationFragment)
+                .replace(R.id.fragmentHolderId, RegistrationFragment())
                 .commit()
         }, 3000)
 
@@ -48,9 +45,8 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
     }
 
     override fun onRegistrationComplete() {
-        val loginFragment = LoginFragment()
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentHolderId, loginFragment)
+            .replace(R.id.fragmentHolderId, LoginFragment())
             .commit()
     }
 }

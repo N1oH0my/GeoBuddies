@@ -12,6 +12,6 @@ class PasswordInputLayoutRepositoryImpl(private val binding: FragmentRegistratio
 
 class ConfirmPasswordInputLayoutRepositoryImpl(private val binding: FragmentRegistrationBinding): ITextInputLayoutRepository {
     override fun getInputLayout(): TextInputLayout {
-        return binding.confirmPasswordRegistrationTextInput
+        return binding.confirmpasswordRegistrationTextInput
     }
 }

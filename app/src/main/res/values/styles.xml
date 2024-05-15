@@ -6,7 +6,7 @@
         <item name="android:fontFamily">@font/tilda_sans_light</item>
     </style>
 
-    <style name="registrationFieldTextViewDarkMode">
+    <style name="RegistrationFieldTextViewDarkMode">
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">@color/field_text_color_dark_theme</item>
         <item name="android:fontFamily">@font/tilda_sans_light</item>
