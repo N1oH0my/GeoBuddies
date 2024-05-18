@@ -11,12 +11,10 @@ import com.surf2024.geobuddies.domain.registration.entity.RegistrationEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import retrofit2.Retrofit
-import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
-class MainVM @Inject constructor(
+class    MainVM @Inject constructor(
     private val registrationRepositoryImpl: RegistrationRepositoryImpl,
     private val loginRepositoryImpl: LoginRepositoryImpl
 ): ViewModel() {

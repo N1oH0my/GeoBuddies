@@ -22,6 +22,7 @@
     <string name="yandex">Яндекс</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="the_field_must_not_be_empty">The field must not be empty</string>
 
 
 </resources>
