@@ -21,9 +21,9 @@ class LoginViewModel @Inject constructor(
 
     private val _isLoginSuccess = MutableLiveData<Boolean>()
 
-
     val isLoginSuccess: LiveData<Boolean>
         get() = _isLoginSuccess
+
     private fun setLoginSuccess(isSuccess: Boolean) {
         _isLoginSuccess.value = isSuccess
     }
@@ -47,15 +47,13 @@ class LoginViewModel @Inject constructor(
 
                 if (error is HttpException) {
                     Log.d("loginProcess", "HTTP Error: ${error.code()}")
-                }
-                else {
+                } else {
                     Log.d("loginProcess", "Error: ${error.message}")
                 }
                 setLoginSuccess(false)
             })
         disposables.add(disposable)
     }
-
 
     override fun onCleared() {
         super.onCleared()

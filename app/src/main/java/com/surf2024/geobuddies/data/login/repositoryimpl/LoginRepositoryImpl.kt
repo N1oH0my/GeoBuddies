@@ -9,28 +9,30 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import retrofit2.Response
 import javax.inject.Inject
 
-class LoginRepositoryImpl @Inject constructor (
+class LoginRepositoryImpl @Inject constructor(
     private val loginService: ILoginService,
     private val loginValidator: ILoginValidatorRepository,
-): ILoginRepository {
+) : ILoginRepository {
     override fun login(
         email: String?,
         password: String?
-        ): Single<Response<Unit>> {
+    ): Single<Response<Unit>> {
 
-        val isValid = loginValidator.validateLoginFields(
-            email,
-            password
-        )
-        if (isValid) {
-            return loginService.login(
-                LoginEntity(
-                    email = email!!,
-                    password = password!!,
-                )
-            ).subscribeOn(Schedulers.io())
+        if (email == null || password == null) {
+            return Single.error(Throwable("Email or password cannot be null"))
         }
-        return Single.error(Throwable("Invalid registration fields"))
+
+        val isValid = loginValidator.validateLoginFields(email, password)
+        return if (isValid) {
+            loginService.login(
+                LoginEntity(
+                    email = email,
+                    password = password
+                )
+            )
+        } else {
+            Single.error(Throwable("Invalid registration fields"))
+        }
     }
 
 }
