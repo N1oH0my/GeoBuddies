@@ -5,8 +5,25 @@
         <item name="android:textColor">@color/field_text_color_dark_theme</item>
         <item name="android:fontFamily">@font/tilda_sans_light</item>
     </style>
+    <style name="InviteUserNameTextDarkMode">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/field_text_color_dark_theme</item>
+        <item name="android:fontFamily">@font/tilda_sans_light</item>
+    </style>
+    <style name="InviteUserEmailTextDarkMode">
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@color/field_text_color_dark_theme</item>
+        <item name="android:fontFamily">@font/tilda_sans_light</item>
+    </style>
 
     <style name="RegistrationFieldTextViewDarkMode">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/field_text_color_dark_theme</item>
+        <item name="android:fontFamily">@font/tilda_sans_light</item>
+        <item name="android:textColorHint">@color/field_text_color_dark_theme</item>
+    </style>
+
+    <style name="SearchFieldDarkMode">
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">@color/field_text_color_dark_theme</item>
         <item name="android:fontFamily">@font/tilda_sans_light</item>
