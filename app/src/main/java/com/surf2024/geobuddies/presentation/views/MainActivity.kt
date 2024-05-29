@@ -55,4 +55,10 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
             .replace(R.id.fragmentHolderId, SplashScreenFragment())
             .commit()
     }
+
+    override fun onSearchFriendClose() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentHolderId, LoginFragment())
+            .commit()
+    }
 }

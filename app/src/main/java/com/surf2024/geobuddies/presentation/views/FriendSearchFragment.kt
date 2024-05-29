@@ -1,5 +1,6 @@
 package com.surf2024.geobuddies.presentation.views
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +19,7 @@ import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.databinding.FragmentFriendSearchBinding
 import com.surf2024.geobuddies.domain.friendsearch.entity.FoundFriendModel
 import com.surf2024.geobuddies.domain.friendsearch.usecases.IOnFriendItemClickListener
+import com.surf2024.geobuddies.domain.main.usecase.FragmentChangeListener
 import com.surf2024.geobuddies.presentation.adapters.FriendSearchRVAdapter
 import com.surf2024.geobuddies.presentation.viewmodels.FriendSearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,6 +27,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class FriendSearchFragment : Fragment(), IOnFriendItemClickListener {
+    private lateinit var friendSearchCloseListener: FragmentChangeListener
     companion object {
         @JvmStatic
         fun newInstance() =
@@ -44,6 +48,10 @@ class FriendSearchFragment : Fragment(), IOnFriendItemClickListener {
         }
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        friendSearchCloseListener = context as FragmentChangeListener
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -59,7 +67,10 @@ class FriendSearchFragment : Fragment(), IOnFriendItemClickListener {
         initListenerSearchFriendField()
         initObserversFriendSearchViewModel()
 
+        overrideOnBackPressed()
     }
+
+
 
     override fun onFriendItemClick(position: Int) {
         val clickedFriend = dataList[position]
@@ -112,5 +123,17 @@ class FriendSearchFragment : Fragment(), IOnFriendItemClickListener {
 
     private fun showToast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+    private fun onSearchFriendClose() {
+        friendSearchCloseListener.onSearchFriendClose()
+    }
+    fun overrideOnBackPressed() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                onSearchFriendClose()
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 }
