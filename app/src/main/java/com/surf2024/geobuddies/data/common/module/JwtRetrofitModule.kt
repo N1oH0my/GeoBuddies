@@ -8,6 +8,7 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Named
 import javax.inject.Singleton
@@ -21,7 +22,7 @@ object JwtRetrofitModule {
     fun provideRetrofit(/*tokenProvider: ITokenProvider*/): Retrofit {
         val jwtInterceptor = Interceptor { chain ->
             //val token = tokenProvider.getToken()
-            val token = "jwt"
+            val token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJvb29AZ21haWwuY29tIiwiaWF0IjoxNzE2NjUyMDM2LCJleHAiOjE3MjQ0MjgwMzZ9.-Z3USCfqQ8N_W_qDlQYIyiWOI_NymY36oh8zZXBKeqE"
             if (token != null) {
                 val request = chain.request().newBuilder()
                     .addHeader("Authorization", "Bearer $token")
@@ -39,6 +40,7 @@ object JwtRetrofitModule {
         return Retrofit.Builder()
             .baseUrl(BuildConfig.API_BASE_URL)
             .client(okHttpClient)
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
