@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -58,19 +59,11 @@ class FriendSearchFragment : Fragment(), IOnFriendItemClickListener {
         initListenerSearchFriendField()
         initObserversFriendSearchViewModel()
 
-        /*dataList= listOf(
-            FoundFriendModel(1, "Name Surname 1", "email1@example.com", "", ""),
-            FoundFriendModel(2, "Name Surname 2", "email2@example.com", "", ""),
-        )
-
-        adapter = FriendSearchRVAdapter(requireContext(), dataList, this)
-        recyclerView.adapter = adapter*/
-
     }
 
     override fun onFriendItemClick(position: Int) {
         val clickedFriend = dataList[position]
-
+        friendSearchViewModel.inviteFriend(clickedFriend.id)
     }
 
     private fun initFriendSearchViewModel(){
@@ -101,6 +94,23 @@ class FriendSearchFragment : Fragment(), IOnFriendItemClickListener {
             recyclerView.adapter = adapter
 
             dataList = foundFriendList
+            if (dataList.isEmpty()){
+                showToast("no users found or check auth")
+            }
         }
+
+        friendSearchViewModel.isInviteSendSuccess.observe(viewLifecycleOwner){result ->
+            if (result){
+                showToast("invite sent")
+            }
+            else{
+                showToast("smth went wrong...")
+                showToast("try again later")
+            }
+        }
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 }

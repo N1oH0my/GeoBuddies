@@ -8,6 +8,6 @@ import retrofit2.http.Path
 interface IInviteSendService {
     @POST("/api/v1/friend/invite/{userId}")
     fun sendInvite(
-        @Path("userId") userId: String
+        @Path("userId") userId: Int
     ): Single<Response<Unit>>
 }

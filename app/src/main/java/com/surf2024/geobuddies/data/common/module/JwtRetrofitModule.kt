@@ -22,7 +22,7 @@ object JwtRetrofitModule {
     fun provideRetrofit(/*tokenProvider: ITokenProvider*/): Retrofit {
         val jwtInterceptor = Interceptor { chain ->
             //val token = tokenProvider.getToken()
-            val token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJvb29AZ21haWwuY29tIiwiaWF0IjoxNzE2NjUyMDM2LCJleHAiOjE3MjQ0MjgwMzZ9.-Z3USCfqQ8N_W_qDlQYIyiWOI_NymY36oh8zZXBKeqE"
+            val token = "jwt"
             if (token != null) {
                 val request = chain.request().newBuilder()
                     .addHeader("Authorization", "Bearer $token")
