@@ -19,9 +19,8 @@ object JwtRetrofitModule {
     @Provides
     @Singleton
     @Named("withJwt")
-    fun provideRetrofit(/*tokenProvider: ITokenProvider*/): Retrofit {
+    fun provideRetrofit(): Retrofit {
         val jwtInterceptor = Interceptor { chain ->
-            //val token = tokenProvider.getToken()
             val token = "jwt"
             if (token != null) {
                 val request = chain.request().newBuilder()

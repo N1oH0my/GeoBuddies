@@ -41,7 +41,6 @@ class FriendSearchViewModel @Inject constructor(
         val disposable = friendSearchRepository.findFriend(
             userNameOrEmail
         )
-            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ foundFriends  ->
                 Log.d("FriendSearchProcess", "Search successful: $foundFriends")
