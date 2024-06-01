@@ -4,23 +4,19 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.surf2024.geobuddies.R
-import com.surf2024.geobuddies.domain.friendsearch.usecases.IOnFriendItemClickListener
 import com.surf2024.geobuddies.domain.invites.entities.InviteModel
+import com.surf2024.geobuddies.domain.invites.usecases.IOnInviteClickListener
+import de.hdodenhof.circleimageview.CircleImageView
 
 class InvitesRVAdapter(
     private val context: Context,
     private val dataList: List<InviteModel>,
-    private val listener: IOnFriendItemClickListener
+    private val listener: IOnInviteClickListener
 ) : RecyclerView.Adapter<InvitesRVAdapter.InvitesViewHolder>() {
-    inner class InvitesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        fun bind(data: InviteModel){
-
-        }
-    }
-
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -38,4 +34,35 @@ class InvitesRVAdapter(
         return dataList.size
     }
 
+    inner class InvitesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val userName: TextView = itemView.findViewById(R.id.invite_user_name)
+        private val userEmail: TextView = itemView.findViewById(R.id.invite_user_email)
+
+        private val addIcon: ImageView = itemView.findViewById(R.id.invite_add_icon)
+        private val crossIcon: ImageView = itemView.findViewById(R.id.invite_cross_icon)
+        private val profileImage: CircleImageView = itemView.findViewById(R.id.invite_profile_image)
+
+        fun bind(data: InviteModel){
+            userName.text = data.name
+            userEmail.text = data.email
+            addIcon.setImageResource(R.drawable.ic_add_friend)
+            crossIcon.setImageResource(R.drawable.ic_cross)
+        }
+
+        init {
+            addIcon.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    addIcon.setImageResource(R.drawable.ic_send_invite)
+                    listener.onInviteAcceptClick(position)
+                }
+            }
+            crossIcon.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    listener.onInviteDenyClick(position)
+                }
+            }
+        }
+    }
 }

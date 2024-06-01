@@ -5,5 +5,5 @@ data class FoundFriendModel(
     val name: String,
     val email: String,
     val avatarUrl: String,
-    val birthDay: String, // возможно не нужен
+    val birthDay: String,
 )

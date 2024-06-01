@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
 
         Handler(Looper.getMainLooper()).postDelayed({
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentHolderId, FriendSearchFragment() /*RegistrationFragment()*/)
+                .replace(R.id.fragmentHolderId, AcceptDenyInvitesFragment() /*RegistrationFragment()*/)
                 .commit()
         }, 3000)
 
