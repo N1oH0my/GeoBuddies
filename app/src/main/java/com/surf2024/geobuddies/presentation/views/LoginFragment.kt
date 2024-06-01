@@ -31,6 +31,7 @@ class LoginFragment : Fragment() {
         super.onAttach(context)
         loginCompleteListener = context as FragmentChangeListener
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -52,29 +53,34 @@ class LoginFragment : Fragment() {
 
         initObserversLoginViewModel()
         initListenerLoginButton()
+        initListenerSingUpButton()
 
     }
 
-    private fun initListenerLoginButton(){
-        binding.loginFragmentLoginButton.setOnClickListener {
-            loginUser()
-        }
-    }
-
-    private  fun initObserversLoginViewModel(){
+    private fun initObserversLoginViewModel() {
 
         loginViewModel.isLoginSuccess.observe(viewLifecycleOwner) { isSuccess ->
             if (isSuccess) {
                 showToast("Hi!")
                 showToast("u ve been successfully logged!")
                 onLoginComplete()
-            }
-            else{
+            } else {
                 showToast("smth went wrong...")
             }
         }
     }
 
+    private fun initListenerLoginButton() {
+        binding.loginFragmentLoginButton.setOnClickListener {
+            loginUser()
+        }
+    }
+
+    private fun initListenerSingUpButton() {
+        binding.loginFragmentSingUpTextView.setOnClickListener {
+            onSignUpClicked()
+        }
+    }
 
     private fun loginUser() {
 
@@ -84,8 +90,10 @@ class LoginFragment : Fragment() {
         val email = loginInputReadHelper.getEmail()
         val password = loginInputReadHelper.getPassword()
 
-        Log.d("FieldData", "email: ${email}," +
-                "password: ${password},")
+        Log.d(
+            "FieldData", "email: ${email}," +
+                    "password: ${password},"
+        )
 
         loginViewModel.login(
             email,
@@ -97,12 +105,16 @@ class LoginFragment : Fragment() {
     private fun onLoginComplete() {
         loginCompleteListener.onLoginComplete()
     }
-
+    private fun onSignUpClicked() {
+        loginCompleteListener.onSignUpClicked()
+    }
     private fun showToast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
+
     companion object {
         @JvmStatic
-        fun newInstance(){}
+        fun newInstance() {
+        }
     }
 }

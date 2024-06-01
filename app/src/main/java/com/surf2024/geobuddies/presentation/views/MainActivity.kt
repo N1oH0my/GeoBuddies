@@ -49,4 +49,14 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
             .replace(R.id.fragmentHolderId, LoginFragment())
             .commit()
     }
+
+    override fun onLoginComplete() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onSignUpClicked() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentHolderId, RegistrationFragment())
+            .commit()
+    }
 }
