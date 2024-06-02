@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.surf2024.geobuddies.domain.login.repository.ILoginRepository
+import com.surf2024.geobuddies.domain.login.repositoryimpl.LoginAccessTokenSaverRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val loginRepository: ILoginRepository
+    private val loginRepository: ILoginRepository,
+    private val loginAccessTokenSaverRepository: LoginAccessTokenSaverRepositoryImpl
 ) : ViewModel() {
 
     private val disposables = CompositeDisposable()
@@ -28,10 +30,7 @@ class LoginViewModel @Inject constructor(
         _isLoginSuccess.value = isSuccess
     }
 
-    fun login(
-        email: String?,
-        password: String?
-    ) {
+    fun login(email: String?, password: String?) {
         disposables.clear()
         val disposable = loginRepository.login(email, password)
             .subscribeOn(Schedulers.io())
@@ -41,6 +40,13 @@ class LoginViewModel @Inject constructor(
                     val loginResponse = response.body()
                     val accessToken = loginResponse?.accessToken
                     Log.d("loginProcess", "login successful: Access Token = $accessToken")
+
+                    if (loginAccessTokenSaverRepository.saveAccessToken(accessToken)) {
+                        Log.d("loginProcess", "Access token saved successfully")
+                    } else {
+                        Log.e("loginProcess", "Failed to save access token")
+                    }
+
                     setLoginSuccess(true)
                 } else {
                     Log.e("loginProcess", "login failed: ${response.code()}")

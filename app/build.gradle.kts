@@ -84,6 +84,8 @@ dependencies {
 
     // Activity ktx
     implementation("androidx.activity:activity-ktx:$activity_version")
+    //Encryption
+    implementation("androidx.security:security-crypto:1.1.0-alpha03")
 
 }
 kapt {
