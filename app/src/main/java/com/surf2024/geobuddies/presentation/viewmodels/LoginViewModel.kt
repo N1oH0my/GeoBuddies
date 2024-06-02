@@ -33,15 +33,19 @@ class LoginViewModel @Inject constructor(
         password: String?
     ) {
         disposables.clear()
-        val disposable = loginRepository.login(
-            email,
-            password
-        )
+        val disposable = loginRepository.login(email, password)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ isSuccess ->
-                Log.d("loginProcess", "login successful: $isSuccess")
-                setLoginSuccess(true)
+            .subscribe({ response ->
+                if (response.isSuccessful) {
+                    val loginResponse = response.body()
+                    val accessToken = loginResponse?.accessToken
+                    Log.d("loginProcess", "login successful: Access Token = $accessToken")
+                    setLoginSuccess(true)
+                } else {
+                    Log.e("loginProcess", "login failed: ${response.code()}")
+                    setLoginSuccess(false)
+                }
             }, { error ->
                 Log.e("loginProcess", "login failed", error)
 
@@ -54,6 +58,7 @@ class LoginViewModel @Inject constructor(
             })
         disposables.add(disposable)
     }
+
 
     override fun onCleared() {
         super.onCleared()
