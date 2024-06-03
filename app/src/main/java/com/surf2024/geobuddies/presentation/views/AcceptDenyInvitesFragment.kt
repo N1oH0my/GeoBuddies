@@ -37,7 +37,8 @@ class AcceptDenyInvitesFragment : Fragment(), IOnInviteClickListener {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: InvitesRVAdapter
 
-    private lateinit var dataList: List<InviteModel>
+    private lateinit var dataList: MutableList<InviteModel>
+    private var lastAcceptDenyPosition: Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {}
@@ -76,12 +77,32 @@ class AcceptDenyInvitesFragment : Fragment(), IOnInviteClickListener {
             adapter = InvitesRVAdapter( requireContext(), invites, this)
             recyclerView.adapter = adapter
 
-            dataList = invites
+            dataList = invites.toMutableList()
             if (dataList.isEmpty()){
                 showToast("there are no invites")
             }
         }
-
+        invitesViewModel.isInviteAccepted.observe(viewLifecycleOwner){response ->
+            if (response){
+                showToast("invite accepted")
+                hideCrossIcon(lastAcceptDenyPosition)
+            }
+            else{
+                showToast("smth went wrong...")
+                showToast("try again later")
+            }
+        }
+        invitesViewModel.isInviteDenied.observe(viewLifecycleOwner){response ->
+            if (response){
+                showToast("invite denied")
+                dataList.removeAt(lastAcceptDenyPosition)
+                invitesViewModel.setInvites(dataList)
+            }
+            else{
+                showToast("smth went wrong...")
+                showToast("try again later")
+            }
+        }
     }
 
     private fun loadInvites(){
@@ -92,12 +113,19 @@ class AcceptDenyInvitesFragment : Fragment(), IOnInviteClickListener {
     }
     override fun onInviteAcceptClick(position: Int) {
         val invite = dataList[position]
-        showToast("invite accepted")
+        invitesViewModel.acceptInvite(invite.id)
+        lastAcceptDenyPosition = position
     }
+    fun hideCrossIcon(position: Int) {
+        val viewHolder = recyclerView.findViewHolderForAdapterPosition(position) as InvitesRVAdapter.InvitesViewHolder?
+        viewHolder?.hideCrossIcon()
+    }
+
 
     override fun onInviteDenyClick(position: Int) {
         val invite = dataList[position]
-        showToast("invite denied")
+        invitesViewModel.denyInvite(invite.id)
+        lastAcceptDenyPosition = position
     }
 
 

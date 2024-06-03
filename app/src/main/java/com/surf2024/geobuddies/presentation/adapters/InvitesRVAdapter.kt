@@ -34,6 +34,7 @@ class InvitesRVAdapter(
         return dataList.size
     }
 
+
     inner class InvitesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val userName: TextView = itemView.findViewById(R.id.invite_user_name)
         private val userEmail: TextView = itemView.findViewById(R.id.invite_user_email)
@@ -47,6 +48,9 @@ class InvitesRVAdapter(
             userEmail.text = data.email
             addIcon.setImageResource(R.drawable.ic_add_friend)
             crossIcon.setImageResource(R.drawable.ic_cross)
+        }
+        fun hideCrossIcon() {
+            crossIcon.visibility = View.GONE
         }
 
         init {
