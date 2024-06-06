@@ -1,6 +1,7 @@
 package com.surf2024.geobuddies.data.login.repositoryimpl
 
 import com.surf2024.geobuddies.domain.login.entity.LoginEntity
+import com.surf2024.geobuddies.domain.login.entity.LoginResponse
 import com.surf2024.geobuddies.domain.login.repository.ILoginRepository
 import com.surf2024.geobuddies.domain.login.repository.ILoginValidatorRepository
 import com.surf2024.geobuddies.domain.login.services.ILoginService
@@ -16,7 +17,7 @@ class LoginRepositoryImpl @Inject constructor(
     override fun login(
         email: String?,
         password: String?
-    ): Single<Response<Unit>> {
+    ): Single<Response<LoginResponse>> {
 
         if (email == null || password == null) {
             return Single.error(Throwable("Email or password cannot be null"))

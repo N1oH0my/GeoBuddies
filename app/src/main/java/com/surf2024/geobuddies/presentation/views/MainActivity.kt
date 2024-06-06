@@ -51,8 +51,12 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
     }
 
     override fun onLoginComplete() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onSignUpClicked() {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentHolderId, SplashScreenFragment())
+            .replace(R.id.fragmentHolderId, RegistrationFragment())
             .commit()
     }
 
