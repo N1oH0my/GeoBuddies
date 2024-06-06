@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
 
         Handler(Looper.getMainLooper()).postDelayed({
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentHolderId, RegistrationFragment())
+                .replace(R.id.fragmentHolderId, FriendSearchFragment() /*RegistrationFragment()*/)
                 .commit()
         }, 3000)
 
@@ -63,6 +63,6 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
     override fun onSearchFriendClose() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentHolderId, LoginFragment())
-        .commit()
+            .commit()
     }
 }
