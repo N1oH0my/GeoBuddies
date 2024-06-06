@@ -59,4 +59,10 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
             .replace(R.id.fragmentHolderId, RegistrationFragment())
             .commit()
     }
+
+    override fun onSearchFriendClose() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentHolderId, LoginFragment())
+        .commit()
+    }
 }
