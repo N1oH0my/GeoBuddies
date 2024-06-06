@@ -20,7 +20,7 @@ object EncryptedSharedPreferenceModule {
         Log.d("SharedPreferences", "Creating EncryptedSharedPreference instance")
         return EncryptedSharedPreferences.create(
             context,
-            "secure_prefs",
+            ENCRYPTED_SHARED_PREFERENCE_NAME,
             MasterKey.Builder(context)
                 .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
                 .build(),
@@ -28,4 +28,7 @@ object EncryptedSharedPreferenceModule {
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
     }
+
+    private const val ENCRYPTED_SHARED_PREFERENCE_NAME = "secure_prefs"
+
 }

@@ -37,16 +37,11 @@ class LoginViewModel @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ response ->
                 if (response.isSuccessful) {
-                    val loginResponse = response.body()
-                    val accessToken = loginResponse?.accessToken
-                    Log.d("loginProcess", "login successful: Access Token = $accessToken")
-
-                    if (loginAccessTokenSaverRepository.saveAccessToken(accessToken)) {
+                    if (loginAccessTokenSaverRepository.saveAccessToken(response)) {
                         Log.d("loginProcess", "Access token saved successfully")
                     } else {
                         Log.e("loginProcess", "Failed to save access token")
                     }
-
                     setLoginSuccess(true)
                 } else {
                     Log.e("loginProcess", "login failed: ${response.code()}")
