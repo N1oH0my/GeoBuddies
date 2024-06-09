@@ -8,6 +8,7 @@ import androidx.security.crypto.MasterKey
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -16,7 +17,7 @@ import javax.inject.Singleton
 object EncryptedSharedPreferenceModule {
     @Provides
     @Singleton
-    fun provideEncryptedSharedPreference(context: Context): SharedPreferences {
+    fun provideEncryptedSharedPreference(@ApplicationContext context: Context): SharedPreferences {
         Log.d("SharedPreferences", "Creating EncryptedSharedPreference instance")
         return EncryptedSharedPreferences.create(
             context,
