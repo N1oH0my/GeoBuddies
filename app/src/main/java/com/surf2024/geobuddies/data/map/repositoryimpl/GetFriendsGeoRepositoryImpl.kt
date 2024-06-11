@@ -13,13 +13,11 @@ class GetFriendsGeoRepositoryImpl @Inject constructor(
     override fun getFriendsGeo(): Single<List<FriendGeoModel>> {
         return getFriendsGeoService.getFriendsGeo()
             .subscribeOn(Schedulers.io())
-            .flatMap { response ->
-                if (response.isSuccessful){
-                    Single.just(response.body() ?: emptyList())
-                }
-                else{
-                    Single.error(Throwable("Failed to get friends geo"))
-                }
+            .map { response ->
+                response ?: emptyList()
+            }
+            .onErrorResumeNext { throwable: Throwable ->
+                Single.error(Throwable("Failed to get friends geo", throwable))
             }
     }
 }
