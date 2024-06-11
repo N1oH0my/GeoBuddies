@@ -67,4 +67,10 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
             .replace(R.id.fragmentHolderId, LoginFragment())
             .commit()
     }
+
+    override fun onInvitesClose() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentHolderId, LoginFragment())
+            .commit()
+    }
 }

@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -61,6 +62,9 @@ class AcceptDenyInvitesFragment : Fragment(), IOnInviteClickListener {
         initRecyclerView()
         initInvitesViewModel()
         initObserversInvitesViewModel()
+
+        overrideOnBackPressed()
+
         loadInvites()
     }
 
@@ -131,5 +135,17 @@ class AcceptDenyInvitesFragment : Fragment(), IOnInviteClickListener {
         lastAcceptDenyPosition = position
     }
 
+    private fun onInvitesClose() {
+        invitesCloseListener.onInvitesClose()
+    }
+    fun overrideOnBackPressed() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                onInvitesClose()
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+    }
 
 }
