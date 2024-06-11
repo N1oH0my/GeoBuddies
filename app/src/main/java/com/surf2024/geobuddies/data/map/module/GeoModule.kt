@@ -19,6 +19,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object GeoModule {
+
     @Provides
     @Singleton
     fun provideGetFriendsGeoService(
@@ -27,6 +28,7 @@ object GeoModule {
         Log.d("Hilt", "Creating IGetFriendsGeoService Retrofit client instance")
         return retrofit.create(IGetFriendsGeoService::class.java)
     }
+
     @Provides
     @Singleton
     fun provideSaveUserGeoService(
@@ -38,17 +40,17 @@ object GeoModule {
 
     @Provides
     @Singleton
-    fun provideGetFriendsGeoRepositoryImpl(
-        getFriendsGeoService : IGetFriendsGeoService
-    ): IGetFriendsGeoRepository{
+    fun provideGetFriendsGeoRepository(
+        getFriendsGeoService: IGetFriendsGeoService
+    ): IGetFriendsGeoRepository {
         Log.d("Hilt", "Creating GetFriendsGeoRepositoryImpl instance")
         return GetFriendsGeoRepositoryImpl(getFriendsGeoService)
     }
 
     @Provides
     @Singleton
-    fun provideGetFriendsGeoRepositoryImpl(
-        saveUserGeoService : ISaveUserGeoService
+    fun provideSaveUserGeoRepository(
+        saveUserGeoService: ISaveUserGeoService
     ): ISaveUserGeoRepository {
         Log.d("Hilt", "Creating SaveUserGeoRepositoryImpl instance")
         return SaveUserGeoRepositoryImpl(saveUserGeoService)
