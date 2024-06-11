@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
 
         Handler(Looper.getMainLooper()).postDelayed({
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentHolderId, FriendSearchFragment() /*RegistrationFragment()*/)
+                .replace(R.id.fragmentHolderId, LoginFragment() /*RegistrationFragment()*/)
                 .commit()
         }, 3000)
 
@@ -51,7 +51,9 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
     }
 
     override fun onLoginComplete() {
-        TODO("Not yet implemented")
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentHolderId, FriendSearchFragment())
+            .commit()
     }
 
     override fun onSignUpClicked() {
