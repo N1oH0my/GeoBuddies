@@ -1,6 +1,7 @@
 package com.surf2024.geobuddies.data.common.module
 
 import com.surf2024.geobuddies.BuildConfig
+import com.surf2024.geobuddies.domain.common.repository.ITokenProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,12 +20,12 @@ object JwtRetrofitModule {
     @Provides
     @Singleton
     @Named("withJwt")
-    fun provideRetrofit(): Retrofit {
+    fun provideRetrofit(tokenProvider: ITokenProvider): Retrofit {
         val jwtInterceptor = Interceptor { chain ->
-            val token = "jwt"
-            if (token != null) {
+
+            if (tokenProvider.getToken() != null) {
                 val request = chain.request().newBuilder()
-                    .addHeader("Authorization", "Bearer $token")
+                    .addHeader("Authorization", "Bearer ${tokenProvider.getToken()}")
                     .build()
                 chain.proceed(request)
             } else {

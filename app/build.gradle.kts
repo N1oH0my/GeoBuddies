@@ -56,6 +56,7 @@ androidComponents {
 dependencies {
 
     val activity_version = "1.9.0"
+    val security_version = "1.1.0-alpha03"
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -84,6 +85,8 @@ dependencies {
 
     // Activity ktx
     implementation("androidx.activity:activity-ktx:$activity_version")
+    //Encryption
+    implementation("androidx.security:security-crypto:$security_version")
 
 }
 kapt {

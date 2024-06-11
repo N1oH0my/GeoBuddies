@@ -125,7 +125,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/login_fragment_sing_up_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="25dp"
@@ -153,7 +153,7 @@
             android:background="@drawable/gradient_circle"
             android:gravity="center"
             android:text="@string/login_button"
-            app:layout_constraintTop_toBottomOf="@+id/textView3"
+            app:layout_constraintTop_toBottomOf="@+id/login_fragment_sing_up_text_view"
             tools:ignore="MissingConstraints"
             tools:layout_editor_absoluteX="30dp" />
 
