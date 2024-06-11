@@ -67,8 +67,8 @@ class AcceptDenyInvitesViewModel@Inject constructor(
         disposables.clear()
         val disposable = acceptInviteRepository.acceptInvite(userId)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ response ->
-                Log.d("InvitesProcess", "Accept successful: $response")
+            .subscribe({
+                Log.d("InvitesProcess", "Accept successful")
                 setAcceptInviteResponse(true)
             }, { error->
                 if(error is HttpException){
@@ -86,8 +86,8 @@ class AcceptDenyInvitesViewModel@Inject constructor(
         disposables.clear()
         val disposable = denyInviteRepository.denyInvite(userId)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ response ->
-                Log.d("InvitesProcess", "Deny successful: $response")
+            .subscribe({
+                Log.d("InvitesProcess", "Deny successful")
                 setDenyInviteResponse(true)
             }, { error->
                 if(error is HttpException){

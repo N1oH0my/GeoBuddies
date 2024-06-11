@@ -13,12 +13,12 @@ class InvitesRepositoryImpl @Inject constructor(
     override fun getAllInvites(): Single<List<InviteModel>> {
         return invitesService.getAllInvites()
             .subscribeOn(Schedulers.io())
-            .flatMap { response ->
-                if (response.isSuccessful) {
-                    Single.just(response.body() ?: emptyList())
-                } else {
-                    Single.error(Throwable("Failed to get invites"))
+            .map { response ->
+                response ?: emptyList()
                 }
-            }
+            .onErrorResumeNext{
+                    Single.error(Throwable("Failed to get invites", it))
+                }
     }
+
 }
