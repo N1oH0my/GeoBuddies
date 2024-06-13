@@ -24,7 +24,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AcceptDenyInvitesFragment : Fragment(), IOnInviteClickListener {
-    private lateinit var invitesCloseListener: FragmentChangeListener
     companion object {
         @JvmStatic
         fun newInstance() =
@@ -32,6 +31,8 @@ class AcceptDenyInvitesFragment : Fragment(), IOnInviteClickListener {
                 arguments = Bundle().apply {}
             }
     }
+    private lateinit var invitesCloseListener: FragmentChangeListener
+
     private val binding by viewBinding(FragmentAcceptDenyInvitesBinding::bind)
     private lateinit var invitesViewModel: AcceptDenyInvitesViewModel
 
@@ -40,6 +41,7 @@ class AcceptDenyInvitesFragment : Fragment(), IOnInviteClickListener {
 
     private var dataList: MutableList<Pair<InviteModel, Boolean>> = mutableListOf()
     private var lastAcceptDenyPosition: Int = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {}
@@ -67,62 +69,6 @@ class AcceptDenyInvitesFragment : Fragment(), IOnInviteClickListener {
 
         loadInvites()
     }
-
-    private fun initRecyclerView(){
-        recyclerView = binding.invitesRecyclerview
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        adapter = InvitesRVAdapter( requireContext(), mutableListOf(), this)
-        recyclerView.adapter = adapter
-    }
-    private fun initInvitesViewModel() {
-        Log.d("Hilt", "Creating AcceptDenyInvitesViewModel client instance")
-        invitesViewModel = ViewModelProvider(this)[AcceptDenyInvitesViewModel::class.java]
-    }
-    private fun initObserversInvitesViewModel() {
-        invitesViewModel.invitesList.observe(viewLifecycleOwner){ invites->
-
-            if (invites.isEmpty()){
-                showToast("there are no invites")
-            }
-            else{
-                if (dataList.isEmpty()) {
-                    dataList = invites.map { it to false }.toMutableList()
-                }
-                adapter.reload(dataList)
-            }
-        }
-        invitesViewModel.isInviteAccepted.observe(viewLifecycleOwner){response ->
-            if (response){
-                showToast("invite accepted")
-                val (invite, _) = dataList[lastAcceptDenyPosition]
-                dataList[lastAcceptDenyPosition] = invite to true
-                adapter.reload(dataList)
-            }
-            else{
-                showToast("smth went wrong...")
-                showToast("try again later")
-            }
-        }
-        invitesViewModel.isInviteDenied.observe(viewLifecycleOwner){response ->
-            if (response){
-                showToast("invite denied")
-                dataList.removeAt(lastAcceptDenyPosition)
-                adapter.reload(dataList)
-            }
-            else{
-                showToast("smth went wrong...")
-                showToast("try again later")
-            }
-        }
-    }
-
-    private fun loadInvites(){
-        invitesViewModel.getAllInvites()
-    }
-    private fun showToast(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-    }
-
     override fun onInviteAcceptClick(position: Int) {
         val (invite, _) = dataList[position]
         invitesViewModel.acceptInvite(invite.id)
@@ -135,17 +81,84 @@ class AcceptDenyInvitesFragment : Fragment(), IOnInviteClickListener {
         lastAcceptDenyPosition = position
     }
 
-    private fun onInvitesClose() {
-        invitesCloseListener.onInvitesClose()
-    }
-    fun overrideOnBackPressed() {
+    private fun overrideOnBackPressed() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 onInvitesClose()
             }
         }
-
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+    }
+
+    private fun initRecyclerView(){
+        recyclerView = binding.invitesRecyclerview
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        adapter = InvitesRVAdapter( requireContext(), this)
+        recyclerView.adapter = adapter
+    }
+
+    private fun initInvitesViewModel() {
+        Log.d("Hilt", "Creating AcceptDenyInvitesViewModel client instance")
+        invitesViewModel = ViewModelProvider(this)[AcceptDenyInvitesViewModel::class.java]
+    }
+
+    private fun initObserversInvitesViewModel() {
+        invitesViewModel.invitesList.observe(viewLifecycleOwner){ invites->
+
+            if (invites != null) {
+                if (invites.isEmpty()){
+                    activity?.let { showToast(it.getString(R.string.no_invites)) }
+                } else{
+                    if (dataList.isEmpty()) {
+                        dataList = invites.map { it to false }.toMutableList()
+                    }
+                    adapter.reload(dataList.toList())
+                }
+            }
+            else{
+                showError()
+            }
+        }
+        invitesViewModel.isInviteAccepted.observe(viewLifecycleOwner){response ->
+            if (response){
+                activity?.let { showToast(it.getString(R.string.invite_accepted)) }
+                val (invite, _) = dataList[lastAcceptDenyPosition]
+                dataList[lastAcceptDenyPosition] = invite to true
+                adapter.reload(dataList.toList())
+            }
+            else{
+                showError()
+            }
+        }
+        invitesViewModel.isInviteDenied.observe(viewLifecycleOwner){response ->
+            if (response){
+                activity?.let { showToast(it.getString(R.string.invite_denied)) }
+                dataList.removeAt(lastAcceptDenyPosition)
+                adapter.reload(dataList.toList())
+            }
+            else{
+                showError()
+            }
+        }
+    }
+
+    private fun loadInvites(){
+        invitesViewModel.getAllInvites()
+    }
+
+    private fun onInvitesClose() {
+        invitesCloseListener.onInvitesClose()
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showError(){
+        activity?.let {
+            showToast(it.getString(R.string.error_part_1))
+            showToast(it.getString(R.string.error_part_2))
+        }
     }
 
 }

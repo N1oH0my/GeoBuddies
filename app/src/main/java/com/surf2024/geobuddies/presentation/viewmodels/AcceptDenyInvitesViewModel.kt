@@ -21,11 +21,11 @@ class AcceptDenyInvitesViewModel@Inject constructor(
     private val denyInviteRepository: IDenyInviteRepository,
 ): ViewModel() {
     private val disposables = CompositeDisposable()
-    private val _InvitesList = MutableLiveData <List<InviteModel>>()
-    val invitesList: LiveData<List<InviteModel>>
-        get() = _InvitesList
-    fun setInvites(result: List<InviteModel>) {
-        _InvitesList.value = result
+    private val _invitesList = MutableLiveData <List<InviteModel>?>()
+    val invitesList: LiveData<List<InviteModel>?>
+        get() = _invitesList
+    private fun setInvites(result: List<InviteModel>?) {
+        _invitesList.value = result
     }
 
     private val _isInviteAccepted = MutableLiveData<Boolean>()
@@ -58,7 +58,7 @@ class AcceptDenyInvitesViewModel@Inject constructor(
                 else {
                     Log.d("InvitesProcess", "Error: ${error.message}")
                 }
-                setInvites(emptyList())
+                setInvites(null)
             })
         disposables.add(disposable)
     }

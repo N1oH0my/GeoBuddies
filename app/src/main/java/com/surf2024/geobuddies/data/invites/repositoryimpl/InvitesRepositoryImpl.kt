@@ -17,7 +17,7 @@ class InvitesRepositoryImpl @Inject constructor(
                 response ?: emptyList()
                 }
             .onErrorResumeNext{
-                    Single.error(Throwable("Failed to get invites", it))
+                    Single.error(Throwable("Failed to get invites ${it.message}"))
                 }
     }
 
