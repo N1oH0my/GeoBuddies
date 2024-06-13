@@ -21,10 +21,10 @@ class AcceptDenyInvitesViewModel@Inject constructor(
     private val denyInviteRepository: IDenyInviteRepository,
 ): ViewModel() {
     private val disposables = CompositeDisposable()
-    private val _invitesList = MutableLiveData <List<InviteModel>?>()
-    val invitesList: LiveData<List<InviteModel>?>
+    private val _invitesList = MutableLiveData <List<Pair<InviteModel, Boolean>>?>()
+    val invitesList: LiveData<List<Pair<InviteModel, Boolean>>?>
         get() = _invitesList
-    private fun setInvites(result: List<InviteModel>?) {
+    private fun setInvites(result: List<Pair<InviteModel, Boolean>>?) {
         _invitesList.value = result
     }
 
@@ -42,13 +42,35 @@ class AcceptDenyInvitesViewModel@Inject constructor(
         _isInviteDenied.value = response
     }
 
+    fun checkInviteOnPosition(position: Int){
+        val currentList = _invitesList.value?.toMutableList()
+        if(currentList != null){
+            if (position >= 0 && position < currentList.size) {
+                val (invite, _) = currentList[position]
+                currentList[position] = invite to true
+
+                setInvites(currentList.toList())
+            }
+        }
+    }
+    fun removeInviteOnPosition(position: Int){
+        val currentList = _invitesList.value?.toMutableList()
+        if(currentList != null) {
+            if (position >= 0 && position < currentList.size) {
+                currentList.removeAt(position)
+
+                setInvites(currentList.toList())
+            }
+        }
+    }
+
     fun getAllInvites(){
         disposables.clear()
         val disposable = invitesRepository.getAllInvites()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ invites ->
                 Log.d("InvitesProcess", "Get successful: $invites")
-                setInvites(invites)
+                setInvites(invites.map { it to false })
             }, { error ->
                 Log.e("InvitesProcess", "Get failed", error)
 
@@ -63,42 +85,56 @@ class AcceptDenyInvitesViewModel@Inject constructor(
         disposables.add(disposable)
     }
 
-    fun acceptInvite(userId: Int){
-        disposables.clear()
-        val disposable = acceptInviteRepository.acceptInvite(userId)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                Log.d("InvitesProcess", "Accept successful")
-                setAcceptInviteResponse(true)
-            }, { error->
-                if(error is HttpException){
-                    Log.d("InvitesProcess", "HTTP Error: ${error.code()}")
-                }
-                else{
-                    Log.d("InvitesProcess", "Error: ${error.message}")
-                }
-                setAcceptInviteResponse(false)
-            })
-        disposables.add(disposable)
+    fun acceptInvite(position: Int){
+        val userId = getUserIdByPosition(position)
+        if (userId != -1){
+            disposables.clear()
+            val disposable = acceptInviteRepository.acceptInvite(userId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    Log.d("InvitesProcess", "Accept successful")
+                    setAcceptInviteResponse(true)
+                }, { error->
+                    if(error is HttpException){
+                        Log.d("InvitesProcess", "HTTP Error: ${error.code()}")
+                    }
+                    else{
+                        Log.d("InvitesProcess", "Error: ${error.message}")
+                    }
+                    setAcceptInviteResponse(false)
+                })
+            disposables.add(disposable)
+        }
     }
 
-    fun denyInvite(userId: Int){
-        disposables.clear()
-        val disposable = denyInviteRepository.denyInvite(userId)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                Log.d("InvitesProcess", "Deny successful")
-                setDenyInviteResponse(true)
-            }, { error->
-                if(error is HttpException){
-                    Log.d("InvitesProcess", "HTTP Error: ${error.code()}")
-                }
-                else{
-                    Log.d("InvitesProcess", "Error: ${error.message}")
-                }
-                setDenyInviteResponse(false)
-            })
-        disposables.add(disposable)
+    fun denyInvite(position: Int){
+        val userId = getUserIdByPosition(position)
+        if (userId != -1) {
+            disposables.clear()
+            val disposable = denyInviteRepository.denyInvite(userId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    Log.d("InvitesProcess", "Deny successful")
+                    setDenyInviteResponse(true)
+                }, { error ->
+                    if (error is HttpException) {
+                        Log.d("InvitesProcess", "HTTP Error: ${error.code()}")
+                    } else {
+                        Log.d("InvitesProcess", "Error: ${error.message}")
+                    }
+                    setDenyInviteResponse(false)
+                })
+            disposables.add(disposable)
+        }
     }
 
+    private fun getUserIdByPosition(position: Int): Int {
+        val currentList = _invitesList.value?.toList()
+        if (currentList != null) {
+            if (position >= 0 && position < currentList.size) {
+                return currentList[position].first.id
+            }
+        }
+        return -1
+    }
 }

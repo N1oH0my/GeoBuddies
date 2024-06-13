@@ -39,7 +39,6 @@ class AcceptDenyInvitesFragment : Fragment(), IOnInviteClickListener {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: InvitesRVAdapter
 
-    private var dataList: MutableList<Pair<InviteModel, Boolean>> = mutableListOf()
     private var lastAcceptDenyPosition: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,14 +69,12 @@ class AcceptDenyInvitesFragment : Fragment(), IOnInviteClickListener {
         loadInvites()
     }
     override fun onInviteAcceptClick(position: Int) {
-        val (invite, _) = dataList[position]
-        invitesViewModel.acceptInvite(invite.id)
+        invitesViewModel.acceptInvite(position)
         lastAcceptDenyPosition = position
     }
 
     override fun onInviteDenyClick(position: Int) {
-        val (invite, _) = dataList[position]
-        invitesViewModel.denyInvite(invite.id)
+        invitesViewModel.denyInvite(position)
         lastAcceptDenyPosition = position
     }
 
@@ -108,12 +105,8 @@ class AcceptDenyInvitesFragment : Fragment(), IOnInviteClickListener {
             if (invites != null) {
                 if (invites.isEmpty()){
                     activity?.let { showToast(it.getString(R.string.no_invites)) }
-                } else{
-                    if (dataList.isEmpty()) {
-                        dataList = invites.map { it to false }.toMutableList()
-                    }
-                    adapter.reload(dataList.toList())
                 }
+                adapter.reload(invites)
             }
             else{
                 showError()
@@ -122,9 +115,7 @@ class AcceptDenyInvitesFragment : Fragment(), IOnInviteClickListener {
         invitesViewModel.isInviteAccepted.observe(viewLifecycleOwner){response ->
             if (response){
                 activity?.let { showToast(it.getString(R.string.invite_accepted)) }
-                val (invite, _) = dataList[lastAcceptDenyPosition]
-                dataList[lastAcceptDenyPosition] = invite to true
-                adapter.reload(dataList.toList())
+                invitesViewModel.checkInviteOnPosition(lastAcceptDenyPosition)
             }
             else{
                 showError()
@@ -133,8 +124,7 @@ class AcceptDenyInvitesFragment : Fragment(), IOnInviteClickListener {
         invitesViewModel.isInviteDenied.observe(viewLifecycleOwner){response ->
             if (response){
                 activity?.let { showToast(it.getString(R.string.invite_denied)) }
-                dataList.removeAt(lastAcceptDenyPosition)
-                adapter.reload(dataList.toList())
+                invitesViewModel.removeInviteOnPosition(lastAcceptDenyPosition)
             }
             else{
                 showError()
