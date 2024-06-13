@@ -85,7 +85,7 @@ class InvitesRVAdapter(
 
     class InviteDiffCallback : DiffUtil.ItemCallback<Pair<InviteModel, Boolean>>() {
         override fun areItemsTheSame(oldItem: Pair<InviteModel, Boolean>, newItem: Pair<InviteModel, Boolean>): Boolean {
-            return oldItem.first.id == newItem.first.id
+            return oldItem.first == newItem.first
         }
 
         override fun areContentsTheSame(oldItem: Pair<InviteModel, Boolean>, newItem: Pair<InviteModel, Boolean>): Boolean {
