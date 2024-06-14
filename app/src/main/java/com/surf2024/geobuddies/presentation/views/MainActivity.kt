@@ -40,9 +40,6 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
 
     }
 
-    private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
 
     override fun onRegistrationComplete() {
         supportFragmentManager.beginTransaction()
@@ -52,7 +49,7 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
 
     override fun onLoginComplete() {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentHolderId, FriendSearchFragment())
+            .replace(R.id.fragmentHolderId, AcceptDenyInvitesFragment())
             .commit()
     }
 
@@ -66,5 +63,14 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentHolderId, LoginFragment())
             .commit()
+    }
+
+    override fun onInvitesClose() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentHolderId, LoginFragment())
+            .commit()
+    }
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

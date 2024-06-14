@@ -24,5 +24,15 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="the_field_must_not_be_empty">The field must not be empty</string>
 
+    <!--> accept_deny_invites_fragment <-->
+    <string name="no_invites">there are no invites</string>
+    <string name="invite_accepted">invite accepted</string>
+    <string name="invite_denied">invite denied</string>
+
+    <!--> common error <-->
+    <string name="error_part_1">smth went wrong...</string>
+    <string name="error_part_2">try again later</string>
+
+
 
 </resources>

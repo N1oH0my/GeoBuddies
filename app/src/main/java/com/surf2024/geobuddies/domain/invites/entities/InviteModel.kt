@@ -1,6 +1,6 @@
-package com.surf2024.geobuddies.domain.friendsearch.entity
+package com.surf2024.geobuddies.domain.invites.entities
 
-data class FoundFriendModel(
+data class InviteModel (
     val id: Int,
     val name: String,
     val email: String,
