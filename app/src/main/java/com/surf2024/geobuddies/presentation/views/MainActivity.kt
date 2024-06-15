@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
 
         Handler(Looper.getMainLooper()).postDelayed({
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentHolderId, LoginFragment() /*RegistrationFragment()*/)
+                .replace(R.id.fragmentHolderId, MapFragment() /*RegistrationFragment()*/)
                 .commit()
         }, 3000)
 
