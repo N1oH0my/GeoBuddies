@@ -29,6 +29,7 @@ rxandroid = "3.0.2"
 roomRxjava3 = "2.6.1"
 hiltCompiler-version = "2.51.1"
 hilt-android-version = "2.51.1"
+mapsMobile = "4.6.1-navikit"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -65,6 +66,7 @@ androidx-room-runtime = { group = "androidx.room", name = "room-runtime", versio
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomCompiler" }
 androidx-room-rxjava2 = { group = "androidx.room", name = "room-rxjava2", version.ref = "roomRxjava2" }
 androidx-room-rxjava3 = { group = "androidx.room", name = "room-rxjava3", version = "2.6.0" }
+maps-mobile = { group = "com.yandex.android", name = "maps.mobile", version.ref = "mapsMobile" }
 
 
 [plugins]

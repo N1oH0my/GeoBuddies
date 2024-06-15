@@ -7,6 +7,7 @@ plugins {
     id("com.google.dagger.hilt.android")
 }
 
+
 android {
     namespace = "com.surf2024.geobuddies"
     compileSdk = 34
@@ -41,6 +42,8 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+
+
 }
 
 androidComponents {
@@ -50,11 +53,17 @@ androidComponents {
                 "String", "\"${properties["API_BASE_URL"]}\"", "API_BASE_URL"
             )
         )
+        it.buildConfigFields.put(
+            "API_MAP", BuildConfigField(
+                "String", "\"${properties["API_MAP"]}\"", "API_MAP"
+            )
+        )
     }
 }
 
 dependencies {
 
+    implementation(libs.maps.mobile)
     val activity_version = "1.9.0"
     val security_version = "1.1.0-alpha03"
 

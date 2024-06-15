@@ -2,6 +2,7 @@ package com.surf2024.geobuddies.presentation.views
 
 import android.animation.Animator
 import android.animation.ValueAnimator
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,8 +15,12 @@ import androidx.core.content.ContextCompat
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.databinding.FragmentMapBinding
+import com.surf2024.geobuddies.domain.main.usecase.FragmentChangeListener
+import com.yandex.mapkit.MapKitFactory
+import com.yandex.mapkit.mapview.MapView
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MapFragment : Fragment() {
     companion object {
         @JvmStatic
@@ -30,8 +35,11 @@ class MapFragment : Fragment() {
     private lateinit var fadeInAnimator: ValueAnimator
     private lateinit var fadeOutAnimator: ValueAnimator
 
+    private lateinit var mapView: MapView
+
     private val binding by viewBinding(FragmentMapBinding::class.java)
     private var isMenuOpen = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -48,7 +56,19 @@ class MapFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initAnimation()
+        initMap()
         initListeners()
+    }
+    override fun onStart() {
+        super.onStart()
+        MapKitFactory.getInstance().onStart()
+        mapView.onStart()
+    }
+
+    override fun onStop() {
+        mapView.onStop()
+        MapKitFactory.getInstance().onStop()
+        super.onStop()
     }
 
     private fun initListeners(){
@@ -122,6 +142,10 @@ class MapFragment : Fragment() {
 
         })
 
+    }
+    private fun initMap(){
+        mapView = binding.idMapview
+        MapKitFactory.initialize(requireContext())
     }
     private fun toggleMenu() {
         startMapShadowAnimation()
