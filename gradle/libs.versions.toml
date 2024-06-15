@@ -30,6 +30,9 @@ roomRxjava3 = "2.6.1"
 hiltCompiler-version = "2.51.1"
 hilt-android-version = "2.51.1"
 mapsMobile = "4.6.1-navikit"
+automotivenavigation = "4.6.1"
+roadevents = "4.6.1"
+search = "3.5.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -67,6 +70,9 @@ androidx-room-compiler = { group = "androidx.room", name = "room-compiler", vers
 androidx-room-rxjava2 = { group = "androidx.room", name = "room-rxjava2", version.ref = "roomRxjava2" }
 androidx-room-rxjava3 = { group = "androidx.room", name = "room-rxjava3", version = "2.6.0" }
 maps-mobile = { group = "com.yandex.android", name = "maps.mobile", version.ref = "mapsMobile" }
+automotivenavigation = { group = "com.yandex.mapkit.styling", name = "automotivenavigation", version.ref = "automotivenavigation" }
+roadevents = { group = "com.yandex.mapkit.styling", name = "roadevents", version.ref = "roadevents" }
+search = { group = "com.yandex.android", name = "search", version.ref = "search" }
 
 
 [plugins]

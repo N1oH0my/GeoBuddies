@@ -17,4 +17,5 @@
     <color name="start_gradient_color">#DE5CE0</color>
     <color name="center_gradient_color">#B727E5</color>
     <color name="end_gradient_color">#003BD3</color>
+    <color name="pin_civ_color">#994E14EC</color>
 </resources>

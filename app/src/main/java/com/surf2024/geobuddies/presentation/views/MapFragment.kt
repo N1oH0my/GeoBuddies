@@ -3,12 +3,14 @@ package com.surf2024.geobuddies.presentation.views
 import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.Context
+import android.graphics.PointF
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.Toast
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import androidx.core.content.ContextCompat
@@ -17,7 +19,15 @@ import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.databinding.FragmentMapBinding
 import com.surf2024.geobuddies.domain.main.usecase.FragmentChangeListener
 import com.yandex.mapkit.MapKitFactory
+import com.yandex.mapkit.geometry.Point
+import com.yandex.mapkit.map.CameraPosition
+import com.yandex.mapkit.map.IconStyle
+import com.yandex.mapkit.map.MapObjectTapListener
+import com.yandex.mapkit.map.MapType
+import com.yandex.mapkit.map.TextStyle
 import com.yandex.mapkit.mapview.MapView
+import com.yandex.runtime.image.ImageProvider
+import com.yandex.runtime.ui_view.ViewProvider
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -28,6 +38,13 @@ class MapFragment : Fragment() {
             MapFragment().apply {
                 arguments = Bundle().apply {}
             }
+        private val POINT1 = Point(55.751280, 37.629720)
+        private val POINT2 = Point(55.751590, 37.630030)
+        private val POSITION = CameraPosition(POINT1, 10.0f, 0.0f, 60.0f)
+    }
+    private val placemarkTapListener = MapObjectTapListener { _, point ->
+        showToast("Tapped the point (${point.longitude}, ${point.latitude})")
+        true
     }
     private lateinit var mapShadowAnimation: ValueAnimator
     private lateinit var slideInAnimator: ValueAnimator
@@ -58,7 +75,10 @@ class MapFragment : Fragment() {
         initAnimation()
         initMap()
         initListeners()
+
+        setTestPosition()
     }
+
     override fun onStart() {
         super.onStart()
         MapKitFactory.getInstance().onStart()
@@ -145,8 +165,51 @@ class MapFragment : Fragment() {
     }
     private fun initMap(){
         mapView = binding.idMapview
+        mapView.mapWindow.map.mapType = MapType.MAP
         MapKitFactory.initialize(requireContext())
+
     }
+
+
+    private fun setTestPosition() {
+        val map = mapView.mapWindow.map
+        map.move(POSITION)
+
+        val imageProvider = ImageProvider.fromResource(requireContext(), R.drawable.ic_dollar_pin)
+        val placemarkObject1 = map.mapObjects.addPlacemark().apply {
+            geometry = POINT1
+            setIcon(imageProvider)
+            setText(
+                "Special place",
+                TextStyle().apply {
+                    size = 14f
+                    placement = TextStyle.Placement.TOP
+                    offset = 5f
+                },
+            )
+        }
+        val placemarkObject2 = map.mapObjects.addPlacemark().apply {
+            geometry = POINT2
+            setView(
+                ViewProvider(binding.customMapPin),
+                IconStyle().apply {
+                    anchor = PointF(0.5f, 1.0f)
+                    scale = 0.9f
+                }
+            )
+            setText(
+                "Special place",
+                TextStyle().apply {
+                    size = 14f
+                    placement = TextStyle.Placement.TOP
+                    offset = 5f
+                },
+            )
+        }
+        placemarkObject1.addTapListener(placemarkTapListener)
+        placemarkObject2.addTapListener(placemarkTapListener)
+    }
+
     private fun toggleMenu() {
         startMapShadowAnimation()
         if (!isMenuOpen) {
@@ -182,6 +245,9 @@ class MapFragment : Fragment() {
         binding.idMenuPart2.visibility = View.VISIBLE
         binding.sideMenu.visibility = View.VISIBLE
         binding.btnToggleMenu.visibility = View.GONE
+    }
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
 }
