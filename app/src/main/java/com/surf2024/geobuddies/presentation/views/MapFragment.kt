@@ -40,7 +40,7 @@ class MapFragment : Fragment() {
             }
         private val POINT1 = Point(55.751280, 37.629720)
         private val POINT2 = Point(55.751590, 37.630030)
-        private val POSITION = CameraPosition(POINT1, 10.0f, 0.0f, 60.0f)
+        private val POSITION = CameraPosition(POINT1, 17.0f, 0.0f, 0.0f)
     }
     private val placemarkTapListener = MapObjectTapListener { _, point ->
         showToast("Tapped the point (${point.longitude}, ${point.latitude})")
@@ -175,23 +175,10 @@ class MapFragment : Fragment() {
         val map = mapView.mapWindow.map
         map.move(POSITION)
 
-        val imageProvider = ImageProvider.fromResource(requireContext(), R.drawable.ic_dollar_pin)
-        val placemarkObject1 = map.mapObjects.addPlacemark().apply {
-            geometry = POINT1
-            setIcon(imageProvider)
-            setText(
-                "Special place",
-                TextStyle().apply {
-                    size = 14f
-                    placement = TextStyle.Placement.TOP
-                    offset = 5f
-                },
-            )
-        }
         val placemarkObject2 = map.mapObjects.addPlacemark().apply {
             geometry = POINT2
             setView(
-                ViewProvider(binding.customMapPin),
+                ViewProvider(binding.customMapPinView),
                 IconStyle().apply {
                     anchor = PointF(0.5f, 1.0f)
                     scale = 0.9f
@@ -206,8 +193,7 @@ class MapFragment : Fragment() {
                 },
             )
         }
-        placemarkObject1.addTapListener(placemarkTapListener)
-        placemarkObject2.addTapListener(placemarkTapListener)
+        //placemarkObject2.addTapListener(placemarkTapListener)
     }
 
     private fun toggleMenu() {

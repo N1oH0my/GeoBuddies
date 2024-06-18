@@ -33,6 +33,8 @@ mapsMobile = "4.6.1-navikit"
 automotivenavigation = "4.6.1"
 roadevents = "4.6.1"
 search = "3.5.0"
+compiler = "5.0.0-rc01"
+glide = "5.0.0-rc01"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -73,6 +75,8 @@ maps-mobile = { group = "com.yandex.android", name = "maps.mobile", version.ref 
 automotivenavigation = { group = "com.yandex.mapkit.styling", name = "automotivenavigation", version.ref = "automotivenavigation" }
 roadevents = { group = "com.yandex.mapkit.styling", name = "roadevents", version.ref = "roadevents" }
 search = { group = "com.yandex.android", name = "search", version.ref = "search" }
+compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "compiler" }
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 
 
 [plugins]

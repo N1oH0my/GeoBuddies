@@ -66,6 +66,8 @@ dependencies {
     implementation(libs.maps.mobile)
     implementation(libs.automotivenavigation)
     implementation(libs.roadevents)
+    kapt(libs.compiler)
+    implementation(libs.glide)
     val activity_version = "1.9.0"
     val security_version = "1.1.0-alpha03"
 

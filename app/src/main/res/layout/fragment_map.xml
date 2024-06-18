@@ -6,43 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".presentation.views.MapFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/custom_map_pin"
+    <com.surf2024.geobuddies.presentation.feature.CustomMapPinView
+        android:id="@+id/custom_map_pin_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/id_mapview"
-        app:layout_constraintEnd_toStartOf="@+id/view"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/map_pin_imageview"
-            android:layout_width="65dp"
-            android:layout_height="85dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            app:srcCompat="@drawable/ic_map_pin" />
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/map_pin_profile_image"
-            android:layout_width="55dp"
-            android:layout_height="57dp"
-            android:layout_marginTop="1dp"
-            android:src="@drawable/ic_default_profile_image"
-            app:civ_border_color="@color/pin_civ_color"
-            app:civ_border_width="2.5dp"
-            app:civ_circle_background_color="@color/default_profile_background_dark_theme"
-            app:layout_constraintBottom_toBottomOf="@+id/map_pin_imageview"
-            app:layout_constraintEnd_toEndOf="@+id/map_pin_imageview"
-            app:layout_constraintStart_toStartOf="@+id/map_pin_imageview"
-            app:layout_constraintTop_toTopOf="@+id/map_pin_imageview"
-            app:layout_constraintVertical_bias="0.0" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toTopOf="parent"
+        >
+    </com.surf2024.geobuddies.presentation.feature.CustomMapPinView>
     <View
         android:id="@+id/view"
         android:layout_width="wrap_content"

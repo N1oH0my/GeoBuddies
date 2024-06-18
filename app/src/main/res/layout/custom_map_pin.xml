@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+
+    <ImageView
+        android:id="@+id/custom_map_pin_imageview"
+        android:layout_width="60dp"
+        android:layout_height="80dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/ic_map_pin" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/custom_map_pin_profile_image"
+        android:layout_width="57dp"
+        android:layout_height="47dp"
+        android:layout_marginTop="4.5dp"
+        android:src="@drawable/ic_default_profile_image"
+
+        app:civ_circle_background_color="@color/default_profile_background_dark_theme"
+        app:layout_constraintBottom_toBottomOf="@+id/custom_map_pin_imageview"
+        app:layout_constraintEnd_toEndOf="@+id/custom_map_pin_imageview"
+        app:layout_constraintHorizontal_bias="0.65"
+        app:layout_constraintStart_toStartOf="@+id/custom_map_pin_imageview"
+        app:layout_constraintTop_toTopOf="@+id/custom_map_pin_imageview"
+        app:layout_constraintVertical_bias="0.0" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
