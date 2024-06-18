@@ -2,32 +2,27 @@ package com.surf2024.geobuddies.presentation.views
 
 import android.animation.Animator
 import android.animation.ValueAnimator
-import android.content.Context
-import android.graphics.PointF
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.databinding.FragmentMapBinding
-import com.surf2024.geobuddies.domain.main.usecase.FragmentChangeListener
+import com.surf2024.geobuddies.presentation.adapters.InvitesRVAdapter
+import com.surf2024.geobuddies.presentation.adapters.MapPinsAdapter
+import com.surf2024.geobuddies.presentation.viewmodels.MapViewModel
 import com.yandex.mapkit.MapKitFactory
-import com.yandex.mapkit.geometry.Point
-import com.yandex.mapkit.map.CameraPosition
-import com.yandex.mapkit.map.IconStyle
-import com.yandex.mapkit.map.MapObjectTapListener
 import com.yandex.mapkit.map.MapType
-import com.yandex.mapkit.map.TextStyle
 import com.yandex.mapkit.mapview.MapView
-import com.yandex.runtime.image.ImageProvider
-import com.yandex.runtime.ui_view.ViewProvider
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -38,14 +33,8 @@ class MapFragment : Fragment() {
             MapFragment().apply {
                 arguments = Bundle().apply {}
             }
-        private val POINT1 = Point(55.751280, 37.629720)
-        private val POINT2 = Point(55.751590, 37.630030)
-        private val POSITION = CameraPosition(POINT1, 17.0f, 0.0f, 0.0f)
     }
-    private val placemarkTapListener = MapObjectTapListener { _, point ->
-        showToast("Tapped the point (${point.longitude}, ${point.latitude})")
-        true
-    }
+
     private lateinit var mapShadowAnimation: ValueAnimator
     private lateinit var slideInAnimator: ValueAnimator
     private lateinit var slideOutAnimator: ValueAnimator
@@ -55,6 +44,10 @@ class MapFragment : Fragment() {
     private lateinit var mapView: MapView
 
     private val binding by viewBinding(FragmentMapBinding::class.java)
+    private lateinit var mapViewModel: MapViewModel
+
+    private lateinit var adapter: MapPinsAdapter
+
     private var isMenuOpen = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,11 +65,17 @@ class MapFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        initMapViewModel()
+        initObserversMapViewModel()
+
         initAnimation()
+
         initMap()
+        initMapPinsAdapter()
+
         initListeners()
 
-        setTestPosition()
     }
 
     override fun onStart() {
@@ -91,6 +90,31 @@ class MapFragment : Fragment() {
         super.onStop()
     }
 
+    private fun initMapViewModel() {
+        Log.d("Hilt", "Creating MapViewModel client instance")
+        mapViewModel = ViewModelProvider(this)[MapViewModel::class.java]
+    }
+    private fun initObserversMapViewModel() {
+        mapViewModel.friendsGeoList.observe(viewLifecycleOwner){ friendsGeoList->
+            if(friendsGeoList != null){
+                adapter.friendsReload(friendsGeoList)
+            }
+            else{
+                showError()
+            }
+        }
+        mapViewModel.userGeo.observe(viewLifecycleOwner){ result->
+            if(result){
+
+            }
+            else{
+                showError()
+            }
+        }
+    }
+    private fun initMapPinsAdapter(){
+        adapter = MapPinsAdapter(requireContext(), binding, mapView)
+    }
     private fun initListeners(){
         binding.btnToggleMenu.setOnClickListener {
             toggleMenu()
@@ -170,30 +194,12 @@ class MapFragment : Fragment() {
 
     }
 
+    private fun loadFriendsGeo(){
+        mapViewModel.getFriendsGeo()
+    }
 
-    private fun setTestPosition() {
-        val map = mapView.mapWindow.map
-        map.move(POSITION)
-
-        val placemarkObject2 = map.mapObjects.addPlacemark().apply {
-            geometry = POINT2
-            setView(
-                ViewProvider(binding.customMapPinView),
-                IconStyle().apply {
-                    anchor = PointF(0.5f, 1.0f)
-                    scale = 0.9f
-                }
-            )
-            setText(
-                "Special place",
-                TextStyle().apply {
-                    size = 14f
-                    placement = TextStyle.Placement.TOP
-                    offset = 5f
-                },
-            )
-        }
-        //placemarkObject2.addTapListener(placemarkTapListener)
+    private fun saveUserGeo(longitude: String, latitude: String){
+        mapViewModel.saveUserGeo(longitude, latitude)
     }
 
     private fun toggleMenu() {
@@ -235,5 +241,10 @@ class MapFragment : Fragment() {
     private fun showToast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
-
+    private fun showError(){
+        activity?.let {
+            showToast(it.getString(R.string.error_part_1))
+            showToast(it.getString(R.string.error_part_2))
+        }
+    }
 }
