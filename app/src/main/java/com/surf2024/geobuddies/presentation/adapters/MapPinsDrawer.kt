@@ -34,7 +34,7 @@ class MapPinsDrawer(
             mapView.mapWindow.map.mapObjects.remove(placemarkFriend!!)
         }
 
-        val point = Point(data.latitude.toDouble(), data.longitude.toDouble())
+        val point = Point(data.latitude, data.longitude)
 
         val newPlacemarkFriend = mapView.mapWindow.map.mapObjects.addPlacemark().apply {
             geometry = point
@@ -64,7 +64,7 @@ class MapPinsDrawer(
         if(placemarkUser!=null){
             mapView.mapWindow.map.mapObjects.remove(placemarkUser!!)
         }
-        val point = Point(data.latitude.toDouble(), data.longitude.toDouble())
+        val point = Point(data.latitude, data.longitude)
         mapView.mapWindow.map.move(
             CameraPosition(
             point,

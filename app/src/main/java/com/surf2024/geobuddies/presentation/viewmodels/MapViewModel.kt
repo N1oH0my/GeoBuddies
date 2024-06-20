@@ -33,8 +33,10 @@ class MapViewModel@Inject constructor(
         _userGeo.value = data
     }
 
-    fun getFriendsGeo(){
+    fun clearRequests(){
         disposables.clear()
+    }
+    fun getFriendsGeo(){
         val disposable = getFriendsGeoRepository.getFriendsGeo()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ result ->
@@ -51,19 +53,18 @@ class MapViewModel@Inject constructor(
             })
         disposables.add(disposable)
     }
-    fun saveUserGeo(longitude: String, latitude: String){
-        disposables.clear()
-        val disposable = saveUserGeoRepository.saveGeo(longitude, latitude)
+    fun saveUserGeo(longitude: Double, latitude: Double){
+        val disposable = saveUserGeoRepository.saveGeo(longitude = longitude, latitude = latitude)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                Log.d("GeoProccess", "Save user geo successful")
+                Log.d("GeoProccess", "Save successful")
                 setUserGeo(true)
             },{ error ->
-                Log.d("GeoProccess", "Save failed $error")
+                Log.d("GeoProccess", "Get failed $error")
                 if(error is HttpException){
-                    Log.d("GeoProccess", "Save failed ${error.code()}")
+                    Log.d("GeoProccess", "Get failed ${error.code()}")
                 }else{
-                    Log.d("GeoProccess", "Save failed ${error.message}")
+                    Log.d("GeoProccess", "Get failed ${error.message}")
                 }
                 setUserGeo(false)
             })

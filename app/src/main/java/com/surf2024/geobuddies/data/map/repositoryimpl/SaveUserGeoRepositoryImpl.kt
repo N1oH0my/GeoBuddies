@@ -7,12 +7,13 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
+
 class SaveUserGeoRepositoryImpl @Inject constructor(
     private val saveUserGeoService : ISaveUserGeoService
 ): ISaveUserGeoRepository {
     override fun saveGeo(
-        longitude: String,
-        latitude: String,
+        longitude: Double,
+        latitude: Double,
     ): Completable {
         return saveUserGeoService.saveGeo(
             UserGeoModel(longitude = longitude, latitude = latitude)

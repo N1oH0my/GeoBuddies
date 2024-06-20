@@ -34,10 +34,10 @@ class MapFragment : Fragment() {
             MapFragment().apply {
                 arguments = Bundle().apply {}
             }
-        private val POINT1 = Point(55.751280, 37.629720)
+        private val POINT1 = Point(59.751280, 37.629720)
         private val POINT2 = Point(37.751590, 37.630030)
         private val POSITION = CameraPosition(POINT1, 17.0f, 0.0f, 0.0f)
-        private var currentUserGeo = UserGeoModel("0.0", "0.0")
+        private var currentUserGeo = UserGeoModel(0.0, 0.0)
     }
 
     private lateinit var mapShadowAnimation: ValueAnimator
@@ -81,8 +81,8 @@ class MapFragment : Fragment() {
 
         initListeners()
 
-        saveUserGeo(POINT1.longitude.toString(), POINT1.latitude.toString())
-        loadFriendsGeo()
+        saveUserGeo(POINT1.longitude, POINT1.latitude)
+        updateGeo()
 
     }
 
@@ -130,8 +130,8 @@ class MapFragment : Fragment() {
         }
         binding.sideMenu.setOnClickListener {
             toggleMenu()
-            saveUserGeo(POINT2.longitude.toString(), POINT2.latitude.toString())
-            loadFriendsGeo()
+            saveUserGeo(POINT2.longitude, POINT2.latitude)
+            updateGeo()
         }
         binding.idMenuPart1.setOnClickListener {}
         binding.idMenuPart2.setOnClickListener {}
@@ -204,15 +204,18 @@ class MapFragment : Fragment() {
         MapKitFactory.initialize(requireContext())
 
     }
-    private fun loadFriendsGeo(){
+
+    private fun updateGeo(){
+        mapViewModel.clearRequests()
         mapViewModel.getFriendsGeo()
+        mapViewModel.saveUserGeo(currentUserGeo.longitude, currentUserGeo.latitude)
     }
 
-    private fun saveUserGeo(longitude: String, latitude: String){
+    private fun saveUserGeo(longitude: Double, latitude: Double){
         // test data
         //currentUserGeo = UserGeoModel(longitude, latitude)
         //pinsDrawer.userReload(currentUserGeo)
-        mapViewModel.saveUserGeo(longitude, latitude)
+        currentUserGeo = UserGeoModel(longitude, latitude)
     }
 
     private fun toggleMenu() {
