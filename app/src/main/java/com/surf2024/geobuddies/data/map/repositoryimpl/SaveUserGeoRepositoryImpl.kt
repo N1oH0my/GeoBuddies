@@ -15,7 +15,8 @@ class SaveUserGeoRepositoryImpl @Inject constructor(
         latitude: String,
     ): Completable {
         return saveUserGeoService.saveGeo(
-            UserGeoModel(longitude = longitude, latitude = latitude,))
+            UserGeoModel(longitude = longitude, latitude = latitude)
+        )
             .subscribeOn(Schedulers.io())
     }
 }

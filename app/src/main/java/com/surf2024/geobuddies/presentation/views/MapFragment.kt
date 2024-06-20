@@ -209,8 +209,9 @@ class MapFragment : Fragment() {
     }
 
     private fun saveUserGeo(longitude: String, latitude: String){
-        currentUserGeo = UserGeoModel(longitude, latitude)
-        pinsDrawer.userReload(currentUserGeo)
+        // test data
+        //currentUserGeo = UserGeoModel(longitude, latitude)
+        //pinsDrawer.userReload(currentUserGeo)
         mapViewModel.saveUserGeo(longitude, latitude)
     }
 
