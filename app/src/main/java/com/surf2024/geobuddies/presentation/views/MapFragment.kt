@@ -13,14 +13,15 @@ import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.databinding.FragmentMapBinding
-import com.surf2024.geobuddies.presentation.adapters.InvitesRVAdapter
-import com.surf2024.geobuddies.presentation.adapters.MapPinsAdapter
+import com.surf2024.geobuddies.domain.map.entity.UserGeoModel
+import com.surf2024.geobuddies.presentation.adapters.MapPinsDrawer
 import com.surf2024.geobuddies.presentation.viewmodels.MapViewModel
 import com.yandex.mapkit.MapKitFactory
+import com.yandex.mapkit.geometry.Point
+import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.MapType
 import com.yandex.mapkit.mapview.MapView
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,6 +34,10 @@ class MapFragment : Fragment() {
             MapFragment().apply {
                 arguments = Bundle().apply {}
             }
+        private val POINT1 = Point(55.751280, 37.629720)
+        private val POINT2 = Point(37.751590, 37.630030)
+        private val POSITION = CameraPosition(POINT1, 17.0f, 0.0f, 0.0f)
+        private var currentUserGeo = UserGeoModel("0.0", "0.0")
     }
 
     private lateinit var mapShadowAnimation: ValueAnimator
@@ -46,7 +51,7 @@ class MapFragment : Fragment() {
     private val binding by viewBinding(FragmentMapBinding::class.java)
     private lateinit var mapViewModel: MapViewModel
 
-    private lateinit var adapter: MapPinsAdapter
+    private lateinit var pinsDrawer: MapPinsDrawer
 
     private var isMenuOpen = false
 
@@ -72,9 +77,12 @@ class MapFragment : Fragment() {
         initAnimation()
 
         initMap()
-        initMapPinsAdapter()
+        initMapPinsDrawer()
 
         initListeners()
+
+        saveUserGeo(POINT1.longitude.toString(), POINT1.latitude.toString())
+        loadFriendsGeo()
 
     }
 
@@ -95,9 +103,10 @@ class MapFragment : Fragment() {
         mapViewModel = ViewModelProvider(this)[MapViewModel::class.java]
     }
     private fun initObserversMapViewModel() {
+
         mapViewModel.friendsGeoList.observe(viewLifecycleOwner){ friendsGeoList->
             if(friendsGeoList != null){
-                adapter.friendsReload(friendsGeoList)
+                pinsDrawer.friendsReload(friendsGeoList)
             }
             else{
                 showError()
@@ -105,15 +114,15 @@ class MapFragment : Fragment() {
         }
         mapViewModel.userGeo.observe(viewLifecycleOwner){ result->
             if(result){
-
+                pinsDrawer.userReload(currentUserGeo)
             }
             else{
                 showError()
             }
         }
     }
-    private fun initMapPinsAdapter(){
-        adapter = MapPinsAdapter(requireContext(), binding, mapView)
+    private fun initMapPinsDrawer(){
+        pinsDrawer = MapPinsDrawer(mapView, binding.customMapPinView)
     }
     private fun initListeners(){
         binding.btnToggleMenu.setOnClickListener {
@@ -121,6 +130,8 @@ class MapFragment : Fragment() {
         }
         binding.sideMenu.setOnClickListener {
             toggleMenu()
+            saveUserGeo(POINT2.longitude.toString(), POINT2.latitude.toString())
+            loadFriendsGeo()
         }
         binding.idMenuPart1.setOnClickListener {}
         binding.idMenuPart2.setOnClickListener {}
@@ -193,12 +204,13 @@ class MapFragment : Fragment() {
         MapKitFactory.initialize(requireContext())
 
     }
-
     private fun loadFriendsGeo(){
         mapViewModel.getFriendsGeo()
     }
 
     private fun saveUserGeo(longitude: String, latitude: String){
+        currentUserGeo = UserGeoModel(longitude, latitude)
+        pinsDrawer.userReload(currentUserGeo)
         mapViewModel.saveUserGeo(longitude, latitude)
     }
 
