@@ -37,5 +37,16 @@
     <string name="menu_invites">Invites</string>
     <string name="menu_logout">Logout</string>
 
+    <!--> AlertDialog location <-->
+    <string name="title_why_location_permission_needed">Location permission</string>
+    <string name="msg_why_location_permission_needed">This app requires location permission to display you on a map and share your coordinates with your friends.\nDo you want to grant this permission?</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+
+    <!--> Location permission messages <-->
+    <string name="location_permission_denied">Location permission denied</string>
+    <string name="location_permission_granted">Location permission granted</string>
+    <!--> Location get messages <-->
+    <string name="failed_to_get_location">Failed to get location</string>
 
 </resources>

@@ -33,6 +33,7 @@ class MapViewModel@Inject constructor(
         _userGeo.value = data
     }
 
+
     fun clearRequests(){
         disposables.clear()
     }

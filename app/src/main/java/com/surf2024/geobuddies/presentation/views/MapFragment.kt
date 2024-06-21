@@ -1,7 +1,9 @@
 package com.surf2024.geobuddies.presentation.views
 
+import android.Manifest
 import android.animation.Animator
 import android.animation.ValueAnimator
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import androidx.core.content.ContextCompat
@@ -17,6 +20,10 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.databinding.FragmentMapBinding
 import com.surf2024.geobuddies.domain.map.entity.UserGeoModel
+import com.surf2024.geobuddies.domain.map.repository.ILocationRepository
+import com.surf2024.geobuddies.domain.map.repository.IMapPinsDrawer
+import com.surf2024.geobuddies.domain.map.repositoryimpl.LocationRepositoryImpl
+import com.surf2024.geobuddies.domain.map.utilityimpl.LocationPermissionChecker
 import com.surf2024.geobuddies.presentation.adapters.MapPinsDrawer
 import com.surf2024.geobuddies.presentation.viewmodels.MapViewModel
 import com.yandex.mapkit.MapKitFactory
@@ -40,6 +47,25 @@ class MapFragment : Fragment() {
         private var currentUserGeo = UserGeoModel(0.0, 0.0)
     }
 
+    private val locationPermissionChecker: LocationPermissionChecker by lazy {
+        LocationPermissionChecker(requireContext())
+    }
+
+    private val locationRepository: ILocationRepository by lazy {
+        LocationRepositoryImpl(requireContext(), locationPermissionChecker)
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            getLocation()
+            showPermissionGrantedMessage()
+        } else {
+            showPermissionDeniedMessage()
+        }
+    }
+
     private lateinit var mapShadowAnimation: ValueAnimator
     private lateinit var slideInAnimator: ValueAnimator
     private lateinit var slideOutAnimator: ValueAnimator
@@ -47,11 +73,11 @@ class MapFragment : Fragment() {
     private lateinit var fadeOutAnimator: ValueAnimator
 
     private lateinit var mapView: MapView
+    private lateinit var pinsDrawer: IMapPinsDrawer
+
 
     private val binding by viewBinding(FragmentMapBinding::class.java)
     private lateinit var mapViewModel: MapViewModel
-
-    private lateinit var pinsDrawer: MapPinsDrawer
 
     private var isMenuOpen = false
 
@@ -81,8 +107,8 @@ class MapFragment : Fragment() {
 
         initListeners()
 
-        saveUserGeo(POINT1.longitude, POINT1.latitude)
-        updateGeo()
+        checkLocationPermission()
+        getLocation()
 
     }
 
@@ -130,8 +156,7 @@ class MapFragment : Fragment() {
         }
         binding.sideMenu.setOnClickListener {
             toggleMenu()
-            saveUserGeo(POINT2.longitude, POINT2.latitude)
-            updateGeo()
+            getLocation()
         }
         binding.idMenuPart1.setOnClickListener {}
         binding.idMenuPart2.setOnClickListener {}
@@ -205,17 +230,43 @@ class MapFragment : Fragment() {
 
     }
 
+    private fun getLocation() {
+        locationRepository.requestLocation(
+            { location ->
+                saveUserGeo(longitude = location.longitude, latitude = location.latitude)
+                updateGeo()
+            }, {
+                updateOnlyFriendsGeo()
+            }, {
+                showGetLocationFailedMessage()
+                updateOnlyFriendsGeo()
+            }
+        )
+    }
+    private fun checkLocationPermission() {
+        if (!locationPermissionChecker.isLocationPermissionGranted()) {
+            if (locationPermissionChecker.shouldShowLocationPermissionRationale(this)) {
+                showPermissionExplanation()
+            } else {
+                requestLocationPermission()
+            }
+        }
+    }
+    private fun requestLocationPermission() {
+        requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+    }
     private fun updateGeo(){
         mapViewModel.clearRequests()
         mapViewModel.getFriendsGeo()
         mapViewModel.saveUserGeo(currentUserGeo.longitude, currentUserGeo.latitude)
     }
+    private fun updateOnlyFriendsGeo(){
+        mapViewModel.clearRequests()
+        mapViewModel.getFriendsGeo()
+    }
 
     private fun saveUserGeo(longitude: Double, latitude: Double){
-        // test data
-        //currentUserGeo = UserGeoModel(longitude, latitude)
-        //pinsDrawer.userReload(currentUserGeo)
-        currentUserGeo = UserGeoModel(longitude, latitude)
+        currentUserGeo = UserGeoModel(longitude = longitude,latitude = latitude)
     }
 
     private fun toggleMenu() {
@@ -261,6 +312,40 @@ class MapFragment : Fragment() {
         activity?.let {
             showToast(it.getString(R.string.error_part_1))
             showToast(it.getString(R.string.error_part_2))
+        }
+    }
+    private fun showPermissionExplanation() {
+        activity?.let {
+            AlertDialog.Builder(requireContext())
+                .setTitle(it.getString(R.string.title_why_location_permission_needed))
+                .setMessage(
+                    it.getString(R.string.msg_why_location_permission_needed)
+                )
+                .setPositiveButton(it.getString(R.string.ok)) { _, _ ->
+                    requestLocationPermission()
+                }
+                .setNegativeButton(it.getString(R.string.cancel)) { dialog, _ ->
+                    dialog.dismiss()
+                    showPermissionDeniedMessage()
+                }
+                .create()
+                .show()
+        }
+    }
+
+    private fun showPermissionDeniedMessage() {
+        activity?.let {
+            showToast(it.getString(R.string.location_permission_denied))
+        }
+    }
+    private fun showPermissionGrantedMessage() {
+        activity?.let {
+            showToast(it.getString(R.string.location_permission_granted))
+        }
+    }
+    private fun showGetLocationFailedMessage() {
+        activity?.let {
+            showToast(it.getString(R.string.failed_to_get_location))
         }
     }
 }

@@ -5,6 +5,7 @@ import android.graphics.PointF
 import android.view.View
 import com.surf2024.geobuddies.domain.map.entity.FriendGeoModel
 import com.surf2024.geobuddies.domain.map.entity.UserGeoModel
+import com.surf2024.geobuddies.domain.map.repository.IMapPinsDrawer
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.IconStyle
@@ -15,16 +16,16 @@ import com.yandex.runtime.ui_view.ViewProvider
 class MapPinsDrawer(
     val mapView: MapView,
     val pinView: View,
-) {
+): IMapPinsDrawer {
     private val placemarkList: MutableList<PlacemarkMapObject?> = mutableListOf()
     private var placemarkUser: PlacemarkMapObject? = null
 
-    fun friendsReload(data: List<FriendGeoModel>){
+    override fun friendsReload(data: List<FriendGeoModel>){
         for (i in 0 until data.size){
             bind(data[i], i)
         }
     }
-    fun userReload(data: UserGeoModel){
+    override fun userReload(data: UserGeoModel){
         bindUser(data)
     }
     private fun bind(data: FriendGeoModel, position: Int){
@@ -61,17 +62,21 @@ class MapPinsDrawer(
         }
     }
     private fun bindUser(data: UserGeoModel){
+        val point = Point(data.latitude, data.longitude)
+
         if(placemarkUser!=null){
             mapView.mapWindow.map.mapObjects.remove(placemarkUser!!)
         }
-        val point = Point(data.latitude, data.longitude)
-        mapView.mapWindow.map.move(
-            CameraPosition(
-            point,
-            17.0f,
-            0.0f,
-            0.0f)
-        )
+        else{
+            mapView.mapWindow.map.move(
+                CameraPosition(
+                point,
+                17.0f,
+                0.0f,
+                0.0f)
+            )
+        }
+
         placemarkUser = mapView.mapWindow.map.mapObjects.addPlacemark().apply {
             geometry = point
             setView(
