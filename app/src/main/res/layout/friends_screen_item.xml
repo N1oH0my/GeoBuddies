@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:layout_marginTop="20dp"
+    android:background="@color/fragment_backround_dark_theme"
+    android:orientation="vertical">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/friend_profile_image"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/ic_default_profile_image"
+        app:civ_circle_background_color="@color/default_profile_background_dark_theme"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/friend_user_name"
+        style="@style/InviteUserNameTextDarkMode"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:gravity="top"
+        android:text="Nasyrov Vladimir Nasyrov Vladimir"
+        app:layout_constraintStart_toEndOf="@+id/friend_profile_image"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/friend_user_email"
+        style="@style/InviteUserEmailTextDarkMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:gravity="center|top"
+        android:text="kovrov@mail.ru"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/friend_user_name"
+        app:layout_constraintTop_toBottomOf="@+id/friend_user_name"
+        app:layout_constraintVertical_bias="0.01" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

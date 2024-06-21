@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.databinding.FragmentAcceptDenyInvitesBinding
-import com.surf2024.geobuddies.domain.invites.entities.InviteModel
 import com.surf2024.geobuddies.domain.invites.usecases.IOnInviteClickListener
 import com.surf2024.geobuddies.domain.main.usecase.FragmentChangeListener
 import com.surf2024.geobuddies.presentation.adapters.InvitesRVAdapter
