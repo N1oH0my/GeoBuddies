@@ -18,7 +18,9 @@ class MapViewModel@Inject constructor(
     private val getFriendsGeoRepository: IGetFriendsGeoRepository,
     private val saveUserGeoRepository: ISaveUserGeoRepository,
 ): ViewModel(){
-    private val disposables = CompositeDisposable()
+    private val friendsDisposable: CompositeDisposable = CompositeDisposable()
+    private val userGeoDisposable: CompositeDisposable = CompositeDisposable()
+
     private val _friendsGeoList = MutableLiveData <List<FriendGeoModel>?>()
     val friendsGeoList: LiveData<List<FriendGeoModel>?>
         get() = _friendsGeoList
@@ -33,11 +35,8 @@ class MapViewModel@Inject constructor(
         _userGeo.value = data
     }
 
-    fun disposablesClear(){
-        disposables.clear()
-    }
     fun getFriendsGeo(){
-
+        friendsDisposable.clear()
         val disposable = getFriendsGeoRepository.getFriendsGeo()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ result ->
@@ -52,10 +51,10 @@ class MapViewModel@Inject constructor(
                 }
                 setFriendsGeo(null)
             })
-        disposables.add(disposable)
+        friendsDisposable.add(disposable)
     }
     fun saveUserGeo(latitude: Double, longitude: Double){
-
+        userGeoDisposable.clear()
         val disposable = saveUserGeoRepository.saveGeo(latitude = latitude, longitude = longitude)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -70,6 +69,6 @@ class MapViewModel@Inject constructor(
                 }
                 setUserGeo(false)
             })
-        disposables.add(disposable)
+        userGeoDisposable.add(disposable)
     }
 }

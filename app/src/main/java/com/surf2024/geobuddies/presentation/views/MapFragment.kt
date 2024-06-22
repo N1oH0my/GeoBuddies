@@ -127,17 +127,14 @@ class MapFragment : Fragment() {
     }
     private fun initLocationViewModelObservers(){
         locationViewModel.currentUserGeo.observe(viewLifecycleOwner){ userGeoModel ->
-            mapViewModel.disposablesClear()
             updateUserGeo(userGeoModel.latitude, userGeoModel.longitude)
             updateFriendsGeo()
         }
         locationViewModel.permissionsFailure.observe(viewLifecycleOwner){
-            mapViewModel.disposablesClear()
             updateFriendsGeo()
         }
         locationViewModel.getUserGeoFailure.observe(viewLifecycleOwner){
             showGetLocationFailedMessage()
-            mapViewModel.disposablesClear()
             updateFriendsGeo()
         }
         locationViewModel.alertDialogForLocationPermissionsNeeded.observe(viewLifecycleOwner){
