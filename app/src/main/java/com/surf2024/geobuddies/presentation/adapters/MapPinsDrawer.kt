@@ -3,7 +3,7 @@ package com.surf2024.geobuddies.presentation.adapters
 
 import android.graphics.PointF
 import android.view.View
-import com.surf2024.geobuddies.domain.map.entity.FriendGeoModel
+import com.surf2024.geobuddies.domain.map.entity.FriendPinModel
 import com.surf2024.geobuddies.domain.map.entity.UserGeoModel
 import com.surf2024.geobuddies.domain.map.repository.IMapPinsDrawer
 import com.yandex.mapkit.geometry.Point
@@ -20,7 +20,7 @@ class MapPinsDrawer(
     private val placemarkList: MutableList<PlacemarkMapObject?> = mutableListOf()
     private var placemarkUser: PlacemarkMapObject? = null
 
-    override fun friendsReload(data: List<FriendGeoModel>){
+    override fun friendsReload(data: List<FriendPinModel>){
         for (i in 0 until data.size){
             bind(data[i], i)
         }
@@ -28,7 +28,7 @@ class MapPinsDrawer(
     override fun userReload(data: UserGeoModel){
         bindUser(data)
     }
-    private fun bind(data: FriendGeoModel, position: Int){
+    private fun bind(data: FriendPinModel, position: Int){
         val placemarkFriend: PlacemarkMapObject? = placemarkList.getOrNull(position)
 
         if (placemarkFriend != null) {
@@ -47,7 +47,7 @@ class MapPinsDrawer(
                 }
             )
             setText(
-                "Friend #${data.userId}",
+                data.nickname,
                 TextStyle().apply {
                     size = 12f
                     placement = TextStyle.Placement.TOP

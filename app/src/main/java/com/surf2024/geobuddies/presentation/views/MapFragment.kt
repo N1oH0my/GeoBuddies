@@ -1,8 +1,6 @@
 package com.surf2024.geobuddies.presentation.views
 
 import android.Manifest
-import android.animation.Animator
-import android.animation.ValueAnimator
 import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
@@ -12,26 +10,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.animation.doOnEnd
-import androidx.core.animation.doOnStart
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.databinding.FragmentMapBinding
-import com.surf2024.geobuddies.domain.map.entity.UserGeoModel
-import com.surf2024.geobuddies.domain.map.repository.ILocationRepository
 import com.surf2024.geobuddies.domain.map.repository.IMapPinsDrawer
-import com.surf2024.geobuddies.domain.map.repositoryimpl.LocationRepositoryImpl
 import com.surf2024.geobuddies.domain.map.utility.IMapMenuAnimationHelper
-import com.surf2024.geobuddies.domain.map.utilityimpl.LocationPermissionChecker
 import com.surf2024.geobuddies.domain.map.utilityimpl.MapMenuAnimationHelper
 import com.surf2024.geobuddies.presentation.adapters.MapPinsDrawer
 import com.surf2024.geobuddies.presentation.viewmodels.LocationViewModel
 import com.surf2024.geobuddies.presentation.viewmodels.MapViewModel
 import com.yandex.mapkit.MapKitFactory
-import com.yandex.mapkit.geometry.Point
-import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.MapType
 import com.yandex.mapkit.mapview.MapView
 import dagger.hilt.android.AndroidEntryPoint
@@ -57,16 +46,15 @@ class MapFragment : Fragment() {
         }
     }
 
+    private val binding by viewBinding(FragmentMapBinding::class.java)
+
+    private lateinit var mapViewModel: MapViewModel
+    private lateinit var locationViewModel: LocationViewModel
+
     private lateinit var animationHelper: IMapMenuAnimationHelper
 
     private lateinit var mapView: MapView
     private lateinit var pinsDrawer: IMapPinsDrawer
-
-
-    private val binding by viewBinding(FragmentMapBinding::class.java)
-    private lateinit var mapViewModel: MapViewModel
-    private lateinit var locationViewModel: LocationViewModel
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,14 +68,13 @@ class MapFragment : Fragment() {
     ): View? {
         return inflater.inflate(R.layout.fragment_map, container, false)
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initMapViewModel()
         initLocationViewModel()
 
-        initObserversMapViewModel()
+        initMapViewModelObservers()
         initLocationViewModelObservers()
 
         initMapMenuAnimationHelper()
@@ -99,6 +86,7 @@ class MapFragment : Fragment() {
 
         checkLocationPermission()
 
+        getFriends()
         getLocation()
     }
 
@@ -152,19 +140,34 @@ class MapFragment : Fragment() {
             requestLocationPermission()
         }
     }
-    private fun initObserversMapViewModel() {
-
-        mapViewModel.friendsGeoList.observe(viewLifecycleOwner){ friendsGeoList->
-            if(friendsGeoList != null){
-                pinsDrawer.friendsReload(friendsGeoList)
+    private fun initMapViewModelObservers() {
+        mapViewModel.userGeo.observe(viewLifecycleOwner){ result->
+            if(result){
+                locationViewModel.currentUserGeo.value?.let { pinsDrawer.userReload(it) }
             }
             else{
                 showError()
             }
         }
-        mapViewModel.userGeo.observe(viewLifecycleOwner){ result->
-            if(result){
-                locationViewModel.currentUserGeo.value?.let { pinsDrawer.userReload(it) }
+        mapViewModel.friendList.observe(viewLifecycleOwner){ result->
+            if(result!=null){
+                updateFriendsGeo()
+            }
+            else{
+                showError()
+            }
+        }
+        mapViewModel.friendsGeoList.observe(viewLifecycleOwner){ result->
+            if(result!=null){
+                generateFriendsPins()
+            }
+            else{
+                showError()
+            }
+        }
+        mapViewModel.friendsPinsList.observe(viewLifecycleOwner){ friendPinsGeoList->
+            if(friendPinsGeoList != null){
+                pinsDrawer.friendsReload(friendPinsGeoList)
             }
             else{
                 showError()
@@ -196,8 +199,14 @@ class MapFragment : Fragment() {
     private fun updateUserGeo(latitude: Double, longitude: Double){
         mapViewModel.saveUserGeo(latitude = latitude, longitude = longitude)
     }
+    private fun getFriends(){
+        mapViewModel.getFriends()
+    }
     private fun updateFriendsGeo(){
         mapViewModel.getFriendsGeo()
+    }
+    private fun generateFriendsPins(){
+        mapViewModel.generateFriendsPins()
     }
 
     private fun animateMapMenu() {
