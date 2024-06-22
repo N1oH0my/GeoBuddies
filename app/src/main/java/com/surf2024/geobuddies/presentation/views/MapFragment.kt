@@ -23,7 +23,9 @@ import com.surf2024.geobuddies.domain.map.entity.UserGeoModel
 import com.surf2024.geobuddies.domain.map.repository.ILocationRepository
 import com.surf2024.geobuddies.domain.map.repository.IMapPinsDrawer
 import com.surf2024.geobuddies.domain.map.repositoryimpl.LocationRepositoryImpl
+import com.surf2024.geobuddies.domain.map.utility.IMapMenuAnimationHelper
 import com.surf2024.geobuddies.domain.map.utilityimpl.LocationPermissionChecker
+import com.surf2024.geobuddies.domain.map.utilityimpl.MapMenuAnimationHelper
 import com.surf2024.geobuddies.presentation.adapters.MapPinsDrawer
 import com.surf2024.geobuddies.presentation.viewmodels.LocationViewModel
 import com.surf2024.geobuddies.presentation.viewmodels.MapViewModel
@@ -55,11 +57,7 @@ class MapFragment : Fragment() {
         }
     }
 
-    private lateinit var mapShadowAnimation: ValueAnimator
-    private lateinit var slideInAnimator: ValueAnimator
-    private lateinit var slideOutAnimator: ValueAnimator
-    private lateinit var fadeInAnimator: ValueAnimator
-    private lateinit var fadeOutAnimator: ValueAnimator
+    private lateinit var animationHelper: IMapMenuAnimationHelper
 
     private lateinit var mapView: MapView
     private lateinit var pinsDrawer: IMapPinsDrawer
@@ -69,7 +67,6 @@ class MapFragment : Fragment() {
     private lateinit var mapViewModel: MapViewModel
     private lateinit var locationViewModel: LocationViewModel
 
-    private var isMenuOpen = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,7 +90,7 @@ class MapFragment : Fragment() {
         initObserversMapViewModel()
         initLocationViewModelObservers()
 
-        initAnimation()
+        initMapMenuAnimationHelper()
 
         initMap()
         initMapPinsDrawer()
@@ -101,8 +98,8 @@ class MapFragment : Fragment() {
         initListeners()
 
         checkLocationPermission()
-        getLocation()
 
+        getLocation()
     }
 
     override fun onStart() {
@@ -124,6 +121,17 @@ class MapFragment : Fragment() {
     private fun initLocationViewModel() {
         Log.d("Hilt", "Creating LocationViewModel client instance")
         locationViewModel = ViewModelProvider(this)[LocationViewModel::class.java]
+    }
+    private fun initMap(){
+        mapView = binding.idMapview
+        mapView.mapWindow.map.mapType = MapType.MAP
+        MapKitFactory.initialize(requireContext())
+    }
+    private fun initMapPinsDrawer(){
+        pinsDrawer = MapPinsDrawer(mapView, binding.customMapPinView)
+    }
+    private fun initMapMenuAnimationHelper(){
+        animationHelper = MapMenuAnimationHelper(requireContext(), binding)
     }
     private fun initLocationViewModelObservers(){
         locationViewModel.currentUserGeo.observe(viewLifecycleOwner){ userGeoModel ->
@@ -163,98 +171,28 @@ class MapFragment : Fragment() {
             }
         }
     }
-    private fun initMapPinsDrawer(){
-        pinsDrawer = MapPinsDrawer(mapView, binding.customMapPinView)
-    }
     private fun initListeners(){
         binding.btnToggleMenu.setOnClickListener {
-            toggleMenu()
+            animateMapMenu()
         }
         binding.sideMenu.setOnClickListener {
-            toggleMenu()
+            animateMapMenu()
             getLocation()
         }
         binding.idMenuPart1.setOnClickListener {}
         binding.idMenuPart2.setOnClickListener {}
     }
 
-    private fun initAnimation(){
-        val initialColor = 0x00000000
-        val finalColor = ContextCompat.getColor(requireContext(), R.color.menu_map_shadow)
-
-        mapShadowAnimation = ValueAnimator.ofArgb(initialColor, finalColor).apply {
-            duration = 600
-            addUpdateListener { animator ->
-                val animatedValue = animator.animatedValue as Int
-                binding.sideMenu.setBackgroundColor(animatedValue)
-            }
-        }
-
-        slideInAnimator = ValueAnimator.ofFloat(-1f, 0f).apply {
-            duration = 400
-            addUpdateListener { animator ->
-                val slideOffset = animator.animatedValue as Float
-                binding.idMenuPart1.translationX = slideOffset * binding.idMenuPart1.width
-                binding.idMenuPart2.translationX = slideOffset * binding.idMenuPart2.width
-            }
-        }
-        slideInAnimator.doOnStart {
-            menuVisible()
-        }
-        slideOutAnimator = ValueAnimator.ofFloat(0f, -1f).apply {
-            duration = 400
-            addUpdateListener { animator ->
-                val slideOffset = animator.animatedValue as Float
-                binding.idMenuPart1.translationX = slideOffset * binding.idMenuPart1.width
-                binding.idMenuPart2.translationX = slideOffset * binding.idMenuPart2.width
-            }
-        }
-
-        slideOutAnimator.doOnEnd {
-            menuGone()
-        }
-
-        fadeInAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
-            duration = 500
-            addUpdateListener { animator ->
-                binding.sideMenu.alpha = animator.animatedValue as Float
-            }
-        }
-
-        fadeOutAnimator = ValueAnimator.ofFloat(1f, 0f).apply {
-            duration = 500
-            addUpdateListener { animator ->
-                binding.sideMenu.alpha = animator.animatedValue as Float
-            }
-        }
-
-        fadeOutAnimator.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(animation: Animator) {}
-            override fun onAnimationEnd(animation: Animator) {
-                binding.sideMenu.visibility = View.GONE
-            }
-            override fun onAnimationCancel(animation: Animator) {}
-            override fun onAnimationRepeat(animation: Animator) {}
-
-        })
-
-    }
-    private fun initMap(){
-        mapView = binding.idMapview
-        mapView.mapWindow.map.mapType = MapType.MAP
-        MapKitFactory.initialize(requireContext())
-    }
-
     private fun checkLocationPermission(){
         locationViewModel.checkLocationPermission(this)
+    }
+    private fun requestLocationPermission() {
+        requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
     }
     private fun getLocation() {
         locationViewModel.getLocation()
     }
 
-    private fun requestLocationPermission() {
-        requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-    }
     private fun updateUserGeo(latitude: Double, longitude: Double){
         mapViewModel.saveUserGeo(latitude = latitude, longitude = longitude)
     }
@@ -262,42 +200,10 @@ class MapFragment : Fragment() {
         mapViewModel.getFriendsGeo()
     }
 
-    private fun toggleMenu() {
-        startMapShadowAnimation()
-        if (!isMenuOpen) {
-            binding.idMenuPart1.translationX = -binding.idMenuPart1.width.toFloat()
-            binding.idMenuPart2.translationX = -binding.idMenuPart2.width.toFloat()
-            binding.sideMenu.alpha = 0f
+    private fun animateMapMenu() {
+        animationHelper.animateMapMenu()
+    }
 
-            slideInAnimator.start()
-            fadeInAnimator.start()
-        } else {
-            slideOutAnimator.start()
-            fadeOutAnimator.start()
-        }
-        isMenuOpen = !isMenuOpen
-    }
-    private fun startMapShadowAnimation() {
-        if (::mapShadowAnimation.isInitialized) {
-            if (!isMenuOpen){
-                mapShadowAnimation.start()
-            } else{
-                mapShadowAnimation.reverse()
-            }
-        }
-    }
-    private fun menuGone(){
-        binding.idMenuPart1.visibility = View.GONE
-        binding.idMenuPart2.visibility = View.GONE
-        binding.sideMenu.visibility = View.GONE
-        binding.btnToggleMenu.visibility = View.VISIBLE
-    }
-    private fun menuVisible(){
-        binding.idMenuPart1.visibility = View.VISIBLE
-        binding.idMenuPart2.visibility = View.VISIBLE
-        binding.sideMenu.visibility = View.VISIBLE
-        binding.btnToggleMenu.visibility = View.GONE
-    }
     private fun showToast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
