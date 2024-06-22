@@ -9,11 +9,12 @@ import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.surf2024.geobuddies.domain.map.repository.ILocationRepository
+import com.surf2024.geobuddies.domain.map.utility.ILocationPermissionChecker
 import com.surf2024.geobuddies.domain.map.utilityimpl.LocationPermissionChecker
 
 class LocationRepositoryImpl(
     private val context: Context,
-    private val locationPermissionChecker: LocationPermissionChecker
+    private val locationPermissionChecker: ILocationPermissionChecker
 ): ILocationRepository {
 
     private val fusedLocationClient: FusedLocationProviderClient =

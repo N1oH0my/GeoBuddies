@@ -25,6 +25,7 @@ import com.surf2024.geobuddies.domain.map.repository.IMapPinsDrawer
 import com.surf2024.geobuddies.domain.map.repositoryimpl.LocationRepositoryImpl
 import com.surf2024.geobuddies.domain.map.utilityimpl.LocationPermissionChecker
 import com.surf2024.geobuddies.presentation.adapters.MapPinsDrawer
+import com.surf2024.geobuddies.presentation.viewmodels.LocationViewModel
 import com.surf2024.geobuddies.presentation.viewmodels.MapViewModel
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
@@ -41,19 +42,7 @@ class MapFragment : Fragment() {
             MapFragment().apply {
                 arguments = Bundle().apply {}
             }
-        private val POINT1 = Point(59.751280, 37.629720)
-        private val POINT2 = Point(37.751590, 37.630030)
-        private val POSITION = CameraPosition(POINT1, 17.0f, 0.0f, 0.0f)
-        private var currentUserGeo = UserGeoModel(0.0, 0.0)
-    }
-
-    private val locationPermissionChecker: LocationPermissionChecker by lazy {
-        LocationPermissionChecker(requireContext())
-    }
-
-    private val locationRepository: ILocationRepository by lazy {
-        LocationRepositoryImpl(requireContext(), locationPermissionChecker)
-    }
+        }
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -78,6 +67,7 @@ class MapFragment : Fragment() {
 
     private val binding by viewBinding(FragmentMapBinding::class.java)
     private lateinit var mapViewModel: MapViewModel
+    private lateinit var locationViewModel: LocationViewModel
 
     private var isMenuOpen = false
 
@@ -98,7 +88,10 @@ class MapFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initMapViewModel()
+        initLocationViewModel()
+
         initObserversMapViewModel()
+        initLocationViewModelObservers()
 
         initAnimation()
 
@@ -128,6 +121,32 @@ class MapFragment : Fragment() {
         Log.d("Hilt", "Creating MapViewModel client instance")
         mapViewModel = ViewModelProvider(this)[MapViewModel::class.java]
     }
+    private fun initLocationViewModel() {
+        Log.d("Hilt", "Creating LocationViewModel client instance")
+        locationViewModel = ViewModelProvider(this)[LocationViewModel::class.java]
+    }
+    private fun initLocationViewModelObservers(){
+        locationViewModel.currentUserGeo.observe(viewLifecycleOwner){ userGeoModel ->
+            mapViewModel.disposablesClear()
+            updateUserGeo(userGeoModel.latitude, userGeoModel.longitude)
+            updateFriendsGeo()
+        }
+        locationViewModel.permissionsFailure.observe(viewLifecycleOwner){
+            mapViewModel.disposablesClear()
+            updateFriendsGeo()
+        }
+        locationViewModel.getUserGeoFailure.observe(viewLifecycleOwner){
+            showGetLocationFailedMessage()
+            mapViewModel.disposablesClear()
+            updateFriendsGeo()
+        }
+        locationViewModel.alertDialogForLocationPermissionsNeeded.observe(viewLifecycleOwner){
+            showPermissionExplanation()
+        }
+        locationViewModel.requestLocationPermissionsNeeded.observe(viewLifecycleOwner){
+            requestLocationPermission()
+        }
+    }
     private fun initObserversMapViewModel() {
 
         mapViewModel.friendsGeoList.observe(viewLifecycleOwner){ friendsGeoList->
@@ -140,7 +159,7 @@ class MapFragment : Fragment() {
         }
         mapViewModel.userGeo.observe(viewLifecycleOwner){ result->
             if(result){
-                pinsDrawer.userReload(currentUserGeo)
+                locationViewModel.currentUserGeo.value?.let { pinsDrawer.userReload(it) }
             }
             else{
                 showError()
@@ -227,46 +246,23 @@ class MapFragment : Fragment() {
         mapView = binding.idMapview
         mapView.mapWindow.map.mapType = MapType.MAP
         MapKitFactory.initialize(requireContext())
-
     }
 
+    private fun checkLocationPermission(){
+        locationViewModel.checkLocationPermission(this)
+    }
     private fun getLocation() {
-        locationRepository.requestLocation(
-            { location ->
-                saveUserGeo(longitude = location.longitude, latitude = location.latitude)
-                updateGeo()
-            }, {
-                updateOnlyFriendsGeo()
-            }, {
-                showGetLocationFailedMessage()
-                updateOnlyFriendsGeo()
-            }
-        )
+        locationViewModel.getLocation()
     }
-    private fun checkLocationPermission() {
-        if (!locationPermissionChecker.isLocationPermissionGranted()) {
-            if (locationPermissionChecker.shouldShowLocationPermissionRationale(this)) {
-                showPermissionExplanation()
-            } else {
-                requestLocationPermission()
-            }
-        }
-    }
+
     private fun requestLocationPermission() {
         requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
     }
-    private fun updateGeo(){
-        mapViewModel.clearRequests()
-        mapViewModel.getFriendsGeo()
-        mapViewModel.saveUserGeo(currentUserGeo.longitude, currentUserGeo.latitude)
+    private fun updateUserGeo(latitude: Double, longitude: Double){
+        mapViewModel.saveUserGeo(latitude = latitude, longitude = longitude)
     }
-    private fun updateOnlyFriendsGeo(){
-        mapViewModel.clearRequests()
+    private fun updateFriendsGeo(){
         mapViewModel.getFriendsGeo()
-    }
-
-    private fun saveUserGeo(longitude: Double, latitude: Double){
-        currentUserGeo = UserGeoModel(longitude = longitude,latitude = latitude)
     }
 
     private fun toggleMenu() {

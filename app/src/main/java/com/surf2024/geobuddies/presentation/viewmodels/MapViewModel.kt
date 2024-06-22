@@ -33,11 +33,11 @@ class MapViewModel@Inject constructor(
         _userGeo.value = data
     }
 
-
-    fun clearRequests(){
+    fun disposablesClear(){
         disposables.clear()
     }
     fun getFriendsGeo(){
+
         val disposable = getFriendsGeoRepository.getFriendsGeo()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ result ->
@@ -54,8 +54,9 @@ class MapViewModel@Inject constructor(
             })
         disposables.add(disposable)
     }
-    fun saveUserGeo(longitude: Double, latitude: Double){
-        val disposable = saveUserGeoRepository.saveGeo(longitude = longitude, latitude = latitude)
+    fun saveUserGeo(latitude: Double, longitude: Double){
+
+        val disposable = saveUserGeoRepository.saveGeo(latitude = latitude, longitude = longitude)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 Log.d("GeoProccess", "Save successful")
