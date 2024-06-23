@@ -37,6 +37,7 @@ class LoginViewModel @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ response ->
                 if (response.isSuccessful) {
+                    // TODO save all info
                     if (loginAccessTokenSaverRepository.saveAccessToken(response)) {
                         Log.d("loginProcess", "Access token saved successfully")
                     } else {
