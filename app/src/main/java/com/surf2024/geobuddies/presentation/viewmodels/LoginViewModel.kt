@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.surf2024.geobuddies.domain.login.repository.ILoginRepository
-import com.surf2024.geobuddies.domain.login.repositoryimpl.LoginAccessTokenSaverRepositoryImpl
+import com.surf2024.geobuddies.domain.login.repository.ILoginResponseSaver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginRepository: ILoginRepository,
-    private val loginAccessTokenSaverRepository: LoginAccessTokenSaverRepositoryImpl
+    private val loginResponseSaverRepository: ILoginResponseSaver
 ) : ViewModel() {
 
     private val disposables = CompositeDisposable()
@@ -37,8 +37,7 @@ class LoginViewModel @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ response ->
                 if (response.isSuccessful) {
-                    // TODO save all info
-                    if (loginAccessTokenSaverRepository.saveAccessToken(response)) {
+                    if (loginResponseSaverRepository.saveUserTokensAndInfo(response)) {
                         Log.d("loginProcess", "Access token saved successfully")
                     } else {
                         Log.e("loginProcess", "Failed to save access token")

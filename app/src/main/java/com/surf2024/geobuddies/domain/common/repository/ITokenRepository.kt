@@ -1,5 +1,5 @@
 package com.surf2024.geobuddies.domain.common.repository
 
-interface ITokenProvider {
+interface ITokenRepository {
     fun getToken(): String?
 }
