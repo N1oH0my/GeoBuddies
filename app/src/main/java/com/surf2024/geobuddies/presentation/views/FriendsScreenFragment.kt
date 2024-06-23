@@ -16,6 +16,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.databinding.FragmentFriendsScreenBinding
 import com.surf2024.geobuddies.domain.main.usecase.FragmentChangeListener
+import com.surf2024.geobuddies.presentation.adapters.FriendsRVAdapter
 import com.surf2024.geobuddies.presentation.viewmodels.FriendsScreenViewModel
 
 class FriendsScreenFragment: Fragment() {
@@ -32,7 +33,7 @@ class FriendsScreenFragment: Fragment() {
     private val binding by viewBinding(FragmentFriendsScreenBinding::bind)
 
     private lateinit var recyclerView: RecyclerView
-    //private lateinit var adapter: FriendsRVAdapter
+    private lateinit var adapter: FriendsRVAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +56,7 @@ class FriendsScreenFragment: Fragment() {
 
         initRecyclerView()
         initFriendsViewModel()
-        initObserversInvitesViewModel()
+        initObserversFriendsViewModel()
 
         overrideOnBackPressed()
 
@@ -73,15 +74,15 @@ class FriendsScreenFragment: Fragment() {
     private fun initRecyclerView(){
         recyclerView = binding.friendsRecyclerview
         recyclerView.layoutManager = LinearLayoutManager(context)
-        //adapter = FriendsRVAdapter( requireContext(), this)
-        //recyclerView.adapter = adapter
+        adapter = FriendsRVAdapter( requireContext())
+        recyclerView.adapter = adapter
     }
     private fun initFriendsViewModel() {
         Log.d("Hilt", "Creating FriendsScreenViewModel client instance")
         friendsViewModel = ViewModelProvider(this)[FriendsScreenViewModel::class.java]
     }
 
-    private fun initObserversInvitesViewModel() {
+    private fun initObserversFriendsViewModel() {
 
     }
 
@@ -89,7 +90,7 @@ class FriendsScreenFragment: Fragment() {
         //friendsViewModel.getAllFriends()
     }
     private fun onFriendsClose() {
-        friendsCloseListener.onInvitesClose()
+        friendsCloseListener.onFriendsClose()
     }
 
     private fun showToast(message: String) {
