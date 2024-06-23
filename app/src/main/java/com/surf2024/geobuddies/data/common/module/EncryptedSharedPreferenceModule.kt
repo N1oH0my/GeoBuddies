@@ -33,11 +33,4 @@ object EncryptedSharedPreferenceModule {
         )
     }
 
-    @Provides
-    @Singleton
-    fun provideGson(): Gson {
-        return Gson()
-    }
-
-
 }
