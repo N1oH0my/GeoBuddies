@@ -7,19 +7,6 @@
     android:background="@color/fragment_backround_dark_theme"
     tools:context=".presentation.views.MainActivity">
 
-
-    <ImageView
-        android:id="@+id/back_login_button"
-        android:layout_width="350dp"
-        android:layout_height="350dp"
-        android:layout_marginStart="-150dp"
-        android:layout_marginTop="-120dp"
-        android:background="@drawable/gray_circle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
-
-
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_image"
         android:layout_width="match_parent"
@@ -33,10 +20,6 @@
         app:layout_constraintStart_toEndOf="@+id/constraintLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-
-
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -55,7 +38,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingConstraints" />
+            />
 
         <com.surf2024.geobuddies.presentation.feature.GradientTextView
             android:id="@+id/textView2"
@@ -74,17 +57,18 @@
             app:layout_constraintStart_toStartOf="@+id/login_fragment_logo_imageview"
             app:layout_constraintTop_toBottomOf="@+id/login_fragment_logo_imageview"
             app:startColor="@color/start_gradient_color"
-            tools:ignore="MissingConstraints" />
+            />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/login_fragment_email_textInput"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_marginTop="60dp"
+            app:cursorColor="@color/cursor_color_dark_theme"
             app:hintEnabled="false"
-            app:layout_constraintTop_toBottomOf="@+id/textView2"
-            tools:ignore="MissingConstraints"
-            tools:layout_editor_absoluteX="30dp">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView2">
 
             <com.google.android.material.textfield.TextInputEditText
                 style="@style/fieldTextViewDarkMode"
@@ -103,14 +87,14 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/login_fragment_password_textInput"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:paddingBottom="15dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="25dp"
+            app:cursorColor="@color/cursor_color_dark_theme"
             app:hintEnabled="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/login_fragment_email_textInput"
-            app:passwordToggleEnabled="true"
-            tools:ignore="MissingConstraints"
-            tools:layout_editor_absoluteX="16dp">
+            app:passwordToggleEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 style="@style/fieldTextViewDarkMode"
@@ -126,94 +110,29 @@
 
         <TextView
             android:id="@+id/login_fragment_sing_up_text_view"
+            style="@style/LoginFragmentTextViewButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="25dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginStart="19dp"
             android:text="@string/sign_up"
-            style="@style/LoginFragmentTextViewButton"
             app:layout_constraintStart_toStartOf="@+id/login_fragment_password_textInput"
-            app:layout_constraintTop_toBottomOf="@+id/login_fragment_password_textInput" />
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="25dp"
-            android:text="@string/forgot_password"
-            style="@style/LoginFragmentTextViewButton"
-            app:layout_constraintEnd_toEndOf="@+id/login_fragment_password_textInput"
             app:layout_constraintTop_toBottomOf="@+id/login_fragment_password_textInput" />
 
         <android.widget.Button
             android:id="@+id/login_fragment_login_button"
             style="@style/LoginAndSignUpTextButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="70dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="50dp"
             android:background="@drawable/gradient_circle"
             android:gravity="center"
             android:text="@string/login_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/login_fragment_sing_up_text_view"
-            tools:ignore="MissingConstraints"
-            tools:layout_editor_absoluteX="30dp" />
-
-
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:paddingBottom="20dp"
-            android:text="@string/or_connect_with"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.513"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/login_fragment_login_button" />
-
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="68dp"
-            android:layout_height="68dp"
-            android:adjustViewBounds="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/textView6"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView6"
-            app:srcCompat="@drawable/google_logo"
             tools:ignore="MissingConstraints" />
 
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="58dp"
-            android:layout_height="58dp"
-            android:layout_marginTop="5dp"
-            android:adjustViewBounds="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/textView6"
-            app:layout_constraintTop_toBottomOf="@+id/textView6"
-            app:srcCompat="@drawable/yandex_znak"
-            tools:ignore="MissingConstraints" />
-
-        <TextView
-            android:id="@+id/textView7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/google"
-            style="@style/LoginFragmentPartnerTextView"
-            app:layout_constraintEnd_toEndOf="@+id/imageView2"
-            app:layout_constraintStart_toStartOf="@+id/imageView2"
-            app:layout_constraintTop_toBottomOf="@+id/imageView2" />
-
-        <TextView
-            android:id="@+id/textView8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/yandex"
-            style="@style/LoginFragmentPartnerTextView"
-            app:layout_constraintEnd_toEndOf="@+id/imageView3"
-            app:layout_constraintStart_toStartOf="@+id/imageView3"
-            app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
