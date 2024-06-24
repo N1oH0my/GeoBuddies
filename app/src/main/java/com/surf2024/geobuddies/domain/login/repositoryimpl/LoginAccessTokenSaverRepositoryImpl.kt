@@ -2,11 +2,11 @@ package com.surf2024.geobuddies.domain.login.repositoryimpl
 
 import android.content.SharedPreferences
 import android.util.Log
+import com.surf2024.geobuddies.domain.common.entity.TokenKeys
 import com.surf2024.geobuddies.domain.login.entity.LoginResponse
 import com.surf2024.geobuddies.domain.login.repository.ILoginAccessTokenSaverRepository
 import retrofit2.Response
 import javax.inject.Inject
-import com.surf2024.geobuddies.domain.common.entity.TokenKeys
 
 class LoginAccessTokenSaverRepositoryImpl @Inject constructor(
     private val sharedPreferences: SharedPreferences
@@ -19,7 +19,7 @@ class LoginAccessTokenSaverRepositoryImpl @Inject constructor(
             Log.d("LoginAccessTokenSaver", "login successful: Access Token = $accessToken")
             return try {
                 with(sharedPreferences.edit()) {
-                    putString(TokenKeys.ACCESS_TOKEN_KEY, accessToken)
+                    putString((TokenKeys.ACCESS_TOKEN_KEY, accessToken)
                     apply()
                 }
                 true
