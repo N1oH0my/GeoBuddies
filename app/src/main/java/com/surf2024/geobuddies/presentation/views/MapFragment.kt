@@ -55,7 +55,7 @@ class MapFragment : Fragment() {
 
     private val friendsPinsGenerator: IFriendsPinsGenerator = FriendsPinsGeneratorImpl()
 
-    private val scheduler = Executors.newScheduledThreadPool(1)
+    private var scheduler = Executors.newScheduledThreadPool(1)
     private var scheduledFuture: ScheduledFuture<*>? = null
 
     private lateinit var mapInfoViewModel: MapInfoViewModel
@@ -117,8 +117,11 @@ class MapFragment : Fragment() {
         mapView.onStop()
         MapKitFactory.getInstance().onStop()
 
-        stopScheduler()
         super.onStop()
+    }
+    override fun onDestroy() {
+        stopScheduler()
+        super.onDestroy()
     }
     //////////////////// init /////////////////////////////////////////////////////////////////////
     private fun initMapInfoViewModel() {
@@ -190,21 +193,46 @@ class MapFragment : Fragment() {
         }
     }
     //////////////////// task scheduler ////////////////////////////////////////////////////////////////
-    private fun startScheduler(){
-        scheduledFuture = scheduler.scheduleAtFixedRate({
-            try {
-                Log.d("Scheduler", "Updating user location and friends' geo")
-                updateLocations()
-            } catch (e: Exception) {
-                Log.e("Scheduler", "Error in scheduled task: ${e.message}", e)
+    private fun startScheduler() {
+        if (scheduler == null || scheduler!!.isShutdown) {
+            scheduler = Executors.newScheduledThreadPool(1)
+        }
+        if (scheduledFuture == null || scheduledFuture!!.isCancelled) {
+            scheduledFuture = scheduler.scheduleAtFixedRate({
+                try {
+                    Log.d("Scheduler", "Updating user location and friends' geo")
+                    updateLocations()
+                } catch (e: Exception) {
+                    Log.e("Scheduler", "Error in scheduled task: ${e.message}", e)
+                }
+            }, 0, 5, TimeUnit.SECONDS)
+        } else {
+            Log.d("Scheduler", "Scheduler is already running.")
+        }
+    }
+    private fun pauseScheduler() {
+        scheduledFuture?.let {
+            if (!it.isCancelled && !it.isDone) {
+                it.cancel(true)
+                Log.d("Scheduler", "Scheduler paused.")
             }
-        }, 0, 5, TimeUnit.SECONDS)
+        }
     }
-    private fun pauseScheduler(){
-        scheduledFuture?.cancel(true)
-    }
-    private fun stopScheduler(){
+    private fun stopScheduler() {
         scheduler.shutdown()
+        try {
+            if (!scheduler.awaitTermination(5, TimeUnit.SECONDS)) {
+                scheduler.shutdownNow()
+                if (!scheduler.awaitTermination(5, TimeUnit.SECONDS)) {
+                    Log.e("Scheduler", "Scheduler did not terminate in time.")
+                }
+            }
+        } catch (ie: InterruptedException) {
+            scheduler.shutdownNow()
+            Thread.currentThread().interrupt()
+        }
+        scheduler = null
+        Log.d("Scheduler", "Scheduler stopped.")
     }
     //////////////////// permission ////////////////////////////////////////////////////////////////
     private fun checkLocationPermission(){

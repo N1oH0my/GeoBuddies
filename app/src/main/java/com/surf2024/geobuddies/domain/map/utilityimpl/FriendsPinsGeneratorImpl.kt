@@ -11,8 +11,11 @@ class FriendsPinsGeneratorImpl(): IFriendsPinsGenerator {
      *
      * @param friendList A list of FriendModel objects providing information about friends.
      * @param friendsGeoList List of FriendGeoModel objects that provide geodata of friends.
-     * @param onSuccess A callback function that will be called with the generated list of FriendPinModel objects after successful completion.
-     * @param onDifferentSizesFailure A callback function that will be called if the sizes of friendList and friendsGeoList do not match, this can happen if someone has accepted your friend request.
+     * @param onSuccess A callback function that will be called with the generated list of FriendPinModel objects
+     * after successful completion.
+     * @param onDifferentSizesFailure A callback function that will be called if the sizes of friendList and friendsGeoList
+     * do not match, this can happen if someone has accepted your friend request and load new geo
+     * or if one friend delete you and new friend accept invite less then geo refresh.
      * @param onFailure A callback function that will be called if an exception occurs during processing.
      */
     override fun generateFriendsPins(
@@ -26,16 +29,15 @@ class FriendsPinsGeneratorImpl(): IFriendsPinsGenerator {
         try {
             val friendPinsList = mutableListOf<FriendPinModel>()
 
-            val size: Int = friendList.size
-            if ((size == friendsGeoList.size)) {
+            if ((friendList.size >= friendsGeoList.size)) {
 
-                val geoMap = friendsGeoList.associateBy { it.userId }
+                val friendMap = friendList.associateBy { it.id }
 
-                friendList.forEach { foundFriendModel ->
+                friendsGeoList.forEach { friendGeoModel ->
 
-                    val friendGeoModel = geoMap[foundFriendModel.id]
+                    val foundFriendModel = friendMap[friendGeoModel.userId]
 
-                    if (friendGeoModel != null) {
+                    if (foundFriendModel != null) {
                         val friendPinModel = FriendPinModel(
                             userId = foundFriendModel.id,
                             nickname = foundFriendModel.name,
@@ -45,6 +47,8 @@ class FriendsPinsGeneratorImpl(): IFriendsPinsGenerator {
                             latitude = friendGeoModel.latitude,
                         )
                         friendPinsList.add(friendPinModel)
+                    } else{
+                        onDifferentSizesFailure()
                     }
                 }
             } else{

@@ -40,7 +40,6 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
 
     }
 
-
     override fun onRegistrationComplete() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentHolderId, LoginFragment())
