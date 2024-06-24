@@ -27,6 +27,9 @@ import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.map.MapType
 import com.yandex.mapkit.mapview.MapView
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledFuture
+import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class MapFragment : Fragment() {
@@ -42,7 +45,6 @@ class MapFragment : Fragment() {
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
         if (isGranted) {
-            updateLocations()
             showPermissionGrantedMessage()
         } else {
             showPermissionDeniedMessage()
@@ -52,6 +54,9 @@ class MapFragment : Fragment() {
     private val binding by viewBinding(FragmentMapBinding::class.java)
 
     private val friendsPinsGenerator: IFriendsPinsGenerator = FriendsPinsGeneratorImpl()
+
+    private val scheduler = Executors.newScheduledThreadPool(1)
+    private var scheduledFuture: ScheduledFuture<*>? = null
 
     private lateinit var mapInfoViewModel: MapInfoViewModel
     private lateinit var mapLocationViewModel: MapLocationViewModel
@@ -93,7 +98,6 @@ class MapFragment : Fragment() {
         checkLocationPermission()
 
         getFriends()
-        updateLocations()
     }
 
     override fun onStart() {
@@ -101,10 +105,19 @@ class MapFragment : Fragment() {
         MapKitFactory.getInstance().onStart()
         mapView.onStart()
     }
-
+    override fun onResume(){
+        super.onResume()
+        startScheduler()
+    }
+    override fun onPause() {
+        super.onPause()
+        pauseScheduler()
+    }
     override fun onStop() {
         mapView.onStop()
         MapKitFactory.getInstance().onStop()
+
+        stopScheduler()
         super.onStop()
     }
     //////////////////// init /////////////////////////////////////////////////////////////////////
@@ -133,7 +146,6 @@ class MapFragment : Fragment() {
         }
         binding.sideMenu.setOnClickListener {
             animateMapMenu()
-            updateLocations()
         }
         binding.idMenuPart1.setOnClickListener {}
         binding.idMenuPart2.setOnClickListener {}
@@ -143,14 +155,6 @@ class MapFragment : Fragment() {
         mapInfoViewModel.user.observe(viewLifecycleOwner){ user->
             if (user != null){
                 setUserInfo(user)
-            }
-        }
-        mapInfoViewModel.friendList.observe(viewLifecycleOwner){ result->
-            if(result!=null){
-                updateFriendsGeo()
-            }
-            else{
-                showError()
             }
         }
     }
@@ -185,6 +189,23 @@ class MapFragment : Fragment() {
             requestLocationPermission()
         }
     }
+    //////////////////// task scheduler ////////////////////////////////////////////////////////////////
+    private fun startScheduler(){
+        scheduledFuture = scheduler.scheduleAtFixedRate({
+            try {
+                Log.d("Scheduler", "Updating user location and friends' geo")
+                updateLocations()
+            } catch (e: Exception) {
+                Log.e("Scheduler", "Error in scheduled task: ${e.message}", e)
+            }
+        }, 0, 5, TimeUnit.SECONDS)
+    }
+    private fun pauseScheduler(){
+        scheduledFuture?.cancel(true)
+    }
+    private fun stopScheduler(){
+        scheduler.shutdown()
+    }
     //////////////////// permission ////////////////////////////////////////////////////////////////
     private fun checkLocationPermission(){
         mapLocationViewModel.checkLocationPermission(this)
@@ -194,8 +215,8 @@ class MapFragment : Fragment() {
     }
     //////////////////// location //////////////////////////////////////////////////////////////////
     private fun updateLocations(){
-        updateCurrentUserLocation()
         updateFriendsGeo()
+        updateCurrentUserLocation()
     }
     private fun updateCurrentUserLocation() {
         mapLocationViewModel.getCurrentUserLocation()

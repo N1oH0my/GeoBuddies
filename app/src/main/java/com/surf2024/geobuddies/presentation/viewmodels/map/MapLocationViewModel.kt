@@ -53,14 +53,14 @@ class MapLocationViewModel@Inject constructor(
     val getUserGeoFailure: LiveData<Boolean>
         get() = _getUserGeoFailure
     private fun notifyGetUserGeoFailure(){
-        _getUserGeoFailure.value = false
+        _getUserGeoFailure.postValue(false)
     }
 
     private val _permissionsFailure = MutableLiveData<Boolean>()
     val permissionsFailure: LiveData<Boolean>
         get() = _permissionsFailure
     private fun notifyPermissionsFailure(){
-        _permissionsFailure.value = false
+        _permissionsFailure.postValue(false)
     }
 
     private val _alertDialogForLocationPermissionsNeeded = MutableLiveData<Boolean>()
