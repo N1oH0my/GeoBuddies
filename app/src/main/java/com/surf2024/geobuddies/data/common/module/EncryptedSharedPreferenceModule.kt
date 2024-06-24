@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,6 +16,8 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object EncryptedSharedPreferenceModule {
+    private const val ENCRYPTED_SHARED_PREFERENCE_NAME = "secure_prefs"
+
     @Provides
     @Singleton
     fun provideEncryptedSharedPreference(@ApplicationContext context: Context): SharedPreferences {
@@ -29,7 +32,5 @@ object EncryptedSharedPreferenceModule {
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
     }
-
-    private const val ENCRYPTED_SHARED_PREFERENCE_NAME = "secure_prefs"
 
 }
