@@ -1,13 +1,13 @@
-package com.surf2024.geobuddies.domain.common.repositoryimpl
+package com.surf2024.geobuddies.data.common.repositoryimpl
 
 import android.content.SharedPreferences
 import com.surf2024.geobuddies.domain.common.entity.TokenKeys.ACCESS_TOKEN_KEY
-import com.surf2024.geobuddies.domain.common.repository.ITokenProvider
+import com.surf2024.geobuddies.domain.common.repository.ITokenRepository
 import javax.inject.Inject
 
-class TokenProviderimpl @Inject constructor(
+class TokenRepositoryImpl @Inject constructor(
     private val encryptedSharedPreferences: SharedPreferences
-): ITokenProvider {
+): ITokenRepository {
     override fun getToken(): String? {
         return encryptedSharedPreferences.getString(ACCESS_TOKEN_KEY, null)
     }

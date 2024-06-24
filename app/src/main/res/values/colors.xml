@@ -9,6 +9,7 @@
     <color name="field_text_color_dark_theme">#A6A6A6</color>
     <color name="field_text_white_color_dark_theme">#EAEAEA</color>
     <color name="default_profile_background_dark_theme">#EAEAEA</color>
+    <color name="cursor_color_dark_theme">#EFFFFFFF</color>
 
     <!-->gradient color<-->
     <color name="start_gradient_color">#DE5CE0</color>
