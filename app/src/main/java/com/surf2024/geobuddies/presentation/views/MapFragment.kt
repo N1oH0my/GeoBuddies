@@ -160,6 +160,11 @@ class MapFragment : Fragment() {
                 setUserInfo(user)
             }
         }
+        mapInfoViewModel.friendList.observe(viewLifecycleOwner){ friendsList->
+            if (friendsList != null) {
+                updateFriendsGeo()
+            }
+        }
     }
     private fun initMapLocationViewModelObservers() {
         mapLocationViewModel.currentUserGeo.observe(viewLifecycleOwner){ userGeoModel ->

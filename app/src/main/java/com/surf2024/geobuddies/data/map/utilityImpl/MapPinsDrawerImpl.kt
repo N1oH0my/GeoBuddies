@@ -3,7 +3,6 @@ package com.surf2024.geobuddies.data.map.utilityImpl
 
 import android.graphics.PointF
 import android.view.View
-import com.surf2024.geobuddies.domain.invites.entities.InviteModel
 import com.surf2024.geobuddies.domain.map.entity.FriendPinModel
 import com.surf2024.geobuddies.domain.map.entity.UserGeoModel
 import com.surf2024.geobuddies.domain.map.utility.IMapPinsDrawer
@@ -18,15 +17,15 @@ class MapPinsDrawerImpl(
     val mapView: MapView,
     val pinView: View,
 ): IMapPinsDrawer {
-    private val placemarkList: MutableList<PlacemarkMapObject?> = mutableListOf()
+    private val friendsGeoMap = HashMap<Int, Pair<FriendPinModel, PlacemarkMapObject>>()
     private var placemarkUser: PlacemarkMapObject? = null
 
     override fun friendsReload(data: List<FriendPinModel>){
-        if (placemarkList.size > data.size){
+        if ( !isTheSameFriends(data) ){
             clearAllFriends()
         }
-        for (i in 0 until data.size){
-            bindFriend(data[i])
+        data.forEach{
+            bindFriend(it)
         }
     }
     override fun userReload(data: UserGeoModel){
@@ -44,23 +43,17 @@ class MapPinsDrawerImpl(
         }
     }
     private fun bindFriend(data: FriendPinModel){
-        val placemarkFriend: PlacemarkMapObject? = placemarkList.firstOrNull { it?.userData == data.userId }
-
-        if (placemarkFriend != null) {
-            if (!areFriendItemsTheSame(placemarkFriend, data) || !areFriendContentsTheSame(placemarkFriend, data))
-            {
-                mapView.mapWindow.map.mapObjects.remove(placemarkFriend!!)
+        val oldFriendGeo = friendsGeoMap[data.userId]
+        if (oldFriendGeo != null){
+            if( !areFriendContentsTheSame(oldFriendGeo.first, data) ){
+                mapView.mapWindow.map.mapObjects.remove(oldFriendGeo.second)
 
                 val newPlacemarkFriend = getNewPlacemarkFriend(data)
-
-                val position = getPositionById(placemarkFriend.userData as Int)
-                if (position != null){
-                    placemarkList[position] = newPlacemarkFriend
-                }
+                friendsGeoMap[data.userId] = Pair(data, newPlacemarkFriend)
             }
         } else{
             val newPlacemarkFriend = getNewPlacemarkFriend(data)
-            placemarkList.add(newPlacemarkFriend)
+            friendsGeoMap[data.userId] = Pair(data, newPlacemarkFriend)
         }
     }
 
@@ -78,12 +71,8 @@ class MapPinsDrawerImpl(
             moveCameraToUser()
         }
     }
-    private fun areFriendItemsTheSame(oldItem: PlacemarkMapObject, newItem: FriendPinModel): Boolean {
-        return oldItem.userData as Int == newItem.userId
-    }
-    private fun areFriendContentsTheSame(oldItem: PlacemarkMapObject, newItem: FriendPinModel): Boolean {
-        return (oldItem.geometry.latitude == newItem.latitude &&
-                oldItem.geometry.longitude == newItem.longitude)
+    private fun areFriendContentsTheSame(oldItem: FriendPinModel, newItem: FriendPinModel): Boolean {
+        return oldItem == newItem
     }
     private fun areUserContentsTheSame(oldItem: PlacemarkMapObject, newItem: UserGeoModel): Boolean {
         return (oldItem.geometry.latitude == newItem.latitude &&
@@ -134,13 +123,17 @@ class MapPinsDrawerImpl(
         }
         return newPlacemarkUser
     }
-    private fun getPositionById(id: Int): Int? {
-        return placemarkList.indexOfFirst { it?.userData as Int == id }.takeIf { it >= 0 }
-    }
-    private fun clearAllFriends(){
-        for (i in 0 until placemarkList.size){
-            placemarkList[i]?.let { mapView.mapWindow.map.mapObjects.remove(it) }
+    private fun isTheSameFriends(data: List<FriendPinModel>): Boolean {
+        if (friendsGeoMap.size != data.size) return false
+
+        return data.all { friend ->
+            friendsGeoMap[friend.userId] != null
         }
-        placemarkList.clear()
+    }
+    private fun clearAllFriends() {
+        friendsGeoMap.values.forEach {
+            mapView.mapWindow.map.mapObjects.remove(it.second)
+        }
+        friendsGeoMap.clear()
     }
 }
