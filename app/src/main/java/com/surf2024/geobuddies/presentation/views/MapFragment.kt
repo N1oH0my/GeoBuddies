@@ -14,12 +14,15 @@ import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.databinding.FragmentMapBinding
-import com.surf2024.geobuddies.domain.map.repository.IMapPinsDrawer
+import com.surf2024.geobuddies.domain.login.entity.UserInfoModel
+import com.surf2024.geobuddies.domain.map.utility.IMapPinsDrawer
+import com.surf2024.geobuddies.domain.map.utility.IFriendsPinsGenerator
 import com.surf2024.geobuddies.domain.map.utility.IMapMenuAnimationHelper
-import com.surf2024.geobuddies.domain.map.utilityimpl.MapMenuAnimationHelper
-import com.surf2024.geobuddies.presentation.adapters.MapPinsDrawer
-import com.surf2024.geobuddies.presentation.viewmodels.LocationViewModel
-import com.surf2024.geobuddies.presentation.viewmodels.MapViewModel
+import com.surf2024.geobuddies.domain.map.utilityimpl.FriendsPinsGeneratorImpl
+import com.surf2024.geobuddies.domain.map.utilityimpl.MapMenuAnimationHelperImpl
+import com.surf2024.geobuddies.data.map.utilityImpl.MapPinsDrawerImpl
+import com.surf2024.geobuddies.presentation.viewmodels.map.MapLocationViewModel
+import com.surf2024.geobuddies.presentation.viewmodels.map.MapInfoViewModel
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.map.MapType
 import com.yandex.mapkit.mapview.MapView
@@ -39,7 +42,7 @@ class MapFragment : Fragment() {
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
         if (isGranted) {
-            getLocation()
+            updateLocations()
             showPermissionGrantedMessage()
         } else {
             showPermissionDeniedMessage()
@@ -48,8 +51,10 @@ class MapFragment : Fragment() {
 
     private val binding by viewBinding(FragmentMapBinding::class.java)
 
-    private lateinit var mapViewModel: MapViewModel
-    private lateinit var locationViewModel: LocationViewModel
+    private val friendsPinsGenerator: IFriendsPinsGenerator = FriendsPinsGeneratorImpl()
+
+    private lateinit var mapInfoViewModel: MapInfoViewModel
+    private lateinit var mapLocationViewModel: MapLocationViewModel
 
     private lateinit var animationHelper: IMapMenuAnimationHelper
 
@@ -61,7 +66,6 @@ class MapFragment : Fragment() {
         arguments?.let {
         }
     }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -71,11 +75,11 @@ class MapFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initMapViewModel()
-        initLocationViewModel()
+        initMapInfoViewModel()
+        initMapLocationViewModel()
 
-        initMapViewModelObservers()
-        initLocationViewModelObservers()
+        initMapInfoViewModelObservers()
+        initMapLocationViewModelObservers()
 
         initMapMenuAnimationHelper()
 
@@ -84,10 +88,12 @@ class MapFragment : Fragment() {
 
         initListeners()
 
+        getUserInfo()
+
         checkLocationPermission()
 
         getFriends()
-        getLocation()
+        updateLocations()
     }
 
     override fun onStart() {
@@ -101,14 +107,14 @@ class MapFragment : Fragment() {
         MapKitFactory.getInstance().onStop()
         super.onStop()
     }
-
-    private fun initMapViewModel() {
+    //////////////////// init /////////////////////////////////////////////////////////////////////
+    private fun initMapInfoViewModel() {
         Log.d("Hilt", "Creating MapViewModel client instance")
-        mapViewModel = ViewModelProvider(this)[MapViewModel::class.java]
+        mapInfoViewModel = ViewModelProvider(this)[MapInfoViewModel::class.java]
     }
-    private fun initLocationViewModel() {
+    private fun initMapLocationViewModel() {
         Log.d("Hilt", "Creating LocationViewModel client instance")
-        locationViewModel = ViewModelProvider(this)[LocationViewModel::class.java]
+        mapLocationViewModel = ViewModelProvider(this)[MapLocationViewModel::class.java]
     }
     private fun initMap(){
         mapView = binding.idMapview
@@ -116,63 +122,10 @@ class MapFragment : Fragment() {
         MapKitFactory.initialize(requireContext())
     }
     private fun initMapPinsDrawer(){
-        pinsDrawer = MapPinsDrawer(mapView, binding.customMapPinView)
+        pinsDrawer = MapPinsDrawerImpl(mapView, binding.customMapPinView)
     }
     private fun initMapMenuAnimationHelper(){
-        animationHelper = MapMenuAnimationHelper(requireContext(), binding)
-    }
-    private fun initLocationViewModelObservers(){
-        locationViewModel.currentUserGeo.observe(viewLifecycleOwner){ userGeoModel ->
-            updateUserGeo(userGeoModel.latitude, userGeoModel.longitude)
-            updateFriendsGeo()
-        }
-        locationViewModel.permissionsFailure.observe(viewLifecycleOwner){
-            updateFriendsGeo()
-        }
-        locationViewModel.getUserGeoFailure.observe(viewLifecycleOwner){
-            showGetLocationFailedMessage()
-            updateFriendsGeo()
-        }
-        locationViewModel.alertDialogForLocationPermissionsNeeded.observe(viewLifecycleOwner){
-            showPermissionExplanation()
-        }
-        locationViewModel.requestLocationPermissionsNeeded.observe(viewLifecycleOwner){
-            requestLocationPermission()
-        }
-    }
-    private fun initMapViewModelObservers() {
-        mapViewModel.userGeo.observe(viewLifecycleOwner){ result->
-            if(result){
-                locationViewModel.currentUserGeo.value?.let { pinsDrawer.userReload(it) }
-            }
-            else{
-                showError()
-            }
-        }
-        mapViewModel.friendList.observe(viewLifecycleOwner){ result->
-            if(result!=null){
-                updateFriendsGeo()
-            }
-            else{
-                showError()
-            }
-        }
-        mapViewModel.friendsGeoList.observe(viewLifecycleOwner){ result->
-            if(result!=null){
-                generateFriendsPins()
-            }
-            else{
-                showError()
-            }
-        }
-        mapViewModel.friendsPinsList.observe(viewLifecycleOwner){ friendPinsGeoList->
-            if(friendPinsGeoList != null){
-                pinsDrawer.friendsReload(friendPinsGeoList)
-            }
-            else{
-                showError()
-            }
-        }
+        animationHelper = MapMenuAnimationHelperImpl(requireContext(), binding)
     }
     private fun initListeners(){
         binding.btnToggleMenu.setOnClickListener {
@@ -180,39 +133,114 @@ class MapFragment : Fragment() {
         }
         binding.sideMenu.setOnClickListener {
             animateMapMenu()
-            getLocation()
+            updateLocations()
         }
         binding.idMenuPart1.setOnClickListener {}
         binding.idMenuPart2.setOnClickListener {}
     }
-
+    //////////////////// observers /////////////////////////////////////////////////////////////////
+    private fun initMapInfoViewModelObservers(){
+        mapInfoViewModel.user.observe(viewLifecycleOwner){ user->
+            if (user != null){
+                setUserInfo(user)
+            }
+        }
+        mapInfoViewModel.friendList.observe(viewLifecycleOwner){ result->
+            if(result!=null){
+                updateFriendsGeo()
+            }
+            else{
+                showError()
+            }
+        }
+    }
+    private fun initMapLocationViewModelObservers() {
+        mapLocationViewModel.currentUserGeo.observe(viewLifecycleOwner){ userGeoModel ->
+            saveUserGeo(userGeoModel.latitude, userGeoModel.longitude)
+        }
+        mapLocationViewModel.isSavedUserGeo.observe(viewLifecycleOwner){ result->
+            if(result){
+                mapLocationViewModel.currentUserGeo.value?.let { pinsDrawer.userReload(it) }
+            }
+            else{
+                showError()
+            }
+        }
+        mapLocationViewModel.friendsGeoList.observe(viewLifecycleOwner){ result->
+            if(result!=null){
+                generateFriendsPins()
+            }
+            else{
+                showError()
+            }
+        }
+        mapLocationViewModel.getUserGeoFailure.observe(viewLifecycleOwner){
+            showGetLocationFailedMessage()
+        }
+        mapLocationViewModel.permissionsFailure.observe(viewLifecycleOwner){}
+        mapLocationViewModel.alertDialogForLocationPermissionsNeeded.observe(viewLifecycleOwner){
+            showPermissionExplanation()
+        }
+        mapLocationViewModel.requestLocationPermissionsNeeded.observe(viewLifecycleOwner){
+            requestLocationPermission()
+        }
+    }
+    //////////////////// permission ////////////////////////////////////////////////////////////////
     private fun checkLocationPermission(){
-        locationViewModel.checkLocationPermission(this)
+        mapLocationViewModel.checkLocationPermission(this)
     }
     private fun requestLocationPermission() {
         requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
     }
-    private fun getLocation() {
-        locationViewModel.getLocation()
+    //////////////////// location //////////////////////////////////////////////////////////////////
+    private fun updateLocations(){
+        updateCurrentUserLocation()
+        updateFriendsGeo()
     }
-
-    private fun updateUserGeo(latitude: Double, longitude: Double){
-        mapViewModel.saveUserGeo(latitude = latitude, longitude = longitude)
-    }
-    private fun getFriends(){
-        mapViewModel.getFriends()
+    private fun updateCurrentUserLocation() {
+        mapLocationViewModel.getCurrentUserLocation()
     }
     private fun updateFriendsGeo(){
-        mapViewModel.getFriendsGeo()
+        mapLocationViewModel.getFriendsGeo()
     }
+    private fun saveUserGeo(latitude: Double, longitude: Double){
+        mapLocationViewModel.saveUserGeo(latitude = latitude, longitude = longitude)
+    }
+    //////////////////// additional info ///////////////////////////////////////////////////////////
+    private fun getFriends(){
+        mapInfoViewModel.getFriends()
+    }
+    private fun getUserInfo(){
+        mapInfoViewModel.getUserInfo()
+    }
+    //////////////////// pins //////////////////////////////////////////////////////////////////////
     private fun generateFriendsPins(){
-        mapViewModel.generateFriendsPins()
-    }
+        if (mapInfoViewModel.friendList.value != null &&
+            mapLocationViewModel.friendsGeoList.value != null){
 
+            friendsPinsGenerator.generateFriendsPins(
+                friendList = mapInfoViewModel.friendList.value!!,
+                friendsGeoList = mapLocationViewModel.friendsGeoList.value!!,
+
+                { friendsPinsList ->
+                    pinsDrawer.friendsReload(friendsPinsList)
+                },{
+                    getFriends()
+                },{
+                    showError()
+                }
+            )
+        }
+    }
+    //////////////////// animations ////////////////////////////////////////////////////////////////
     private fun animateMapMenu() {
         animationHelper.animateMapMenu()
     }
-
+    //////////////////// other IU fun //////////////////////////////////////////////////////////////
+    private fun setUserInfo(user: UserInfoModel){
+        binding.menuUserName.text = user.name
+        binding.menuUserEmail.text = user.email
+    }
     private fun showToast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
@@ -220,6 +248,21 @@ class MapFragment : Fragment() {
         activity?.let {
             showToast(it.getString(R.string.error_part_1))
             showToast(it.getString(R.string.error_part_2))
+        }
+    }
+    private fun showPermissionDeniedMessage() {
+        activity?.let {
+            showToast(it.getString(R.string.location_permission_denied))
+        }
+    }
+    private fun showPermissionGrantedMessage() {
+        activity?.let {
+            showToast(it.getString(R.string.location_permission_granted))
+        }
+    }
+    private fun showGetLocationFailedMessage() {
+        activity?.let {
+            showToast(it.getString(R.string.failed_to_get_location))
         }
     }
     private fun showPermissionExplanation() {
@@ -238,22 +281,6 @@ class MapFragment : Fragment() {
                 }
                 .create()
                 .show()
-        }
-    }
-
-    private fun showPermissionDeniedMessage() {
-        activity?.let {
-            showToast(it.getString(R.string.location_permission_denied))
-        }
-    }
-    private fun showPermissionGrantedMessage() {
-        activity?.let {
-            showToast(it.getString(R.string.location_permission_granted))
-        }
-    }
-    private fun showGetLocationFailedMessage() {
-        activity?.let {
-            showToast(it.getString(R.string.failed_to_get_location))
         }
     }
 }

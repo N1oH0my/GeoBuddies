@@ -11,7 +11,7 @@ import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.databinding.FragmentMapBinding
 import com.surf2024.geobuddies.domain.map.utility.IMapMenuAnimationHelper
 
-class MapMenuAnimationHelper(
+class MapMenuAnimationHelperImpl(
     private val context: Context,
     private val binding: FragmentMapBinding,
 ): IMapMenuAnimationHelper {

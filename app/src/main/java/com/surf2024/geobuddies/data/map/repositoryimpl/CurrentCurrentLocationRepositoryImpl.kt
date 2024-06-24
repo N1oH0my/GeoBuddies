@@ -1,21 +1,16 @@
-package com.surf2024.geobuddies.domain.map.repositoryimpl
-import android.Manifest
+package com.surf2024.geobuddies.data.map.repositoryimpl
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.pm.PackageManager
 import android.location.Location
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.surf2024.geobuddies.domain.map.repository.ILocationRepository
+import com.surf2024.geobuddies.domain.map.repository.ICurrentLocationRepository
 import com.surf2024.geobuddies.domain.map.utility.ILocationPermissionChecker
-import com.surf2024.geobuddies.domain.map.utilityimpl.LocationPermissionChecker
 
-class LocationRepositoryImpl(
+class CurrentCurrentLocationRepositoryImpl(
     private val context: Context,
     private val locationPermissionChecker: ILocationPermissionChecker
-): ILocationRepository {
+): ICurrentLocationRepository {
 
     private val fusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)

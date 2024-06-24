@@ -1,4 +1,4 @@
-package com.surf2024.geobuddies.domain.map.repository
+package com.surf2024.geobuddies.domain.map.utility
 
 import com.surf2024.geobuddies.domain.map.entity.FriendPinModel
 import com.surf2024.geobuddies.domain.map.entity.UserGeoModel

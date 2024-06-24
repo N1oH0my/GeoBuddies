@@ -1,11 +1,11 @@
 
-package com.surf2024.geobuddies.presentation.adapters
+package com.surf2024.geobuddies.data.map.utilityImpl
 
 import android.graphics.PointF
 import android.view.View
 import com.surf2024.geobuddies.domain.map.entity.FriendPinModel
 import com.surf2024.geobuddies.domain.map.entity.UserGeoModel
-import com.surf2024.geobuddies.domain.map.repository.IMapPinsDrawer
+import com.surf2024.geobuddies.domain.map.utility.IMapPinsDrawer
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.IconStyle
@@ -13,7 +13,7 @@ import com.yandex.mapkit.map.PlacemarkMapObject
 import com.yandex.mapkit.map.TextStyle
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.runtime.ui_view.ViewProvider
-class MapPinsDrawer(
+class MapPinsDrawerImpl(
     val mapView: MapView,
     val pinView: View,
 ): IMapPinsDrawer {
@@ -22,13 +22,13 @@ class MapPinsDrawer(
 
     override fun friendsReload(data: List<FriendPinModel>){
         for (i in 0 until data.size){
-            bind(data[i], i)
+            bindFriend(data[i], i)
         }
     }
     override fun userReload(data: UserGeoModel){
         bindUser(data)
     }
-    private fun bind(data: FriendPinModel, position: Int){
+    private fun bindFriend(data: FriendPinModel, position: Int){
         val placemarkFriend: PlacemarkMapObject? = placemarkList.getOrNull(position)
 
         if (placemarkFriend != null) {
@@ -61,6 +61,7 @@ class MapPinsDrawer(
             placemarkList.add(newPlacemarkFriend)
         }
     }
+
     private fun bindUser(data: UserGeoModel){
         val point = Point(data.latitude, data.longitude)
 

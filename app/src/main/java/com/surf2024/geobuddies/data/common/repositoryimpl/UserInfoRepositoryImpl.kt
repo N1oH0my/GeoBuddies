@@ -25,5 +25,4 @@ class UserInfoRepositoryImpl @Inject constructor(
             null
         }
     }
-
 }

@@ -2,6 +2,6 @@ package com.surf2024.geobuddies.domain.map.repository
 
 import android.location.Location
 
-interface ILocationRepository {
+interface ICurrentLocationRepository {
     fun requestLocation(onSuccess: (Location) -> Unit, onPermissionsFailure: () -> Unit, onFailure: () -> Unit)
 }
