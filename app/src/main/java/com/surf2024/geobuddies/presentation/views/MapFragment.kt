@@ -135,8 +135,6 @@ class MapFragment : Fragment() {
         mapLocationViewModel = ViewModelProvider(this)[MapLocationViewModel::class.java]
     }
     private fun initMap(){
-
-
         mapView = binding.idMapview
         mapView.mapWindow.map.mapType = MapType.MAP
         MapKitFactory.initialize(requireContext())
@@ -153,8 +151,9 @@ class MapFragment : Fragment() {
         }
         binding.sideMenu.setOnClickListener {
             animateMapMenu()
-            //pinsDrawer.changeMapTypeToHybrid()
-            //MapKitFactory.initialize(requireContext())
+        }
+        binding.btnFindUserPin.setOnClickListener {
+            pinsDrawer.moveCameraToUser()
         }
         binding.idMenuPart1.setOnClickListener {}
         binding.idMenuPart2.setOnClickListener {}

@@ -39,7 +39,7 @@ class MapPinsDrawerImpl(
             mapView.mapWindow.map.move(
                 CameraPosition(
                     Point(placemarkUser!!.geometry.latitude, placemarkUser!!.geometry.longitude),
-                    20.0f,
+                    17.0f,
                     0.0f,
                     0.0f)
             )
