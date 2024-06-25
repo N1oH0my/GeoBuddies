@@ -29,18 +29,7 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
 
         setLocationLanguage("en")
 
-        supportFragmentManager.beginTransaction()
-            .add(R.id.fragmentHolderId, SplashScreenFragment())
-            .commit()
-
-        showToast("Hello!")
-        showToast("Welcome to the GeoBuddies!")
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentHolderId, LoginFragment() /*RegistrationFragment()*/)
-                .commit()
-        }, 3000)
+        startUpLoading()
 
     }
 
@@ -61,21 +50,77 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
             .replace(R.id.fragmentHolderId, RegistrationFragment())
             .commit()
     }
-
-    override fun onSearchFriendClose() {
+    override fun openFriends() {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentHolderId, LoginFragment())
+            .replace(R.id.fragmentHolderId, MapFragment())
+            .commit()
+    }
+    override fun onFriendsClose() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentHolderId, MapFragment())
             .commit()
     }
 
+    override fun openFriendsSearch() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentHolderId, FriendSearchFragment())
+            .commit()
+    }
+    override fun onFriendsSearchClose() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentHolderId, MapFragment())
+            .commit()
+    }
+
+    override fun openInvites() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentHolderId, AcceptDenyInvitesFragment())
+            .commit()
+    }
     override fun onInvitesClose() {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentHolderId, LoginFragment())
+            .replace(R.id.fragmentHolderId, MapFragment())
             .commit()
     }
+
+    override fun onMapClose() {
+        finishAffinity()
+    }
+
+    override fun onLogOut() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentHolderId, SplashScreenFragment())
+            .commit()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentHolderId, LoginFragment())
+                .commit()
+        }, 2000)
+    }
+
+    private fun startUpLoading() {
+        supportFragmentManager.beginTransaction()
+            .add(R.id.fragmentHolderId, SplashScreenFragment())
+            .commit()
+
+        greetingMessageShow()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentHolderId, LoginFragment())
+                .commit()
+        }, 3500)
+    }
+
     private fun setLocationLanguage(language: String){
         val context: Context = applicationContext
         context.resources.configuration.setLocale(Locale("en"))
+    }
+
+    private fun greetingMessageShow(){
+        showToast(this.getString(R.string.hello))
+        showToast(this.getString(R.string.welcome_to_the_geo_buddies))
     }
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()

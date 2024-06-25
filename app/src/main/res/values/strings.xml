@@ -49,4 +49,9 @@
     <!--> Location get messages <-->
     <string name="failed_to_get_location">Failed to get location</string>
 
+    <!--> greeting messages <-->
+    <string name="hello">Hello!</string>
+    <string name="welcome_to_the_geo_buddies">Welcome to the GeoBuddies!</string>
+
+
 </resources>

@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -22,6 +23,7 @@ import com.surf2024.geobuddies.domain.map.utility.IMapMenuAnimationHelper
 import com.surf2024.geobuddies.domain.map.utilityimpl.FriendsPinsGeneratorImpl
 import com.surf2024.geobuddies.domain.map.utilityimpl.MapMenuAnimationHelperImpl
 import com.surf2024.geobuddies.data.map.utilityImpl.MapPinsDrawerImpl
+import com.surf2024.geobuddies.domain.main.usecase.FragmentChangeListener
 import com.surf2024.geobuddies.presentation.viewmodels.map.MapLocationViewModel
 import com.surf2024.geobuddies.presentation.viewmodels.map.MapInfoViewModel
 import com.yandex.mapkit.MapKitFactory
@@ -42,6 +44,7 @@ class MapFragment : Fragment() {
                 arguments = Bundle().apply {}
             }
         }
+    private lateinit var fragmentsTapListener: FragmentChangeListener
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -82,6 +85,8 @@ class MapFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        overrideOnBackPressed()
+
         initMapInfoViewModel()
         initMapLocationViewModel()
 
@@ -102,6 +107,10 @@ class MapFragment : Fragment() {
         getFriends()
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        fragmentsTapListener = context as FragmentChangeListener
+    }
     override fun onStart() {
         super.onStart()
         MapKitFactory.getInstance().onStart()
@@ -124,6 +133,14 @@ class MapFragment : Fragment() {
     override fun onDestroy() {
         stopScheduler()
         super.onDestroy()
+    }
+    private fun overrideOnBackPressed() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                closeMap()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
     //////////////////// init /////////////////////////////////////////////////////////////////////
     private fun initMapInfoViewModel() {
@@ -152,8 +169,22 @@ class MapFragment : Fragment() {
         binding.sideMenu.setOnClickListener {
             animateMapMenu()
         }
+
         binding.btnFindUserPin.setOnClickListener {
             pinsDrawer.moveCameraToUser()
+        }
+
+        binding.menuMyFriends.setOnClickListener {
+            openFriends()
+        }
+        binding.menuAddFriends.setOnClickListener {
+            openSearchFriends()
+        }
+        binding.menuInvites.setOnClickListener {
+            openInvites()
+        }
+        binding.menuLogout.setOnClickListener {
+            logOut()
         }
         binding.idMenuPart1.setOnClickListener {}
         binding.idMenuPart2.setOnClickListener {}
@@ -294,6 +325,22 @@ class MapFragment : Fragment() {
     //////////////////// animations ////////////////////////////////////////////////////////////////
     private fun animateMapMenu() {
         animationHelper.animateMapMenu()
+    }
+    //////////////////// fragments change //////////////////////////////////////////////////////////
+    private fun closeMap(){
+        fragmentsTapListener.onMapClose()
+    }
+    private fun openInvites(){
+        fragmentsTapListener.openInvites()
+    }
+    private fun openFriends(){
+        fragmentsTapListener.openFriends()
+    }
+    private fun openSearchFriends(){
+        fragmentsTapListener.openFriendsSearch()
+    }
+    private fun logOut(){
+        fragmentsTapListener.onLogOut()
     }
     //////////////////// other IU fun //////////////////////////////////////////////////////////////
     private fun setUserInfo(user: UserInfoModel){

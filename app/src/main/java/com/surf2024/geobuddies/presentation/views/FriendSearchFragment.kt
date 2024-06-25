@@ -125,7 +125,7 @@ class FriendSearchFragment : Fragment(), IOnFriendItemClickListener {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
     private fun onSearchFriendClose() {
-        friendSearchCloseListener.onSearchFriendClose()
+        friendSearchCloseListener.onFriendsSearchClose()
     }
     fun overrideOnBackPressed() {
         val callback = object : OnBackPressedCallback(true) {
