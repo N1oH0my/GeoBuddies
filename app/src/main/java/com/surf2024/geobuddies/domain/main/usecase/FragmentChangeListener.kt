@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 
 interface FragmentChangeListener {
     fun onRegistrationComplete()
+    fun onRegistrationBack()
     fun onLoginComplete()
     fun onSignUpClicked()
     fun onSearchFriendClose()
