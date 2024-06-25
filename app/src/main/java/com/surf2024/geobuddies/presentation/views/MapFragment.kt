@@ -2,6 +2,7 @@ package com.surf2024.geobuddies.presentation.views
 
 import android.Manifest
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -27,6 +28,7 @@ import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.map.MapType
 import com.yandex.mapkit.mapview.MapView
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Locale
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
@@ -133,6 +135,8 @@ class MapFragment : Fragment() {
         mapLocationViewModel = ViewModelProvider(this)[MapLocationViewModel::class.java]
     }
     private fun initMap(){
+
+
         mapView = binding.idMapview
         mapView.mapWindow.map.mapType = MapType.MAP
         MapKitFactory.initialize(requireContext())
@@ -149,6 +153,8 @@ class MapFragment : Fragment() {
         }
         binding.sideMenu.setOnClickListener {
             animateMapMenu()
+            //pinsDrawer.changeMapTypeToHybrid()
+            //MapKitFactory.initialize(requireContext())
         }
         binding.idMenuPart1.setOnClickListener {}
         binding.idMenuPart2.setOnClickListener {}

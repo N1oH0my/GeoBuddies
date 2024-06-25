@@ -9,6 +9,7 @@ import com.surf2024.geobuddies.domain.map.utility.IMapPinsDrawer
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.IconStyle
+import com.yandex.mapkit.map.MapType
 import com.yandex.mapkit.map.PlacemarkMapObject
 import com.yandex.mapkit.map.TextStyle
 import com.yandex.mapkit.mapview.MapView
@@ -28,9 +29,11 @@ class MapPinsDrawerImpl(
             bindFriend(it)
         }
     }
+
     override fun userReload(data: UserGeoModel){
         bindUser(data)
     }
+
     override fun moveCameraToUser(){
         if (placemarkUser != null){
             mapView.mapWindow.map.move(
@@ -42,6 +45,7 @@ class MapPinsDrawerImpl(
             )
         }
     }
+
     private fun bindFriend(data: FriendPinModel){
         val oldFriendGeo = friendsGeoMap[data.userId]
         if (oldFriendGeo != null){

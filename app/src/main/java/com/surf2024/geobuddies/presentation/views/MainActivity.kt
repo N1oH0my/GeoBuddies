@@ -1,5 +1,6 @@
 package com.surf2024.geobuddies.presentation.views
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -11,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.domain.main.usecase.FragmentChangeListener
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Locale
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), FragmentChangeListener {
@@ -24,6 +26,8 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        setLocationLanguage("en")
 
         supportFragmentManager.beginTransaction()
             .add(R.id.fragmentHolderId, SplashScreenFragment())
@@ -68,6 +72,10 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentHolderId, LoginFragment())
             .commit()
+    }
+    private fun setLocationLanguage(language: String){
+        val context: Context = applicationContext
+        context.resources.configuration.setLocale(Locale("en"))
     }
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
