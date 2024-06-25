@@ -86,11 +86,11 @@ class FriendSearchFragment : Fragment(), IOnFriendItemClickListener {
         recyclerView.layoutManager = LinearLayoutManager(context)
     }
     private fun initListenerSearchFriendField() {
-        binding.editTextSearch.setOnEditorActionListener { v, actionId, event ->
+        binding.editTextSearch.editText?.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE ||
                 event.action == KeyEvent.ACTION_DOWN
                 ) {
-                val userNameOrEmail = binding.editTextSearch.text.toString()
+                val userNameOrEmail = binding.editTextSearch.editText?.text.toString()
                 friendSearchViewModel.findFriend(userNameOrEmail)
                 true
             } else {
