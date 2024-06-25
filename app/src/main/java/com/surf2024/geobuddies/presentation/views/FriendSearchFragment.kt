@@ -84,6 +84,9 @@ class FriendSearchFragment : Fragment(), IOnFriendItemClickListener {
     private fun initRecyclerView(){
         recyclerView = binding.foudFriendRecyclerview
         recyclerView.layoutManager = LinearLayoutManager(context)
+
+        adapter = FriendSearchRVAdapter(requireContext(), this)
+        recyclerView.adapter = adapter
     }
     private fun initListenerSearchFriendField() {
         binding.editTextSearch.editText?.setOnEditorActionListener { v, actionId, event ->
@@ -101,9 +104,7 @@ class FriendSearchFragment : Fragment(), IOnFriendItemClickListener {
 
     private fun initObserversFriendSearchViewModel() {
         friendSearchViewModel.foundFriendList.observe(viewLifecycleOwner){  foundFriendList ->
-            adapter = FriendSearchRVAdapter(requireContext(), foundFriendList, this)
-            recyclerView.adapter = adapter
-
+            adapter.reload(foundFriendList)
             dataList = foundFriendList
             if (dataList.isEmpty()){
                 showToast("no users found or check auth")
