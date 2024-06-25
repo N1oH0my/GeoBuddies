@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
 
     override fun onLoginComplete() {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentHolderId, AcceptDenyInvitesFragment())
+            .replace(R.id.fragmentHolderId, FriendSearchFragment())
             .commit()
     }
 
