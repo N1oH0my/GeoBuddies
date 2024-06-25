@@ -33,6 +33,18 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
 
     }
 
+    override fun onSignUpClicked() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentHolderId, RegistrationFragment())
+            .commit()
+    }
+
+    override fun onRegistrationBack() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentHolderId, LoginFragment())
+            .commit()
+    }
+
     override fun onRegistrationComplete() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentHolderId, LoginFragment())
@@ -45,11 +57,6 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
             .commit()
     }
 
-    override fun onSignUpClicked() {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentHolderId, RegistrationFragment())
-            .commit()
-    }
     override fun openFriends() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentHolderId, MapFragment())
@@ -72,17 +79,12 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
             .commit()
     }
 
-    override fun onRegistrationBack() {
+    override fun openInvites() {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentHolderId, LoginFragment())
+            .replace(R.id.fragmentHolderId, AcceptDenyInvitesFragment())
             .commit()
     }
 
-    override fun openInvites() {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentHolderId, FriendSearchFragment())
-            .commit()
-    }
     override fun onInvitesClose() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentHolderId, MapFragment())
