@@ -84,13 +84,16 @@ class FriendSearchFragment : Fragment(), IOnFriendItemClickListener {
     private fun initRecyclerView(){
         recyclerView = binding.foudFriendRecyclerview
         recyclerView.layoutManager = LinearLayoutManager(context)
+
+        adapter = FriendSearchRVAdapter(requireContext(), this)
+        recyclerView.adapter = adapter
     }
     private fun initListenerSearchFriendField() {
-        binding.editTextSearch.setOnEditorActionListener { v, actionId, event ->
+        binding.editTextSearch.editText?.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE ||
                 event.action == KeyEvent.ACTION_DOWN
                 ) {
-                val userNameOrEmail = binding.editTextSearch.text.toString()
+                val userNameOrEmail = binding.editTextSearch.editText?.text.toString()
                 friendSearchViewModel.findFriend(userNameOrEmail)
                 true
             } else {
@@ -101,9 +104,7 @@ class FriendSearchFragment : Fragment(), IOnFriendItemClickListener {
 
     private fun initObserversFriendSearchViewModel() {
         friendSearchViewModel.foundFriendList.observe(viewLifecycleOwner){  foundFriendList ->
-            adapter = FriendSearchRVAdapter(requireContext(), foundFriendList, this)
-            recyclerView.adapter = adapter
-
+            adapter.reload(foundFriendList)
             dataList = foundFriendList
             if (dataList.isEmpty()){
                 showToast("no users found or check auth")

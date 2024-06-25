@@ -72,9 +72,15 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
             .commit()
     }
 
+    override fun onRegistrationBack() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentHolderId, LoginFragment())
+            .commit()
+    }
+
     override fun openInvites() {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentHolderId, AcceptDenyInvitesFragment())
+            .replace(R.id.fragmentHolderId, FriendSearchFragment())
             .commit()
     }
     override fun onInvitesClose() {

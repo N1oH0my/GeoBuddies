@@ -5,6 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.domain.friendsearch.entity.FoundFriendModel
@@ -13,9 +15,8 @@ import de.hdodenhof.circleimageview.CircleImageView
 
 class FriendSearchRVAdapter(
     private val context: Context,
-    private val dataList: List<FoundFriendModel>,
     private val listener: IOnFriendItemClickListener
-    ) : RecyclerView.Adapter<FriendSearchRVAdapter.FriendSearchViewHolder>() {
+    ) : ListAdapter<FoundFriendModel, FriendSearchRVAdapter.FriendSearchViewHolder>(SearchDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendSearchViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.found_friend_list_item, parent, false)
@@ -23,12 +24,12 @@ class FriendSearchRVAdapter(
     }
 
     override fun onBindViewHolder(holder: FriendSearchViewHolder, position: Int) {
-        val data = dataList[position]
+        val data = getItem(position)
         holder.bind(data)
     }
 
     override fun getItemCount(): Int {
-        return dataList.size
+        return currentList.size
     }
 
     inner class FriendSearchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -51,6 +52,19 @@ class FriendSearchRVAdapter(
                 }
             }
         }
+    }
 
+    class SearchDiffCallback : DiffUtil.ItemCallback<FoundFriendModel>() {
+        override fun areItemsTheSame(oldItem: FoundFriendModel, newItem: FoundFriendModel): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: FoundFriendModel, newItem: FoundFriendModel): Boolean {
+            return oldItem == newItem
+        }
+    }
+
+    fun reload(data: List<FoundFriendModel>){
+        submitList(data)
     }
 }
