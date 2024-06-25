@@ -47,6 +47,12 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
             .commit()
     }
 
+    override fun onRegistrationBack() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentHolderId, LoginFragment())
+            .commit()
+    }
+
     override fun onLoginComplete() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentHolderId, AcceptDenyInvitesFragment())
