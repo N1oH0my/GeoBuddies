@@ -104,7 +104,7 @@ class FriendsScreenFragment: Fragment(), IOnFriendRemoveClickListener {
         }
         friendsViewModel.isFriendRemoved.observe(viewLifecycleOwner){response ->
             if (response){
-                activity?.let { showToast(it.getString(R.string.invite_denied)) }
+                activity?.let { showToast(it.getString(R.string.friend_deleted)) }
                 friendsViewModel.removeFriendOnPosition(lastRemovePosition)
             }
             else{
