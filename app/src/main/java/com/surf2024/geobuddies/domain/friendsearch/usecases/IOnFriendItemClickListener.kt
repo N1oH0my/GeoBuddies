@@ -1,5 +1,5 @@
 package com.surf2024.geobuddies.domain.friendsearch.usecases
 
-interface IOnFriendClickListener {
+interface IOnFriendItemClickListener {
     fun onFriendItemClick(position: Int)
 }
