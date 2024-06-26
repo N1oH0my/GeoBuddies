@@ -17,7 +17,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 class FriendsRVAdapter(
     private val context: Context,
     private val listener: IOnFriendRemoveClickListener
-) : ListAdapter<Pair<FriendModel, Boolean>, FriendsRVAdapter.FriendsViewHolder>(FriendsRVAdapter.FriendDiffCallback()) {
+) : ListAdapter<FriendModel, FriendsRVAdapter.FriendsViewHolder>(FriendsRVAdapter.FriendDiffCallback()) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -49,9 +49,9 @@ class FriendsRVAdapter(
                 }
             }
         }
-        fun bind(data: Pair<FriendModel, Boolean>){
-            userName.text = data.first.name
-            userEmail.text = data.first.email
+        fun bind(data: FriendModel){
+            userName.text = data.name
+            userEmail.text = data.email
         }
 
         fun hideCrossIcon() {
@@ -63,17 +63,17 @@ class FriendsRVAdapter(
         }
     }
 
-    class FriendDiffCallback : DiffUtil.ItemCallback<Pair<FriendModel, Boolean>>() {
-        override fun areItemsTheSame(oldItem: Pair<FriendModel, Boolean>, newItem: Pair<FriendModel, Boolean>): Boolean {
-            return oldItem.first.id == newItem.first.id
+    class FriendDiffCallback : DiffUtil.ItemCallback<FriendModel>() {
+        override fun areItemsTheSame(oldItem: FriendModel, newItem: FriendModel): Boolean {
+            return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: Pair<FriendModel, Boolean>, newItem: Pair<FriendModel, Boolean>): Boolean {
+        override fun areContentsTheSame(oldItem: FriendModel, newItem: FriendModel): Boolean {
             return oldItem == newItem
         }
     }
 
-    fun reload(data: List<Pair<FriendModel, Boolean>>){
+    fun reload(data: List<FriendModel>){
         submitList(data)
     }
 }

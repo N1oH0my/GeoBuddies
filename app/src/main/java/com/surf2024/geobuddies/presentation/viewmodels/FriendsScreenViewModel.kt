@@ -17,14 +17,14 @@ class FriendsScreenViewModel@Inject constructor(
     private val friendsDeleteRepository: IFriendDeleteRepository
 ):ViewModel() {
     private val disposables = CompositeDisposable()
-    private val _friendsList = MutableLiveData <List<Pair<FriendModel, Boolean>>?>()
-    val friendsList: LiveData<List<Pair<FriendModel, Boolean>>?>
+    private val _friendsList = MutableLiveData <List<FriendModel>?>()
+    val friendsList: LiveData<List<FriendModel>?>
         get() = _friendsList
     private val _isFriendRemoved = MutableLiveData<Boolean>()
     val isFriendRemoved: LiveData<Boolean>
         get() = _isFriendRemoved
 
-    private fun setFriends(result: List<Pair<FriendModel, Boolean>>?) {
+    private fun setFriends(result: List<FriendModel>?) {
         _friendsList.value = result
     }
     private fun setRemoveFriendResponse(response: Boolean){
@@ -37,7 +37,7 @@ class FriendsScreenViewModel@Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ friends ->
                 Log.d("FriendsProcess", "Get successful: $friends")
-                setFriends(friends.map { it to false })
+                setFriends(friends)
             }, { error ->
                 Log.e("FriendsProcess", "Get failed", error)
 
@@ -88,7 +88,7 @@ class FriendsScreenViewModel@Inject constructor(
         val currentList = _friendsList.value?.toList()
         if (currentList != null) {
             if (position >= 0 && position < currentList.size) {
-                return currentList[position].first.id
+                return currentList[position].id
             }
         }
         return -1
