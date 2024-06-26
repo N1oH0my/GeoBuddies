@@ -83,11 +83,22 @@ class FriendsScreenFragment: Fragment() {
     }
 
     private fun initObserversFriendsViewModel() {
+        friendsViewModel.friendsList.observe(viewLifecycleOwner){ friends->
 
+            if (friends != null) {
+                if (friends.isEmpty()){
+                    activity?.let { showToast(it.getString(R.string.no_frineds)) }
+                }
+                adapter.reload(friends)
+            }
+            else{
+                showError()
+            }
+        }
     }
 
     private fun loadFriends(){
-        //friendsViewModel.getAllFriends()
+        friendsViewModel.getAllFriends()
     }
     private fun onFriendsClose() {
         friendsCloseListener.onFriendsClose()

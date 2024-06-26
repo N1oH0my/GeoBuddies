@@ -1,6 +1,6 @@
 package com.surf2024.geobuddies.domain.login.repositoryimpl
 
-import ILoginAccessTokenSaverRepository
+import com.surf2024.geobuddies.domain.login.repository.ILoginAccessTokenSaverRepository
 import android.content.SharedPreferences
 import android.util.Log
 import com.surf2024.geobuddies.domain.common.entity.TokenKeys

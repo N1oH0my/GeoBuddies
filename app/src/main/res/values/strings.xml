@@ -29,6 +29,9 @@
     <string name="invite_accepted">invite accepted</string>
     <string name="invite_denied">invite denied</string>
 
+    <!--> friends_screen_fragment <-->
+    <string name="no_frineds">there are no friends</string>
+
     <!--> common error <-->
     <string name="error_part_1">smth went wrong...</string>
     <string name="error_part_2">try again later</string>
