@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.surf2024.geobuddies.domain.map.entity.FriendGeoModel
 import com.surf2024.geobuddies.domain.map.entity.UserGeoModel
 import com.surf2024.geobuddies.domain.map.repository.IGetFriendsGeoRepository
-import com.surf2024.geobuddies.domain.map.repository.ICurrentLocationRepository
+import com.surf2024.geobuddies.domain.map.repository.ICurrentUserLocationRepository
 import com.surf2024.geobuddies.domain.map.repository.ISaveUserGeoRepository
 import com.surf2024.geobuddies.domain.map.utility.ILocationPermissionChecker
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MapLocationViewModel@Inject constructor(
     private val locationPermissionChecker: ILocationPermissionChecker,
-    private val currentLocationRepository: ICurrentLocationRepository,
+    private val currentLocationRepository: ICurrentUserLocationRepository,
 
     private val saveUserGeoRepository: ISaveUserGeoRepository,
     private val getFriendsGeoRepository: IGetFriendsGeoRepository,

@@ -71,6 +71,9 @@ class MapFragment : Fragment() {
     private lateinit var mapView: MapView
     private lateinit var pinsDrawer: IMapPinsDrawer
 
+    private var isServerError = false
+    private var isLocationError = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -199,6 +202,8 @@ class MapFragment : Fragment() {
         mapInfoViewModel.friendList.observe(viewLifecycleOwner){ friendsList->
             if (friendsList != null) {
                 updateFriendsGeo()
+            } else{
+                showError()
             }
         }
     }
@@ -209,16 +214,14 @@ class MapFragment : Fragment() {
         mapLocationViewModel.isSavedUserGeo.observe(viewLifecycleOwner){ result->
             if(result){
                 mapLocationViewModel.currentUserGeo.value?.let { pinsDrawer.userReload(it) }
-            }
-            else{
+            } else{
                 showError()
             }
         }
         mapLocationViewModel.friendsGeoList.observe(viewLifecycleOwner){ result->
             if(result!=null){
                 generateFriendsPins()
-            }
-            else{
+            } else{
                 showError()
             }
         }
@@ -233,7 +236,7 @@ class MapFragment : Fragment() {
             requestLocationPermission()
         }
     }
-    //////////////////// task scheduler ////////////////////////////////////////////////////////////////
+    //////////////////// task scheduler ////////////////////////////////////////////////////////////
     private fun startScheduler() {
         if (scheduler == null || scheduler!!.isShutdown) {
             scheduler = Executors.newScheduledThreadPool(1)
@@ -241,7 +244,7 @@ class MapFragment : Fragment() {
         if (scheduledFuture == null || scheduledFuture!!.isCancelled) {
             scheduledFuture = scheduler.scheduleAtFixedRate({
                 try {
-                    Log.d("Scheduler", "Updating user location and friends' geo")
+                    Log.d("Scheduler", "Updating user and friends' geo")
                     updateLocations()
                 } catch (e: Exception) {
                     Log.e("Scheduler", "Error in scheduled task: ${e.message}", e)
@@ -351,9 +354,13 @@ class MapFragment : Fragment() {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
     private fun showError(){
-        activity?.let {
-            showToast(it.getString(R.string.error_part_1))
-            showToast(it.getString(R.string.error_part_2))
+        if(!isServerError){
+            isServerError = true
+
+            activity?.let {
+                showToast(it.getString(R.string.error_part_1))
+                showToast(it.getString(R.string.error_part_2))
+            }
         }
     }
     private fun showPermissionDeniedMessage() {
@@ -367,8 +374,11 @@ class MapFragment : Fragment() {
         }
     }
     private fun showGetLocationFailedMessage() {
-        activity?.let {
-            showToast(it.getString(R.string.failed_to_get_location))
+        if(!isLocationError){
+            isLocationError = true
+            activity?.let {
+                showToast(it.getString(R.string.failed_to_get_location))
+            }
         }
     }
     private fun showPermissionExplanation() {

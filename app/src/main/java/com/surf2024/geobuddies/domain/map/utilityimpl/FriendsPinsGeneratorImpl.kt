@@ -14,7 +14,7 @@ class FriendsPinsGeneratorImpl(): IFriendsPinsGenerator {
      * @param onSuccess A callback function that will be called with the generated list of FriendPinModel objects
      * after successful completion.
      * @param onDifferentSizesFailure A callback function that will be called if the sizes of friendList and friendsGeoList
-     * do not match, this can happen if someone has accepted your friend request and load new geo
+     * are different, this can happen if someone has accepted your friend request and load new geo
      * or if one friend delete you and new friend accept invite less then geo refresh.
      * @param onFailure A callback function that will be called if an exception occurs during processing.
      */

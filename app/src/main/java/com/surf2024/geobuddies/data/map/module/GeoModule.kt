@@ -3,10 +3,10 @@ package com.surf2024.geobuddies.data.map.module
 import android.content.Context
 import android.util.Log
 import com.surf2024.geobuddies.data.map.repositoryimpl.GetFriendsGeoRepositoryImpl
-import com.surf2024.geobuddies.data.map.repositoryimpl.CurrentCurrentLocationRepositoryImpl
+import com.surf2024.geobuddies.data.map.repositoryimpl.CurrentUserUserLocationRepositoryImpl
 import com.surf2024.geobuddies.data.map.repositoryimpl.SaveUserGeoRepositoryImpl
 import com.surf2024.geobuddies.domain.map.repository.IGetFriendsGeoRepository
-import com.surf2024.geobuddies.domain.map.repository.ICurrentLocationRepository
+import com.surf2024.geobuddies.domain.map.repository.ICurrentUserLocationRepository
 import com.surf2024.geobuddies.domain.map.repository.ISaveUserGeoRepository
 import com.surf2024.geobuddies.domain.map.services.IGetFriendsGeoService
 import com.surf2024.geobuddies.domain.map.services.ISaveUserGeoService
@@ -64,7 +64,7 @@ object GeoModule {
     fun provideLocationRepository(
         @ApplicationContext context: Context,
         locationPermissionChecker: ILocationPermissionChecker
-    ): ICurrentLocationRepository {
-        return CurrentCurrentLocationRepositoryImpl(context, locationPermissionChecker)
+    ): ICurrentUserLocationRepository {
+        return CurrentUserUserLocationRepositoryImpl(context, locationPermissionChecker)
     }
 }
