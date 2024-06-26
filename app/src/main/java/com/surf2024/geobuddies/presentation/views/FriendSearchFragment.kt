@@ -18,7 +18,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.databinding.FragmentFriendSearchBinding
 import com.surf2024.geobuddies.domain.friendsearch.entity.FoundFriendModel
-import com.surf2024.geobuddies.domain.friendsearch.usecases.IOnFriendItemClickListener
+import com.surf2024.geobuddies.domain.friendsearch.usecases.IOnFriendClickListener
 import com.surf2024.geobuddies.domain.main.usecase.FragmentChangeListener
 import com.surf2024.geobuddies.presentation.adapters.FriendSearchRVAdapter
 import com.surf2024.geobuddies.presentation.viewmodels.FriendSearchViewModel
@@ -26,7 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class FriendSearchFragment : Fragment(), IOnFriendItemClickListener {
+class FriendSearchFragment : Fragment(), IOnFriendClickListener {
     private lateinit var friendSearchCloseListener: FragmentChangeListener
     companion object {
         @JvmStatic

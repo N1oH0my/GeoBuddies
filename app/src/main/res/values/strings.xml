@@ -31,6 +31,7 @@
 
     <!--> friends_screen_fragment <-->
     <string name="no_frineds">there are no friends</string>
+    <string name="friend_deleted">friend deleted</string>
 
     <!--> common error <-->
     <string name="error_part_1">smth went wrong...</string>

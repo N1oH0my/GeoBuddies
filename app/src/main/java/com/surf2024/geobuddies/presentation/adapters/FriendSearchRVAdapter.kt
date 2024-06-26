@@ -10,12 +10,12 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.domain.friendsearch.entity.FoundFriendModel
-import com.surf2024.geobuddies.domain.friendsearch.usecases.IOnFriendItemClickListener
+import com.surf2024.geobuddies.domain.friendsearch.usecases.IOnFriendClickListener
 import de.hdodenhof.circleimageview.CircleImageView
 
 class FriendSearchRVAdapter(
     private val context: Context,
-    private val listener: IOnFriendItemClickListener
+    private val listener: IOnFriendClickListener
     ) : ListAdapter<FoundFriendModel, FriendSearchRVAdapter.FriendSearchViewHolder>(SearchDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendSearchViewHolder {

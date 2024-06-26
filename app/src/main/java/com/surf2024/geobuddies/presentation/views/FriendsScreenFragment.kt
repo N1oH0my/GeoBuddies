@@ -15,11 +15,12 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.databinding.FragmentFriendsScreenBinding
+import com.surf2024.geobuddies.domain.friends.usecases.IOnFriendRemoveClickListener
 import com.surf2024.geobuddies.domain.main.usecase.FragmentChangeListener
 import com.surf2024.geobuddies.presentation.adapters.FriendsRVAdapter
 import com.surf2024.geobuddies.presentation.viewmodels.FriendsScreenViewModel
 
-class FriendsScreenFragment: Fragment() {
+class FriendsScreenFragment: Fragment(), IOnFriendRemoveClickListener {
     companion object {
         @JvmStatic
         fun newInstance() =
@@ -35,6 +36,7 @@ class FriendsScreenFragment: Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: FriendsRVAdapter
 
+    private var lastRemovePosition: Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {}
@@ -63,6 +65,11 @@ class FriendsScreenFragment: Fragment() {
         loadFriends()
     }
 
+    override fun onFriendRemoveClick(position: Int) {
+        friendsViewModel.removeFriend(position)
+        lastRemovePosition = position
+    }
+
     private fun overrideOnBackPressed() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -74,7 +81,7 @@ class FriendsScreenFragment: Fragment() {
     private fun initRecyclerView(){
         recyclerView = binding.friendsRecyclerview
         recyclerView.layoutManager = LinearLayoutManager(context)
-        adapter = FriendsRVAdapter( requireContext())
+        adapter = FriendsRVAdapter(requireContext(),this)
         recyclerView.adapter = adapter
     }
     private fun initFriendsViewModel() {
@@ -90,6 +97,15 @@ class FriendsScreenFragment: Fragment() {
                     activity?.let { showToast(it.getString(R.string.no_frineds)) }
                 }
                 adapter.reload(friends)
+            }
+            else{
+                showError()
+            }
+        }
+        friendsViewModel.isFriendRemoved.observe(viewLifecycleOwner){response ->
+            if (response){
+                activity?.let { showToast(it.getString(R.string.invite_denied)) }
+                friendsViewModel.removeFriendOnPosition(lastRemovePosition)
             }
             else{
                 showError()

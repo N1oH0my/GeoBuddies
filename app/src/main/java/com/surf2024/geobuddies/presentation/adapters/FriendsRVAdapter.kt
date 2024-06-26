@@ -4,16 +4,19 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.domain.friends.entity.FriendModel
+import com.surf2024.geobuddies.domain.friends.usecases.IOnFriendRemoveClickListener
 import de.hdodenhof.circleimageview.CircleImageView
 
 class FriendsRVAdapter(
     private val context: Context,
+    private val listener: IOnFriendRemoveClickListener
 ) : ListAdapter<Pair<FriendModel, Boolean>, FriendsRVAdapter.FriendsViewHolder>(FriendsRVAdapter.FriendDiffCallback()) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -36,9 +39,27 @@ class FriendsRVAdapter(
         private val userName: TextView = itemView.findViewById(R.id.friend_user_name)
         private val userEmail: TextView = itemView.findViewById(R.id.friend_user_email)
         private val profileImage: CircleImageView = itemView.findViewById(R.id.friend_profile_image)
+
+        private val crossIcon: ImageView = itemView.findViewById(R.id.friend_cross_icon)
+        init {
+            crossIcon.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    listener.onFriendRemoveClick(position)
+                }
+            }
+        }
         fun bind(data: Pair<FriendModel, Boolean>){
             userName.text = data.first.name
             userEmail.text = data.first.email
+        }
+
+        fun hideCrossIcon() {
+            crossIcon.visibility = View.GONE
+        }
+
+        fun showCrossIcon() {
+            crossIcon.visibility = View.VISIBLE
         }
     }
 
