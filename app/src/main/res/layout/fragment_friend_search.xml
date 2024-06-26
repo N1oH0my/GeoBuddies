@@ -9,22 +9,31 @@
     android:background="@color/fragment_backround_dark_theme"
     tools:context=".presentation.views.FriendSearchFragment">
 
-    <EditText
-        android:id="@+id/editTextSearch"
-        style="@style/SearchFieldDarkMode"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="5dp"
-        android:layout_weight="1"
-        android:background="@drawable/search_background"
-        android:drawableStart="@drawable/ic_search"
-        android:drawablePadding="8dp"
-        android:hint="Поиск..."
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/edit_text_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cursorColor="@color/cursor_color_dark_theme"
+        app:hintEnabled="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            style="@style/SearchFieldDarkMode"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:autofillHints="emailAddress"
+            android:background="@drawable/gray_circle"
+            android:drawableStart="@drawable/ic_search"
+            android:paddingStart="15dp"
+            android:hint="Поиск..."
+            android:drawablePadding="10dp"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingVertical="0dp"
+            android:textColorHint="@color/field_text_color_dark_theme" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/foud_friend_recyclerview"
@@ -34,7 +43,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextSearch"
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_search"
         app:layout_constraintVertical_bias="1.0" />
 
 

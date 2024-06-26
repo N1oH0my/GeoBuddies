@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -47,6 +48,8 @@ class RegistrationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        overrideOnBackPressed()
+
         Log.d("Hilt", "Creating registrationViewModel client instance")
         registrationViewModel = ViewModelProvider(this)[RegistrationViewModel::class.java]
 
@@ -55,9 +58,21 @@ class RegistrationFragment : Fragment() {
 
     }
 
+    private fun overrideOnBackPressed() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                backFromRegistration()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+    }
+
     private fun initListenerSignUpButton(){
         binding.signUpRegistrationButton.setOnClickListener {
             registerUser()
+        }
+        binding.backRegistrationButton.setOnClickListener {
+            backFromRegistration()
         }
     }
 
@@ -103,6 +118,10 @@ class RegistrationFragment : Fragment() {
 
     private fun onRegistrationComplete() {
         registrationCompleteListener.onRegistrationComplete()
+    }
+
+    private fun backFromRegistration() {
+        registrationCompleteListener.onRegistrationBack()
     }
 
     private fun showToast(message: String) {
