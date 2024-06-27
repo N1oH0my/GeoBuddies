@@ -15,48 +15,65 @@ import retrofit2.HttpException
 import javax.inject.Inject
 
 @HiltViewModel
-class MapInfoViewModel@Inject constructor(
+class MapInfoViewModel @Inject constructor(
     private val getFriendRepository: IFriendsRepository,
     private val getUserInfoRepository: IUserInfoRepository,
-): ViewModel(){
+) : ViewModel() {
+
     private val friendsDisposable: CompositeDisposable = CompositeDisposable()
 
-    private val _friendList = MutableLiveData <List<FriendModel>?>()
-    val friendList: LiveData<List<FriendModel>?>
+    private val _friendList = MutableLiveData<List<FriendModel>>()
+    val friendList: LiveData<List<FriendModel>>
         get() = _friendList
-    private fun setFriendList(data: List<FriendModel>?){
-        _friendList.value = data
-    }
 
-    private val _user = MutableLiveData <UserInfoModel?>()
-    val user: LiveData<UserInfoModel?>
+    private val _user = MutableLiveData<UserInfoModel>()
+    val user: LiveData<UserInfoModel>
         get() = _user
-    private fun setUserInfo(data: UserInfoModel?){
-        _user.value = data
-    }
 
-    fun getFriends(){
+    private val _serverError = MutableLiveData<Boolean>()
+    val serverError: LiveData<Boolean>
+        get() = _serverError
+
+    fun getFriends() {
         friendsDisposable.clear()
-        val disposable = getFriendRepository.getAllFriends()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ result ->
-                Log.d("GeoProccess", "Get friends successful $result")
-                setFriendList(result)
-            },{ error ->
-                Log.d("GeoProccess", "Get failed $error")
-                if(error is HttpException){
-                    Log.d("GeoProccess", "Get failed ${error.code()}")
-                }else{
-                    Log.d("GeoProccess", "Get failed ${error.message}")
-                }
-                setFriendList(null)
-            })
+        val disposable =
+            getFriendRepository.getAllFriends().observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ result ->
+                    Log.d("GeoProccess", "Get friends successful $result")
+                    setFriendList(result)
+                }, { error ->
+                    Log.d("GeoProccess", "Get failed $error")
+                    if (error is HttpException) {
+                        Log.d("GeoProccess", "Get failed ${error.code()}")
+                    } else {
+                        Log.d("GeoProccess", "Get failed ${error.message}")
+                    }
+                    setServerError()
+                })
         friendsDisposable.add(disposable)
     }
 
-    fun getUserInfo(){
+    fun getUserInfo() {
         val user = getUserInfoRepository.getUserInfo()
-        setUserInfo(user)
+        if(user != null) {
+            setUserInfo(user)
+        } else {
+            setServerError()
+        }
+    }
+
+    private fun setFriendList(data: List<FriendModel>) {
+        _friendList.value = data
+    }
+
+    private fun setUserInfo(data: UserInfoModel) {
+        _user.value = data
+    }
+
+    private fun setServerError(){
+        if (_serverError.value != true){
+            _serverError.value = true
+        }
     }
 
 }

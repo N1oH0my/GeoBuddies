@@ -7,8 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.surf2024.geobuddies.domain.map.entity.FriendGeoModel
 import com.surf2024.geobuddies.domain.map.entity.UserGeoModel
-import com.surf2024.geobuddies.domain.map.repository.IGetFriendsGeoRepository
 import com.surf2024.geobuddies.domain.map.repository.ICurrentUserLocationRepository
+import com.surf2024.geobuddies.domain.map.repository.IGetFriendsGeoRepository
 import com.surf2024.geobuddies.domain.map.repository.ISaveUserGeoRepository
 import com.surf2024.geobuddies.domain.map.utility.ILocationPermissionChecker
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,75 +18,56 @@ import retrofit2.HttpException
 import javax.inject.Inject
 
 @HiltViewModel
-class MapLocationViewModel@Inject constructor(
+class MapLocationViewModel @Inject constructor(
     private val locationPermissionChecker: ILocationPermissionChecker,
     private val currentLocationRepository: ICurrentUserLocationRepository,
-
     private val saveUserGeoRepository: ISaveUserGeoRepository,
     private val getFriendsGeoRepository: IGetFriendsGeoRepository,
-): ViewModel() {
+) : ViewModel() {
+
     private val userGeoDisposable: CompositeDisposable = CompositeDisposable()
     private val friendsGeoDisposable: CompositeDisposable = CompositeDisposable()
 
     private val _currentUserGeo = MutableLiveData<UserGeoModel>()
     val currentUserGeo: LiveData<UserGeoModel>
         get() = _currentUserGeo
-    private fun setCurrentUserGeo(latitude: Double, longitude: Double){
-        _currentUserGeo.value = UserGeoModel(latitude = latitude, longitude = longitude)
-    }
 
-    private val _savedUserGeo = MutableLiveData <Boolean>()
-    val isSavedUserGeo: LiveData<Boolean>
-        get() = _savedUserGeo
-    private fun setIsSavedUserGeo(data: Boolean){
-        _savedUserGeo.value = data
-    }
+    private val _userGeoSaved = MutableLiveData<Boolean>()
+    val userGeoSaved: LiveData<Boolean>
+        get() = _userGeoSaved
 
-    private val _friendsGeoList = MutableLiveData <List<FriendGeoModel>?>()
-    val friendsGeoList: LiveData<List<FriendGeoModel>?>
+    private val _friendsGeoList = MutableLiveData<List<FriendGeoModel>>()
+    val friendsGeoList: LiveData<List<FriendGeoModel>>
         get() = _friendsGeoList
-    private fun setFriendsGeo(data: List<FriendGeoModel>?){
-        _friendsGeoList.value = data
-    }
-
-    private val _getUserGeoFailure = MutableLiveData<Boolean>()
-    val getUserGeoFailure: LiveData<Boolean>
-        get() = _getUserGeoFailure
-    private fun notifyGetUserGeoFailure(){
-        _getUserGeoFailure.postValue(false)
-    }
-
-    private val _permissionsFailure = MutableLiveData<Boolean>()
-    val permissionsFailure: LiveData<Boolean>
-        get() = _permissionsFailure
-    private fun notifyPermissionsFailure(){
-        _permissionsFailure.postValue(false)
-    }
 
     private val _alertDialogForLocationPermissionsNeeded = MutableLiveData<Boolean>()
     val alertDialogForLocationPermissionsNeeded: LiveData<Boolean>
         get() = _alertDialogForLocationPermissionsNeeded
-    private fun notifyAlertDialogForLocationPermissionsNeeded(){
-        _alertDialogForLocationPermissionsNeeded.value = true
-    }
 
     private val _requestLocationPermissionsNeeded = MutableLiveData<Boolean>()
     val requestLocationPermissionsNeeded: LiveData<Boolean>
         get() = _requestLocationPermissionsNeeded
-    private fun notifyRequestLocationPermissionsNeeded(){
-        _requestLocationPermissionsNeeded.value = true
-    }
+
+    private val _serverError = MutableLiveData<Boolean>()
+    val serverError: LiveData<Boolean>
+        get() = _serverError
+
+    private val _getUserGeoFailure = MutableLiveData<Boolean>()
+    val getUserGeoFailure: LiveData<Boolean>
+        get() = _getUserGeoFailure
+
+    private val _permissionsFailure = MutableLiveData<Boolean>()
+    val permissionsFailure: LiveData<Boolean>
+        get() = _permissionsFailure
 
     fun getCurrentUserLocation() {
-        currentLocationRepository.requestLocation(
-            { location ->
-                setCurrentUserGeo(longitude = location.longitude, latitude = location.latitude)
-            }, {
-                notifyPermissionsFailure()
-            }, {
-                notifyGetUserGeoFailure()
-            }
-        )
+        currentLocationRepository.requestLocation({ location ->
+            setCurrentUserGeo(longitude = location.longitude, latitude = location.latitude)
+        }, {
+            notifyPermissionsFailure()
+        }, {
+            notifyGetUserGeoFailure()
+        })
     }
 
     fun checkLocationPermission(fragment: Fragment) {
@@ -99,41 +80,79 @@ class MapLocationViewModel@Inject constructor(
         }
     }
 
-    fun saveUserGeo(latitude: Double, longitude: Double){
+    fun saveUserGeo(latitude: Double, longitude: Double) {
         userGeoDisposable.clear()
         val disposable = saveUserGeoRepository.saveGeo(latitude = latitude, longitude = longitude)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
+            .observeOn(AndroidSchedulers.mainThread()).subscribe({
                 Log.d("GeoProccess", "Save successful")
-                setIsSavedUserGeo(true)
-            },{ error ->
+                setUserGeoSaved()
+            }, { error ->
                 Log.d("GeoProccess", "Get failed $error")
-                if(error is HttpException){
+                if (error is HttpException) {
                     Log.d("GeoProccess", "Get failed ${error.code()}")
-                }else{
+                } else {
                     Log.d("GeoProccess", "Get failed ${error.message}")
                 }
-                setIsSavedUserGeo(false)
+                setServerError()
             })
         userGeoDisposable.add(disposable)
     }
 
-    fun getFriendsGeo(){
+    fun getFriendsGeo() {
         friendsGeoDisposable.clear()
-        val disposable = getFriendsGeoRepository.getFriendsGeo()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ result ->
-                Log.d("GeoProccess", "Get friends geo successful $result")
-                setFriendsGeo(result)
-            },{ error ->
-                Log.d("GeoProccess", "Get failed $error")
-                if(error is HttpException){
-                    Log.d("GeoProccess", "Get failed ${error.code()}")
-                }else{
-                    Log.d("GeoProccess", "Get failed ${error.message}")
-                }
-                setFriendsGeo(null)
-            })
+        val disposable =
+            getFriendsGeoRepository.getFriendsGeo().observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ result ->
+                    Log.d("GeoProccess", "Get friends geo successful $result")
+                    setFriendsGeo(result)
+                }, { error ->
+                    Log.d("GeoProccess", "Get failed $error")
+                    if (error is HttpException) {
+                        Log.d("GeoProccess", "Get failed ${error.code()}")
+                    } else {
+                        Log.d("GeoProccess", "Get failed ${error.message}")
+                    }
+                    setServerError()
+                })
         friendsGeoDisposable.add(disposable)
     }
+
+    private fun setCurrentUserGeo(latitude: Double, longitude: Double) {
+        _currentUserGeo.value = UserGeoModel(latitude = latitude, longitude = longitude)
+    }
+
+    private fun setUserGeoSaved() {
+        _userGeoSaved.value = true
+    }
+
+    private fun setFriendsGeo(data: List<FriendGeoModel>) {
+        _friendsGeoList.value = data
+    }
+
+    private fun notifyGetUserGeoFailure() {
+        if(_getUserGeoFailure.value != true){
+            _getUserGeoFailure.postValue(true)
+        }
+    }
+
+    private fun notifyPermissionsFailure() {
+        if(_permissionsFailure.value != true){
+            _permissionsFailure.postValue(true)
+        }
+    }
+
+    private fun notifyAlertDialogForLocationPermissionsNeeded() {
+        _alertDialogForLocationPermissionsNeeded.value = true
+    }
+
+    private fun notifyRequestLocationPermissionsNeeded() {
+        _requestLocationPermissionsNeeded.value = true
+    }
+
+    private fun setServerError(){
+        if (_serverError.value != true){
+            _serverError.value = true
+        }
+    }
+
 }

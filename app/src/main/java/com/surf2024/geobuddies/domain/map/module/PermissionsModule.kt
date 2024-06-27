@@ -16,4 +16,5 @@ object PermissionsModule {
     fun provideLocationPermissionChecker(@ApplicationContext context: Context): ILocationPermissionChecker {
         return LocationPermissionCheckerImpl(context)
     }
+
 }

@@ -8,4 +8,5 @@ interface ISaveUserGeoRepository {
         longitude: Double,
         latitude: Double,
     ): Completable
+
 }

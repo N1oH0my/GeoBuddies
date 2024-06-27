@@ -7,4 +7,5 @@ interface IMapPinsDrawer {
     fun friendsReload(data: List<FriendPinModel>)
     fun userReload(data: UserGeoModel)
     fun moveCameraToUser()
+
 }

@@ -10,11 +10,10 @@ import com.bumptech.glide.Glide
 import com.surf2024.geobuddies.R
 import de.hdodenhof.circleimageview.CircleImageView
 
-class CustomMapPinView@JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : ConstraintLayout(context, attrs, defStyleAttr)  {
+class CustomMapPinView @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : ConstraintLayout(context, attrs, defStyleAttr) {
+
     private var _mapPinImageView: ImageView
     val mapPinImageView: ImageView
         get() = _mapPinImageView
@@ -22,6 +21,7 @@ class CustomMapPinView@JvmOverloads constructor(
     private var _mapPinProfileImage: CircleImageView
     val mapPinProfileImage: CircleImageView
         get() = _mapPinProfileImage
+
     init {
         LayoutInflater.from(context).inflate(R.layout.custom_map_pin, this, true)
         _mapPinImageView = findViewById(R.id.custom_map_pin_imageview)
@@ -31,7 +31,9 @@ class CustomMapPinView@JvmOverloads constructor(
     fun setProfileImageDrawable(drawable: Drawable?) {
         mapPinProfileImage.setImageDrawable(drawable)
     }
+
     fun setProfileImageFromUrl(url: String) {
         Glide.with(context).load(url).into(mapPinProfileImage)
     }
+
 }

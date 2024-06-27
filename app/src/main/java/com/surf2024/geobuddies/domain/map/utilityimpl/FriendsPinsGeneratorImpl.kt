@@ -5,7 +5,8 @@ import com.surf2024.geobuddies.domain.map.entity.FriendGeoModel
 import com.surf2024.geobuddies.domain.map.entity.FriendPinModel
 import com.surf2024.geobuddies.domain.map.utility.IFriendsPinsGenerator
 
-class FriendsPinsGeneratorImpl(): IFriendsPinsGenerator {
+class FriendsPinsGeneratorImpl() : IFriendsPinsGenerator {
+
     /**
      * Generates a list of FriendPinModel objects based on provided friends and their geolocation.
      *
@@ -18,6 +19,7 @@ class FriendsPinsGeneratorImpl(): IFriendsPinsGenerator {
      * or if one friend delete you and new friend accept invite less then geo refresh.
      * @param onFailure A callback function that will be called if an exception occurs during processing.
      */
+
     override fun generateFriendsPins(
         friendList: List<FriendModel>,
         friendsGeoList: List<FriendGeoModel>,
@@ -25,7 +27,7 @@ class FriendsPinsGeneratorImpl(): IFriendsPinsGenerator {
         onSuccess: (List<FriendPinModel>) -> Unit,
         onDifferentSizesFailure: () -> Unit,
         onFailure: () -> Unit
-    ){
+    ) {
         try {
             val friendPinsList = mutableListOf<FriendPinModel>()
 
@@ -34,7 +36,6 @@ class FriendsPinsGeneratorImpl(): IFriendsPinsGenerator {
                 val friendMap = friendList.associateBy { it.id }
 
                 friendsGeoList.forEach { friendGeoModel ->
-
                     val foundFriendModel = friendMap[friendGeoModel.userId]
 
                     if (foundFriendModel != null) {
@@ -47,11 +48,11 @@ class FriendsPinsGeneratorImpl(): IFriendsPinsGenerator {
                             latitude = friendGeoModel.latitude,
                         )
                         friendPinsList.add(friendPinModel)
-                    } else{
+                    } else {
                         onDifferentSizesFailure()
                     }
                 }
-            } else{
+            } else {
                 onDifferentSizesFailure()
             }
 
@@ -62,4 +63,5 @@ class FriendsPinsGeneratorImpl(): IFriendsPinsGenerator {
             onFailure()
         }
     }
+
 }

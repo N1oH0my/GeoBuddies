@@ -9,19 +9,14 @@ import com.surf2024.geobuddies.domain.map.utility.ILocationPermissionChecker
 
 class LocationPermissionCheckerImpl(
     private val context: Context
-): ILocationPermissionChecker {
+) : ILocationPermissionChecker {
 
     override fun isLocationPermissionGranted(): Boolean {
-        return (
-                ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        )
+        return (ActivityCompat.checkSelfPermission(
+            context, Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+            context, Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED)
     }
 
     override fun shouldShowLocationPermissionRationale(fragment: Fragment): Boolean {

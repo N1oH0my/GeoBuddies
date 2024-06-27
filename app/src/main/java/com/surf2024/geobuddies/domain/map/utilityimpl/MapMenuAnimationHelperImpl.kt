@@ -14,7 +14,8 @@ import com.surf2024.geobuddies.domain.map.utility.IMapMenuAnimationHelper
 class MapMenuAnimationHelperImpl(
     private val context: Context,
     private val binding: FragmentMapBinding,
-): IMapMenuAnimationHelper {
+) : IMapMenuAnimationHelper {
+
     private lateinit var mapShadowAnimation: ValueAnimator
     private lateinit var slideInAnimator: ValueAnimator
     private lateinit var slideOutAnimator: ValueAnimator
@@ -42,7 +43,8 @@ class MapMenuAnimationHelperImpl(
         }
         isMenuOpen = !isMenuOpen
     }
-    private fun initAnimation(){
+
+    private fun initAnimation() {
         val initialColor = 0x00000000
         val finalColor = ContextCompat.getColor(context, R.color.menu_map_shadow)
 
@@ -97,31 +99,36 @@ class MapMenuAnimationHelperImpl(
             override fun onAnimationEnd(animation: Animator) {
                 binding.sideMenu.visibility = View.GONE
             }
+
             override fun onAnimationCancel(animation: Animator) {}
             override fun onAnimationRepeat(animation: Animator) {}
 
         })
 
     }
-    private fun menuGone(){
+
+    private fun menuGone() {
         binding.idMenuPart1.visibility = View.GONE
         binding.idMenuPart2.visibility = View.GONE
         binding.sideMenu.visibility = View.GONE
         binding.btnToggleMenu.visibility = View.VISIBLE
     }
-    private fun menuVisible(){
+
+    private fun menuVisible() {
         binding.idMenuPart1.visibility = View.VISIBLE
         binding.idMenuPart2.visibility = View.VISIBLE
         binding.sideMenu.visibility = View.VISIBLE
         binding.btnToggleMenu.visibility = View.GONE
     }
+
     private fun startMapShadowAnimation() {
         if (::mapShadowAnimation.isInitialized) {
-            if (!isMenuOpen){
+            if (!isMenuOpen) {
                 mapShadowAnimation.start()
-            } else{
+            } else {
                 mapShadowAnimation.reverse()
             }
         }
     }
+
 }

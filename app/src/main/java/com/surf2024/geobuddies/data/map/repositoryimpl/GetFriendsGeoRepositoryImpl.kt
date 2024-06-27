@@ -9,15 +9,14 @@ import javax.inject.Inject
 
 class GetFriendsGeoRepositoryImpl @Inject constructor(
     private val getFriendsGeoService: IGetFriendsGeoService
-): IGetFriendsGeoRepository {
+) : IGetFriendsGeoRepository {
+
     override fun getFriendsGeo(): Single<List<FriendGeoModel>> {
-        return getFriendsGeoService.getFriendsGeo()
-            .subscribeOn(Schedulers.io())
-            .map { response ->
+        return getFriendsGeoService.getFriendsGeo().subscribeOn(Schedulers.io()).map { response ->
                 response ?: emptyList()
-            }
-            .onErrorResumeNext { throwable: Throwable ->
+            }.onErrorResumeNext { throwable: Throwable ->
                 Single.error(Throwable("Failed to get friends geo", throwable))
             }
     }
+
 }

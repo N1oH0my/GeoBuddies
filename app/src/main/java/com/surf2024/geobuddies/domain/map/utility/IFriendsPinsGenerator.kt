@@ -5,6 +5,7 @@ import com.surf2024.geobuddies.domain.map.entity.FriendGeoModel
 import com.surf2024.geobuddies.domain.map.entity.FriendPinModel
 
 interface IFriendsPinsGenerator {
+
     fun generateFriendsPins(
         friendList: List<FriendModel>,
         friendsGeoList: List<FriendGeoModel>,
@@ -13,4 +14,5 @@ interface IFriendsPinsGenerator {
         onDifferentSizesFailure: () -> Unit,
         onFailure: () -> Unit
     )
+
 }

@@ -9,15 +9,16 @@ import javax.inject.Inject
 
 
 class SaveUserGeoRepositoryImpl @Inject constructor(
-    private val saveUserGeoService : ISaveUserGeoService
-): ISaveUserGeoRepository {
+    private val saveUserGeoService: ISaveUserGeoService
+) : ISaveUserGeoRepository {
+
     override fun saveGeo(
         longitude: Double,
         latitude: Double,
     ): Completable {
         return saveUserGeoService.saveGeo(
             UserGeoModel(longitude = longitude, latitude = latitude)
-        )
-            .subscribeOn(Schedulers.io())
+        ).subscribeOn(Schedulers.io())
     }
+
 }

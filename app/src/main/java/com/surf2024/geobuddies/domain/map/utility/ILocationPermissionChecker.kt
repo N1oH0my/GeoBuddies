@@ -5,4 +5,5 @@ import androidx.fragment.app.Fragment
 interface ILocationPermissionChecker {
     fun isLocationPermissionGranted(): Boolean
     fun shouldShowLocationPermissionRationale(fragment: Fragment): Boolean
+
 }

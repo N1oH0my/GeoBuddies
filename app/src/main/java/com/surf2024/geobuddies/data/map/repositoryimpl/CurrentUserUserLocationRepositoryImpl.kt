@@ -1,4 +1,5 @@
 package com.surf2024.geobuddies.data.map.repositoryimpl
+
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
@@ -13,28 +14,29 @@ import com.surf2024.geobuddies.domain.map.utility.ILocationPermissionChecker
 class CurrentUserUserLocationRepositoryImpl(
     private val context: Context,
     private val locationPermissionChecker: ILocationPermissionChecker
-): ICurrentUserLocationRepository {
+) : ICurrentUserLocationRepository {
 
     private val fusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)
 
     @SuppressLint("MissingPermission")
-    override fun requestLocation(onSuccess: (Location) -> Unit, onPermissionsFailure: () -> Unit, onFailure: () -> Unit) {
+    override fun requestLocation(
+        onSuccess: (Location) -> Unit,
+        onPermissionsFailure: () -> Unit,
+        onFailure: () -> Unit
+    ) {
         if (locationPermissionChecker.isLocationPermissionGranted()) {
             try {
                 fusedLocationClient.getCurrentLocation(
-                    Priority.PRIORITY_BALANCED_POWER_ACCURACY,
-                    CancellationTokenSource().token
-                )
-                    .addOnSuccessListener { location: Location? ->
+                    Priority.PRIORITY_BALANCED_POWER_ACCURACY, CancellationTokenSource().token
+                ).addOnSuccessListener { location: Location? ->
                         if (location != null) {
                             Log.d("UserLocation", "${location.latitude}, ${location.longitude}")
                             onSuccess(location)
                         } else {
                             onFailure()
                         }
-                    }
-                    .addOnFailureListener {
+                    }.addOnFailureListener {
                         onFailure()
                     }
             } catch (e: SecurityException) {
@@ -45,4 +47,5 @@ class CurrentUserUserLocationRepositoryImpl(
             onPermissionsFailure()
         }
     }
+
 }
