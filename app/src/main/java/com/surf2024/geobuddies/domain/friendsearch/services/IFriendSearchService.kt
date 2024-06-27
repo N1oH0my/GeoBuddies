@@ -11,4 +11,5 @@ interface IFriendSearchService {
     fun findFriend(
         @Path("userNameOrEmail") userNameOrEmail: String
     ): Single<Response<List<FoundFriendModel>>>
+
 }

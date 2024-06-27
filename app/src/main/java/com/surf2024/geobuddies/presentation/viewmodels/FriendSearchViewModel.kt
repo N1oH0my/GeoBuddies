@@ -18,70 +18,72 @@ import javax.inject.Inject
 class FriendSearchViewModel @Inject constructor(
     private val friendSearchRepository: IFriendSearchRepository,
     private val inviteSendRepository: IInviteSendRepository,
-): ViewModel() {
-    private val disposables = CompositeDisposable()
-    private val _isFriendSearchSuccess = MutableLiveData <List<FoundFriendModel>>()
+) : ViewModel() {
+
+    private val friendSearchDisposable = CompositeDisposable()
+    private val inviteSendDisposable = CompositeDisposable()
+
+    private val _isFriendSearchSuccess = MutableLiveData<List<FoundFriendModel>>()
     val foundFriendList: LiveData<List<FoundFriendModel>>
         get() = _isFriendSearchSuccess
-    private fun setFriendSearchSuccess(result: List<FoundFriendModel>) {
-        _isFriendSearchSuccess.value = result
-    }
 
-    private val _isInviteSendSuccess = MutableLiveData <Boolean>()
+    private val _isInviteSendSuccess = MutableLiveData<Boolean>()
     val isInviteSendSuccess: LiveData<Boolean>
         get() = _isInviteSendSuccess
-    private fun setInviteSendSuccess(result: Boolean) {
-        _isInviteSendSuccess.value = result
-    }
 
-    fun findFriend(
-        userNameOrEmail: String
-    ){
-        disposables.clear()
-        val disposable = friendSearchRepository.findFriend(
-            userNameOrEmail
-        )
+    private val _serverError = MutableLiveData<Boolean>()
+    val serverError: LiveData<Boolean>
+        get() = _serverError
+
+    fun findFriend(userNameOrEmail: String) {
+        friendSearchDisposable.clear()
+        val disposable = friendSearchRepository.findFriend(userNameOrEmail)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ foundFriends  ->
+            .subscribe({ foundFriends ->
                 Log.d("FriendSearchProcess", "Search successful: $foundFriends")
                 setFriendSearchSuccess(foundFriends)
             }, { error ->
                 Log.e("FriendSearchProcess", "Search failed", error)
-
                 if (error is HttpException) {
                     Log.d("FriendSearchProcess", "HTTP Error: ${error.code()}")
-                }
-                else {
+                } else {
                     Log.d("FriendSearchProcess", "Error: ${error.message}")
                 }
-                setFriendSearchSuccess(emptyList())
+                setServerError()
             })
-        disposables.add(disposable)
+        friendSearchDisposable.add(disposable)
     }
 
-    fun inviteFriend(
-        userId: Int
-    ){
-        disposables.clear()
-        val disposable = inviteSendRepository.inviteFriend(
-            userId
-        )
+    fun inviteFriend(userId: Int) {
+        inviteSendDisposable.clear()
+        val disposable = inviteSendRepository.inviteFriend(userId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ isSuccess ->
-                Log.d("InviteSendProcess", "Invite successful: $isSuccess")
-                setInviteSendSuccess(true)
+            .subscribe({
+                Log.d("InviteSendProcess", "Invite successful")
+                setInviteSendSuccess()
             }, { error ->
                 Log.e("InviteSendProcess", "Search failed", error)
-
                 if (error is HttpException) {
                     Log.d("InviteSendProcess", "HTTP Error: ${error.code()}")
-                }
-                else {
+                } else {
                     Log.d("InviteSendProcess", "Error: ${error.message}")
                 }
-                setInviteSendSuccess(false)
+                setServerError()
             })
-        disposables.add(disposable)
+        inviteSendDisposable.add(disposable)
     }
+
+    private fun setFriendSearchSuccess(result: List<FoundFriendModel>) {
+        _isFriendSearchSuccess.value = result
+    }
+
+    private fun setInviteSendSuccess() {
+        _isInviteSendSuccess.value = true
+    }
+
+    private fun setServerError() {
+        _serverError.value = true
+    }
+
 }
