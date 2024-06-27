@@ -14,10 +14,10 @@ import com.surf2024.geobuddies.domain.friends.entity.FriendModel
 import com.surf2024.geobuddies.domain.friends.usecases.IOnFriendRemoveClickListener
 import de.hdodenhof.circleimageview.CircleImageView
 
-class FriendsRVAdapter(
+class FriendsAdapter(
     private val context: Context,
     private val listener: IOnFriendRemoveClickListener
-) : ListAdapter<FriendModel, FriendsRVAdapter.FriendsViewHolder>(FriendsRVAdapter.FriendDiffCallback()) {
+) : ListAdapter<FriendModel, FriendsAdapter.FriendsViewHolder>(FriendsAdapter.FriendDiffCallback()) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -26,7 +26,7 @@ class FriendsRVAdapter(
         return FriendsViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: FriendsRVAdapter.FriendsViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: FriendsAdapter.FriendsViewHolder, position: Int) {
         val data = getItem(position)
         holder.bind(data)
     }
@@ -41,6 +41,7 @@ class FriendsRVAdapter(
         private val profileImage: CircleImageView = itemView.findViewById(R.id.friend_profile_image)
 
         private val crossIcon: ImageView = itemView.findViewById(R.id.friend_cross_icon)
+
         init {
             crossIcon.setOnClickListener {
                 val position = adapterPosition
@@ -49,7 +50,8 @@ class FriendsRVAdapter(
                 }
             }
         }
-        fun bind(data: FriendModel){
+
+        fun bind(data: FriendModel) {
             userName.text = data.name
             userEmail.text = data.email
         }
@@ -73,7 +75,7 @@ class FriendsRVAdapter(
         }
     }
 
-    fun reload(data: List<FriendModel>){
+    fun reload(data: List<FriendModel>) {
         submitList(data)
     }
 }

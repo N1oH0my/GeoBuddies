@@ -17,7 +17,7 @@ import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.databinding.FragmentFriendsScreenBinding
 import com.surf2024.geobuddies.domain.friends.usecases.IOnFriendRemoveClickListener
 import com.surf2024.geobuddies.domain.main.usecase.FragmentChangeListener
-import com.surf2024.geobuddies.presentation.adapters.FriendsRVAdapter
+import com.surf2024.geobuddies.presentation.adapters.FriendsAdapter
 import com.surf2024.geobuddies.presentation.viewmodels.FriendsScreenViewModel
 
 class FriendsScreenFragment: Fragment(), IOnFriendRemoveClickListener {
@@ -34,13 +34,9 @@ class FriendsScreenFragment: Fragment(), IOnFriendRemoveClickListener {
     private val binding by viewBinding(FragmentFriendsScreenBinding::bind)
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: FriendsRVAdapter
+    private lateinit var adapter: FriendsAdapter
 
     private var lastRemovePosition: Int = 0
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {}
-    }
     override fun onAttach(context: Context) {
         super.onAttach(context)
         friendsCloseListener = context as FragmentChangeListener
@@ -81,7 +77,7 @@ class FriendsScreenFragment: Fragment(), IOnFriendRemoveClickListener {
     private fun initRecyclerView(){
         recyclerView = binding.friendsRecyclerview
         recyclerView.layoutManager = LinearLayoutManager(context)
-        adapter = FriendsRVAdapter(requireContext(),this)
+        adapter = FriendsAdapter(requireContext(),this)
         recyclerView.adapter = adapter
     }
     private fun initFriendsViewModel() {

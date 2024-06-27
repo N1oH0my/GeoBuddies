@@ -12,12 +12,12 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import retrofit2.HttpException
 import javax.inject.Inject
 
-class FriendsScreenViewModel@Inject constructor(
+class FriendsScreenViewModel @Inject constructor(
     private val friendsRepository: IFriendsRepository,
     private val friendsDeleteRepository: IFriendDeleteRepository
-):ViewModel() {
+) : ViewModel() {
     private val disposables = CompositeDisposable()
-    private val _friendsList = MutableLiveData <List<FriendModel>?>()
+    private val _friendsList = MutableLiveData<List<FriendModel>?>()
     val friendsList: LiveData<List<FriendModel>?>
         get() = _friendsList
     private val _isFriendRemoved = MutableLiveData<Boolean>()
@@ -27,11 +27,12 @@ class FriendsScreenViewModel@Inject constructor(
     private fun setFriends(result: List<FriendModel>?) {
         _friendsList.value = result
     }
-    private fun setRemoveFriendResponse(response: Boolean){
+
+    private fun setRemoveFriendResponse(response: Boolean) {
         _isFriendRemoved.value = response
     }
 
-    fun getAllFriends(){
+    fun getAllFriends() {
         disposables.clear()
         val disposable = friendsRepository.getAllFriends()
             .observeOn(AndroidSchedulers.mainThread())
@@ -43,8 +44,7 @@ class FriendsScreenViewModel@Inject constructor(
 
                 if (error is HttpException) {
                     Log.d("FriendsProcess", "HTTP Error: ${error.code()}")
-                }
-                else {
+                } else {
                     Log.d("FriendsProcess", "Error: ${error.message}")
                 }
                 setFriends(null)
@@ -75,7 +75,7 @@ class FriendsScreenViewModel@Inject constructor(
 
     fun removeFriendOnPosition(position: Int) {
         val currentList = _friendsList.value?.toMutableList()
-        if(currentList != null) {
+        if (currentList != null) {
             if (position >= 0 && position < currentList.size) {
                 currentList.removeAt(position)
 
