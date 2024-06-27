@@ -1,6 +1,6 @@
 package com.surf2024.geobuddies.data.friends.repositoryimpl
 
-import com.surf2024.geobuddies.domain.friends.entitity.FriendModel
+import com.surf2024.geobuddies.domain.friends.entity.FriendModel
 import com.surf2024.geobuddies.domain.friends.repository.IFriendsRepository
 import com.surf2024.geobuddies.domain.friends.services.IFriendsService
 import io.reactivex.rxjava3.core.Single
