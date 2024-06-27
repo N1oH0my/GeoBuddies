@@ -1,4 +1,4 @@
-package com.surf2024.geobuddies.domain.friends.entitity
+package com.surf2024.geobuddies.domain.friends.entity
 
 data class FriendModel(
     val id: Int,
