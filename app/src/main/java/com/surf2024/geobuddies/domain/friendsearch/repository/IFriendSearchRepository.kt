@@ -5,4 +5,5 @@ import io.reactivex.rxjava3.core.Single
 
 interface IFriendSearchRepository {
     fun findFriend(userNameOrEmail: String): Single<List<FoundFriendModel>>
+
 }

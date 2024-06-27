@@ -24,6 +24,10 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="the_field_must_not_be_empty">The field must not be empty</string>
 
+    <!--> friend_search_fragment <-->
+    <string name="no_users_found">no users found</string>
+    <string name="invite_sent">invite sent</string>
+
     <!--> accept_deny_invites_fragment <-->
     <string name="no_invites">there are no invites</string>
     <string name="invite_accepted">invite accepted</string>

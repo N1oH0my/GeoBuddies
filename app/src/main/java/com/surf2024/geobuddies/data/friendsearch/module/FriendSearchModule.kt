@@ -36,6 +36,7 @@ object FriendSearchModule {
         Log.d("Hilt", "Creating IInviteSendService Retrofit client instance")
         return retrofit.create(IInviteSendService::class.java)
     }
+
     @Provides
     @Singleton
     fun provideFriendSearchRepositoryImpl(

@@ -33,7 +33,7 @@
             android:maxLines="1"
             android:paddingVertical="0dp"
             android:textColorHint="@color/field_text_color_dark_theme" />
-    </com.google.android.material.textfield.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/foud_friend_recyclerview"
@@ -41,10 +41,8 @@
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/edit_text_search"
+        app:layout_constraintStart_toStartOf="@+id/edit_text_search"
         app:layout_constraintTop_toBottomOf="@+id/edit_text_search"
-        app:layout_constraintVertical_bias="1.0" />
-
-
+        app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>
