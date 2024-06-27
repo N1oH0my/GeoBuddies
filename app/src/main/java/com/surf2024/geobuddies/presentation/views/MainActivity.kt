@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener {
 
     override fun openFriends() {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentHolderId, MapFragment())
+            .replace(R.id.fragmentHolderId, FriendsScreenFragment())
             .commit()
     }
     override fun onFriendsClose() {

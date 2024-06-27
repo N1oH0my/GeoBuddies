@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.surf2024.geobuddies.domain.common.repository.IUserInfoRepository
-import com.surf2024.geobuddies.domain.friends.entitity.FriendModel
+import com.surf2024.geobuddies.domain.friends.entity.FriendModel
 import com.surf2024.geobuddies.domain.friends.repository.IFriendsRepository
 import com.surf2024.geobuddies.domain.login.entity.UserInfoModel
 import dagger.hilt.android.lifecycle.HiltViewModel

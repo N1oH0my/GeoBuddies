@@ -19,7 +19,9 @@ import com.surf2024.geobuddies.domain.friends.usecases.IOnFriendRemoveClickListe
 import com.surf2024.geobuddies.domain.main.usecase.FragmentChangeListener
 import com.surf2024.geobuddies.presentation.adapters.FriendsAdapter
 import com.surf2024.geobuddies.presentation.viewmodels.FriendsScreenViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class FriendsScreenFragment: Fragment(), IOnFriendRemoveClickListener {
     companion object {
         @JvmStatic

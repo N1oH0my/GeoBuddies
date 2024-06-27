@@ -7,11 +7,12 @@ import androidx.lifecycle.ViewModel
 import com.surf2024.geobuddies.domain.friends.entity.FriendModel
 import com.surf2024.geobuddies.domain.friends.repository.IFriendDeleteRepository
 import com.surf2024.geobuddies.domain.friends.repository.IFriendsRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import retrofit2.HttpException
 import javax.inject.Inject
-
+@HiltViewModel
 class FriendsScreenViewModel @Inject constructor(
     private val friendsRepository: IFriendsRepository,
     private val friendsDeleteRepository: IFriendDeleteRepository

@@ -1,6 +1,6 @@
 package com.surf2024.geobuddies.domain.map.utilityimpl
 
-import com.surf2024.geobuddies.domain.friends.entitity.FriendModel
+import com.surf2024.geobuddies.domain.friends.entity.FriendModel
 import com.surf2024.geobuddies.domain.map.entity.FriendGeoModel
 import com.surf2024.geobuddies.domain.map.entity.FriendPinModel
 import com.surf2024.geobuddies.domain.map.utility.IFriendsPinsGenerator
