@@ -33,7 +33,7 @@
             android:maxLines="1"
             android:paddingVertical="0dp"
             android:textColorHint="@color/field_text_color_dark_theme" />
-        </com.google.android.material.textfield.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/foud_friend_recyclerview"

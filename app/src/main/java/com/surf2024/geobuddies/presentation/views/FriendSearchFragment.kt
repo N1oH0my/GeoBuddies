@@ -20,7 +20,7 @@ import com.surf2024.geobuddies.databinding.FragmentFriendSearchBinding
 import com.surf2024.geobuddies.domain.friendsearch.entity.FoundFriendModel
 import com.surf2024.geobuddies.domain.friendsearch.usecases.IOnFriendItemClickListener
 import com.surf2024.geobuddies.domain.main.usecase.FragmentChangeListener
-import com.surf2024.geobuddies.presentation.adapters.FriendSearchRVAdapter
+import com.surf2024.geobuddies.presentation.adapters.FriendSearchAdapter
 import com.surf2024.geobuddies.presentation.viewmodels.FriendSearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -35,7 +35,7 @@ class FriendSearchFragment : Fragment(), IOnFriendItemClickListener {
     private lateinit var friendSearchViewModel: FriendSearchViewModel
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: FriendSearchRVAdapter
+    private lateinit var adapter: FriendSearchAdapter
 
     private lateinit var dataList: List<FoundFriendModel>
 
@@ -88,7 +88,7 @@ class FriendSearchFragment : Fragment(), IOnFriendItemClickListener {
         recyclerView = binding.foudFriendRecyclerview
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        adapter = FriendSearchRVAdapter(requireContext(), this)
+        adapter = FriendSearchAdapter(requireContext(), this)
         recyclerView.adapter = adapter
     }
 

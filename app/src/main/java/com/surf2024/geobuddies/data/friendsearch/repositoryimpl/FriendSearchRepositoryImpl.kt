@@ -12,7 +12,8 @@ class FriendSearchRepositoryImpl @Inject constructor(
 ) : IFriendSearchRepository {
 
     override fun findFriend(userNameOrEmail: String): Single<List<FoundFriendModel>> {
-        return searchService.findFriend(userNameOrEmail).subscribeOn(Schedulers.io())
+        return searchService.findFriend(userNameOrEmail)
+            .subscribeOn(Schedulers.io())
             .flatMap { response ->
                 if (response.isSuccessful) {
                     Single.just(response.body() ?: emptyList())

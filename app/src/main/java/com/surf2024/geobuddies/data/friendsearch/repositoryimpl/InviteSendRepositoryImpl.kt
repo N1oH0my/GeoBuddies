@@ -11,7 +11,8 @@ class InviteSendRepositoryImpl @Inject constructor(
 ) : IInviteSendRepository {
 
     override fun inviteFriend(userId: Int): Completable {
-        return inviteService.sendInvite(userId).subscribeOn(Schedulers.io())
+        return inviteService.sendInvite(userId)
+            .subscribeOn(Schedulers.io())
     }
 
 }
