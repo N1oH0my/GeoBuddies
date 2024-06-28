@@ -17,6 +17,8 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.data.map.utilityImpl.MapPinsDrawerImpl
 import com.surf2024.geobuddies.databinding.FragmentMapBinding
+import com.surf2024.geobuddies.domain.common.utility.IButtonAnimationHelper
+import com.surf2024.geobuddies.domain.common.utilityimpl.ButtonAnimationHelperImpl
 import com.surf2024.geobuddies.domain.login.entity.UserInfoModel
 import com.surf2024.geobuddies.domain.main.usecase.FragmentChangeListener
 import com.surf2024.geobuddies.domain.map.utility.IFriendsPinsGenerator
@@ -60,6 +62,7 @@ class MapFragment : Fragment() {
     private lateinit var mapLocationViewModel: MapLocationViewModel
 
     private lateinit var animationHelper: IMapMenuAnimationHelper
+    private lateinit var buttonAnimationHelper: IButtonAnimationHelper
 
     private lateinit var mapView: MapView
     private lateinit var pinsDrawer: IMapPinsDrawer
@@ -87,10 +90,12 @@ class MapFragment : Fragment() {
         initMapLocationViewModelObservers()
 
         initMapMenuAnimationHelper()
+        initButtonAnimationHelper()
 
         initMap()
         initMapPinsDrawer()
 
+        setButtonTouchAnimation()
         initListeners()
 
         getUserInfo()
@@ -166,6 +171,19 @@ class MapFragment : Fragment() {
         animationHelper = MapMenuAnimationHelperImpl(requireContext(), binding)
     }
 
+    private fun initButtonAnimationHelper() {
+        buttonAnimationHelper = ButtonAnimationHelperImpl()
+    }
+
+    private fun setButtonTouchAnimation() {
+        buttonAnimationHelper.setTouchAnimation(binding.btnFindUserPin)
+        buttonAnimationHelper.setTouchAnimation(binding.btnToggleMenu)
+        buttonAnimationHelper.setTouchAnimation(binding.menuFriendsImageview)
+        buttonAnimationHelper.setTouchAnimation(binding.menuAddFriendsImageview)
+        buttonAnimationHelper.setTouchAnimation(binding.menuInvitesImageview)
+        buttonAnimationHelper.setTouchAnimation(binding.menuLogoutImageview)
+    }
+
     private fun initListeners() {
         binding.btnFindUserPin.setOnClickListener {
             pinsDrawer.moveCameraToUser()
@@ -179,13 +197,25 @@ class MapFragment : Fragment() {
         binding.menuMyFriends.setOnClickListener {
             openFriends()
         }
+        binding.menuFriendsImageview.setOnClickListener {
+            openFriends()
+        }
         binding.menuAddFriends.setOnClickListener {
+            openSearchFriends()
+        }
+        binding.menuAddFriendsImageview.setOnClickListener {
             openSearchFriends()
         }
         binding.menuInvites.setOnClickListener {
             openInvites()
         }
+        binding.menuInvitesImageview.setOnClickListener {
+            openInvites()
+        }
         binding.menuLogout.setOnClickListener {
+            logOut()
+        }
+        binding.menuLogoutImageview.setOnClickListener {
             logOut()
         }
         binding.idMenuPart1.setOnClickListener {}

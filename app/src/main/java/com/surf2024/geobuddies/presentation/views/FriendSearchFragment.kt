@@ -125,7 +125,7 @@ class FriendSearchFragment : Fragment(), IOnFriendItemClickListener {
     }
 
     private fun onSearchFriendClose() {
-        friendSearchCloseListener.onSearchFriendClose()
+        friendSearchCloseListener.onFriendsSearchClose()
     }
     private fun showNoUsersFound() {
         activity?.let { showToast(it.getString(R.string.no_users_found)) }

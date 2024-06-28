@@ -10,10 +10,9 @@
         android:id="@+id/custom_map_pin_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        >
-    </com.surf2024.geobuddies.presentation.feature.CustomMapPinView>
+        app:layout_constraintTop_toTopOf="parent"></com.surf2024.geobuddies.presentation.feature.CustomMapPinView>
 
     <View
         android:id="@+id/view"
