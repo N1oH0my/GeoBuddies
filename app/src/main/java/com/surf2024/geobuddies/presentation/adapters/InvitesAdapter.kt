@@ -14,13 +14,12 @@ import com.surf2024.geobuddies.domain.common.utility.IButtonAnimationHelper
 import com.surf2024.geobuddies.domain.invites.entities.InviteModel
 import com.surf2024.geobuddies.domain.invites.usecases.IOnInviteClickListener
 import de.hdodenhof.circleimageview.CircleImageView
-import javax.inject.Inject
 
-class InvitesRVAdapter(
+class InvitesAdapter(
     private val context: Context,
     private val buttonAnimationHelper: IButtonAnimationHelper,
     private val listener: IOnInviteClickListener
-) : ListAdapter<Pair<InviteModel, Boolean>, InvitesRVAdapter.InvitesViewHolder>(InviteDiffCallback()) {
+) : ListAdapter<Pair<InviteModel, Boolean>, InvitesAdapter.InvitesViewHolder>(InviteDiffCallback()) {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -30,7 +29,7 @@ class InvitesRVAdapter(
         return InvitesViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: InvitesRVAdapter.InvitesViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: InvitesAdapter.InvitesViewHolder, position: Int) {
         val data = getItem(position)
         holder.bind(data)
     }
