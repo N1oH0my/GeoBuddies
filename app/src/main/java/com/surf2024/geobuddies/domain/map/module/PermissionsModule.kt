@@ -12,6 +12,7 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 object PermissionsModule {
+
     @Provides
     fun provideLocationPermissionChecker(@ApplicationContext context: Context): ILocationPermissionChecker {
         return LocationPermissionCheckerImpl(context)

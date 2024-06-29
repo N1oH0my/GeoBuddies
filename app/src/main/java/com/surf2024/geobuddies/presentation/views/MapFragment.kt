@@ -24,7 +24,6 @@ import com.surf2024.geobuddies.domain.main.usecase.FragmentChangeListener
 import com.surf2024.geobuddies.domain.map.utility.IFriendsPinsGenerator
 import com.surf2024.geobuddies.domain.map.utility.IMapMenuAnimationHelper
 import com.surf2024.geobuddies.domain.map.utility.IMapPinsDrawer
-import com.surf2024.geobuddies.domain.map.utilityimpl.FriendsPinsGeneratorImpl
 import com.surf2024.geobuddies.domain.map.utilityimpl.MapMenuAnimationHelperImpl
 import com.surf2024.geobuddies.presentation.viewmodels.map.MapInfoViewModel
 import com.surf2024.geobuddies.presentation.viewmodels.map.MapLocationViewModel
@@ -35,6 +34,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MapFragment : Fragment() {
@@ -49,9 +49,12 @@ class MapFragment : Fragment() {
         }
     }
 
-    private val binding by viewBinding(FragmentMapBinding::class.java)
+    @Inject
+    lateinit var buttonAnimationHelper: IButtonAnimationHelper
+    @Inject
+    lateinit var friendsPinsGenerator: IFriendsPinsGenerator
 
-    private val friendsPinsGenerator: IFriendsPinsGenerator = FriendsPinsGeneratorImpl()
+    private val binding by viewBinding(FragmentMapBinding::class.java)
 
     private var scheduler = Executors.newScheduledThreadPool(1)
     private var scheduledFuture: ScheduledFuture<*>? = null
@@ -62,7 +65,6 @@ class MapFragment : Fragment() {
     private lateinit var mapLocationViewModel: MapLocationViewModel
 
     private lateinit var animationHelper: IMapMenuAnimationHelper
-    private lateinit var buttonAnimationHelper: IButtonAnimationHelper
 
     private lateinit var mapView: MapView
     private lateinit var pinsDrawer: IMapPinsDrawer
@@ -90,7 +92,6 @@ class MapFragment : Fragment() {
         initMapLocationViewModelObservers()
 
         initMapMenuAnimationHelper()
-        initButtonAnimationHelper()
 
         initMap()
         initMapPinsDrawer()
@@ -169,10 +170,6 @@ class MapFragment : Fragment() {
 
     private fun initMapMenuAnimationHelper() {
         animationHelper = MapMenuAnimationHelperImpl(requireContext(), binding)
-    }
-
-    private fun initButtonAnimationHelper() {
-        buttonAnimationHelper = ButtonAnimationHelperImpl()
     }
 
     private fun setButtonTouchAnimation() {

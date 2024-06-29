@@ -12,14 +12,19 @@ import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.databinding.FragmentLoginBinding
+import com.surf2024.geobuddies.domain.common.utility.IButtonAnimationHelper
 import com.surf2024.geobuddies.domain.login.repository.ILoginInputReadHelperRepository
 import com.surf2024.geobuddies.domain.login.repositoryimpl.LoginInputReadHelperRepositoryImpl
 import com.surf2024.geobuddies.domain.main.usecase.FragmentChangeListener
 import com.surf2024.geobuddies.presentation.viewmodels.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
+
+    @Inject
+    lateinit var buttonAnimationHelper: IButtonAnimationHelper
 
     private val binding by viewBinding(FragmentLoginBinding::bind)
 
@@ -48,13 +53,19 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.d("Hilt", "Creating loginViewModel client instance")
-        loginViewModel = ViewModelProvider(this)[LoginViewModel::class.java]
-
+        initLoginViewModel()
         initObserversLoginViewModel()
+
         initListenerLoginButton()
         initListenerSingUpButton()
 
+        setButtonTouchAnimation()
+
+    }
+
+    private fun initLoginViewModel() {
+        Log.d("Hilt", "Creating loginViewModel client instance")
+        loginViewModel = ViewModelProvider(this)[LoginViewModel::class.java]
     }
 
     private fun initObserversLoginViewModel() {
@@ -80,6 +91,10 @@ class LoginFragment : Fragment() {
         binding.loginFragmentSingUpTextView.setOnClickListener {
             onSignUpClicked()
         }
+    }
+
+    private fun setButtonTouchAnimation() {
+        buttonAnimationHelper.setTouchAnimation(binding.loginFragmentLoginButton)
     }
 
     private fun loginUser() {

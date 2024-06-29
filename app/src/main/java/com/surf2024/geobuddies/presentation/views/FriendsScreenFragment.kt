@@ -15,11 +15,13 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.databinding.FragmentFriendsScreenBinding
+import com.surf2024.geobuddies.domain.common.utility.IButtonAnimationHelper
 import com.surf2024.geobuddies.domain.friends.usecases.IOnFriendRemoveClickListener
 import com.surf2024.geobuddies.domain.main.usecase.FragmentChangeListener
 import com.surf2024.geobuddies.presentation.adapters.FriendsAdapter
 import com.surf2024.geobuddies.presentation.viewmodels.FriendsScreenViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class FriendsScreenFragment: Fragment(), IOnFriendRemoveClickListener {
@@ -30,6 +32,9 @@ class FriendsScreenFragment: Fragment(), IOnFriendRemoveClickListener {
                 arguments = Bundle().apply {}
             }
     }
+    @Inject
+    lateinit var buttonAnimationHelper: IButtonAnimationHelper
+
     private lateinit var friendsCloseListener: FragmentChangeListener
     private lateinit var friendsViewModel: FriendsScreenViewModel
 
@@ -79,7 +84,7 @@ class FriendsScreenFragment: Fragment(), IOnFriendRemoveClickListener {
     private fun initRecyclerView(){
         recyclerView = binding.friendsRecyclerview
         recyclerView.layoutManager = LinearLayoutManager(context)
-        adapter = FriendsAdapter(requireContext(),this)
+        adapter = FriendsAdapter(requireContext(), buttonAnimationHelper,this)
         recyclerView.adapter = adapter
     }
     private fun initFriendsViewModel() {
