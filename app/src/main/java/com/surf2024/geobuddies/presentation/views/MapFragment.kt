@@ -213,10 +213,10 @@ class MapFragment : Fragment() {
             openInvites()
         }
         binding.menuLogout.setOnClickListener {
-            logOut()
+            resetToken()
         }
         binding.menuLogoutImageview.setOnClickListener {
-            logOut()
+            resetToken()
         }
         binding.idMenuPart1.setOnClickListener {}
         binding.idMenuPart2.setOnClickListener {}
@@ -232,6 +232,9 @@ class MapFragment : Fragment() {
         }
         mapInfoViewModel.serverError.observe(viewLifecycleOwner) {
             showError()
+        }
+        mapInfoViewModel.tokenReset.observe(viewLifecycleOwner) {
+            logOut()
         }
     }
 
@@ -385,6 +388,11 @@ class MapFragment : Fragment() {
 
     private fun logOut() {
         fragmentsTapListener.onLogOut()
+    }
+
+    //////////////////// memory ////////////////////////////////////////////////////////////////////
+    private fun resetToken() {
+        mapInfoViewModel.resetRefreshToken()
     }
 
     //////////////////// other IU fun //////////////////////////////////////////////////////////////

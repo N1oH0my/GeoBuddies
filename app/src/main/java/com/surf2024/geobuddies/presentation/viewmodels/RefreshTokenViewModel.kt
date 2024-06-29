@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.surf2024.geobuddies.domain.login.repository.IAccessTokenSaver
+import com.surf2024.geobuddies.domain.login.repository.ITokensSaver
 import com.surf2024.geobuddies.domain.login.repository.IRefreshAccessTokenRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -15,7 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RefreshTokenViewModel @Inject constructor(
     private val refreshTokenRepository: IRefreshAccessTokenRepository,
-    private val accessTokenSaver: IAccessTokenSaver,
+    private val accessTokenSaver: ITokensSaver,
 ) : ViewModel() {
 
     private val refreshTokenDisposable = CompositeDisposable()

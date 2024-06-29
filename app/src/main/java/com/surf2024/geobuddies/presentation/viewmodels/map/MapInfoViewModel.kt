@@ -8,6 +8,7 @@ import com.surf2024.geobuddies.domain.common.repository.IUserInfoRepository
 import com.surf2024.geobuddies.domain.friends.entity.FriendModel
 import com.surf2024.geobuddies.domain.friends.repository.IFriendsRepository
 import com.surf2024.geobuddies.domain.login.entity.UserInfoModel
+import com.surf2024.geobuddies.domain.login.repository.ITokensSaver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class MapInfoViewModel @Inject constructor(
     private val getFriendRepository: IFriendsRepository,
     private val getUserInfoRepository: IUserInfoRepository,
+    private val accessTokenSaver: ITokensSaver,
 ) : ViewModel() {
 
     private val friendsDisposable: CompositeDisposable = CompositeDisposable()
@@ -29,6 +31,10 @@ class MapInfoViewModel @Inject constructor(
     private val _user = MutableLiveData<UserInfoModel>()
     val user: LiveData<UserInfoModel>
         get() = _user
+
+    private val _tokenReset = MutableLiveData<Boolean>()
+    val tokenReset: LiveData<Boolean>
+        get() = _tokenReset
 
     private val _serverError = MutableLiveData<Boolean>()
     val serverError: LiveData<Boolean>
@@ -62,12 +68,24 @@ class MapInfoViewModel @Inject constructor(
         }
     }
 
+    fun resetRefreshToken() {
+        if (accessTokenSaver.saveRefreshToken(" ")) {
+            setTokenReset()
+        } else {
+            setServerError()
+        }
+    }
+
     private fun setFriendList(data: List<FriendModel>) {
         _friendList.value = data
     }
 
     private fun setUserInfo(data: UserInfoModel) {
         _user.value = data
+    }
+
+    private fun setTokenReset(){
+        _tokenReset.value = true
     }
 
     private fun setServerError(){

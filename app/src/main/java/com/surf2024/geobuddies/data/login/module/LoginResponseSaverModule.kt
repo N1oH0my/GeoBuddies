@@ -3,10 +3,10 @@ package com.surf2024.geobuddies.data.login.module
 import android.content.SharedPreferences
 import android.util.Log
 import com.google.gson.Gson
-import com.surf2024.geobuddies.data.login.repositoryimpl.AccessTokenSaverImpl
+import com.surf2024.geobuddies.data.login.repositoryimpl.TokensSaverImpl
 import com.surf2024.geobuddies.domain.login.repository.ILoginResponseSaver
 import com.surf2024.geobuddies.data.login.repositoryimpl.LoginResponseSaverImpl
-import com.surf2024.geobuddies.domain.login.repository.IAccessTokenSaver
+import com.surf2024.geobuddies.domain.login.repository.ITokensSaver
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,9 +31,9 @@ object LoginResponseSaverModule {
     @Singleton
     fun provideAccessTokenSaverImpl(
         encryptedSharedPreference: SharedPreferences
-    ): IAccessTokenSaver {
+    ): ITokensSaver {
         Log.d("Hilt", "Creating AccessTokenSaverImpl instance")
-        return AccessTokenSaverImpl(encryptedSharedPreference)
+        return TokensSaverImpl(encryptedSharedPreference)
     }
 
 }

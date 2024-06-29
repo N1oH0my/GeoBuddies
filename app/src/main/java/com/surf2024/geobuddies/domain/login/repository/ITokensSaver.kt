@@ -1,7 +1,9 @@
 package com.surf2024.geobuddies.domain.login.repository
 
-interface IAccessTokenSaver {
+interface ITokensSaver {
 
     fun saveAccessToken(accessToken: String): Boolean
+
+    fun saveRefreshToken(refreshToken: String): Boolean
 
 }

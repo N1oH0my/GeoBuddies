@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener, RefreshAccessT
 
         setLocationLanguage("en")
 
-        startUpLoading()
+        runRefreshTokenFragment()
 
     }
 
@@ -108,37 +108,10 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener, RefreshAccessT
         }, 2000)
     }
 
-    private fun startUpLoading() {
-        supportFragmentManager.beginTransaction()
-            .add(R.id.fragmentHolderId, SplashScreenFragment())
-            .commit()
-
-        greetingMessageShow()
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentHolderId, LoginFragment())
-                .commit()
-        }, 3500)
-    }
-
-    private fun setLocationLanguage(language: String){
-        val context: Context = applicationContext
-        context.resources.configuration.setLocale(Locale("en"))
-    }
-
-    private fun greetingMessageShow(){
-        showToast(this.getString(R.string.hello))
-        showToast(this.getString(R.string.welcome_to_the_geo_buddies))
-    }
-    private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
-
     override fun refreshAccessTokenSuccessful() {
         Handler(Looper.getMainLooper()).postDelayed({
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentHolderId, FriendSearchFragment())
+                .replace(R.id.fragmentHolderId, MapFragment())
                 .commit()
         }, 3000)
     }
@@ -156,8 +129,21 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener, RefreshAccessT
             .add(R.id.fragmentHolderId, RefreshTokenFragment())
             .commit()
 
-        showToast("Hello!")
-        showToast("Welcome to the GeoBuddies!")
+        greetingMessageShow()
+    }
+
+
+    private fun setLocationLanguage(language: String){
+        val context: Context = applicationContext
+        context.resources.configuration.setLocale(Locale("en"))
+    }
+
+    private fun greetingMessageShow(){
+        showToast(this.getString(R.string.hello))
+        showToast(this.getString(R.string.welcome_to_the_geo_buddies))
+    }
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
 }
