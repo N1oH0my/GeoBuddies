@@ -24,4 +24,5 @@ object LoginResponseSaverModule {
         Log.d("Hilt", "Creating LoginResponseSaverRepositoryImpl instance")
         return LoginResponseSaverImpl(encryptedSharedPreference, gson)
     }
+
 }

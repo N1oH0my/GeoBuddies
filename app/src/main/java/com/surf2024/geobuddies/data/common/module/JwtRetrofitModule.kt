@@ -17,15 +17,16 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object JwtRetrofitModule {
+
     @Provides
     @Singleton
     @Named("withJwt")
     fun provideRetrofit(tokenProvider: ITokenRepository): Retrofit {
         val jwtInterceptor = Interceptor { chain ->
-
-            if (tokenProvider.getToken() != null) {
-                val request = chain.request().newBuilder()
-                    .addHeader("Authorization", "Bearer ${tokenProvider.getToken()}")
+            if (tokenProvider.getAccessToken() != null) {
+                val request = chain.request()
+                    .newBuilder()
+                    .addHeader("Authorization", "Bearer ${tokenProvider.getAccessToken()}")
                     .build()
                 chain.proceed(request)
             } else {
@@ -44,4 +45,33 @@ object JwtRetrofitModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
+
+    @Provides
+    @Singleton
+    @Named("withRefreshJwt")
+    fun provideRefreshRetrofit(tokenProvider: ITokenRepository): Retrofit {
+        val jwtInterceptor = Interceptor { chain ->
+            if (tokenProvider.getRefreshToken() != null) {
+                val request = chain.request()
+                    .newBuilder()
+                    .addHeader("Authorization", "Bearer ${tokenProvider.getRefreshToken()}")
+                    .build()
+                chain.proceed(request)
+            } else {
+                chain.proceed(chain.request())
+            }
+        }
+
+        val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(jwtInterceptor)
+            .build()
+
+        return Retrofit.Builder()
+            .baseUrl(BuildConfig.API_BASE_URL)
+            .client(okHttpClient)
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
 }
