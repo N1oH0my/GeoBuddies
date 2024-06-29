@@ -24,8 +24,7 @@ object JwtRetrofitModule {
     fun provideRetrofit(tokenProvider: ITokenRepository): Retrofit {
         val jwtInterceptor = Interceptor { chain ->
             if (tokenProvider.getAccessToken() != null) {
-                val request = chain.request()
-                    .newBuilder()
+                val request = chain.request().newBuilder()
                     .addHeader("Authorization", "Bearer ${tokenProvider.getAccessToken()}")
                     .build()
                 chain.proceed(request)
@@ -52,8 +51,7 @@ object JwtRetrofitModule {
     fun provideRefreshRetrofit(tokenProvider: ITokenRepository): Retrofit {
         val jwtInterceptor = Interceptor { chain ->
             if (tokenProvider.getRefreshToken() != null) {
-                val request = chain.request()
-                    .newBuilder()
+                val request = chain.request().newBuilder()
                     .addHeader("Authorization", "Bearer ${tokenProvider.getRefreshToken()}")
                     .build()
                 chain.proceed(request)

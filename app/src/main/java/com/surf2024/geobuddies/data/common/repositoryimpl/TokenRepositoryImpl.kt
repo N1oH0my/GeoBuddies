@@ -8,7 +8,8 @@ import javax.inject.Inject
 
 class TokenRepositoryImpl @Inject constructor(
     private val encryptedSharedPreferences: SharedPreferences
-): ITokenRepository {
+) : ITokenRepository {
+
     override fun getAccessToken(): String? {
         return encryptedSharedPreferences.getString(ACCESS_TOKEN_KEY, null)
     }

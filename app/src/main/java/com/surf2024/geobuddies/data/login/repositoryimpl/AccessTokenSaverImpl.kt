@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class AccessTokenSaverImpl @Inject constructor(
     private val sharedPreferences: SharedPreferences,
-): IAccessTokenSaver {
+) : IAccessTokenSaver {
 
     override fun saveAccessToken(accessToken: String): Boolean {
         return try {

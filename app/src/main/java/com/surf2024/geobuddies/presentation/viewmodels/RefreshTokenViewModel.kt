@@ -4,9 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.surf2024.geobuddies.domain.common.repository.ITokenRepository
 import com.surf2024.geobuddies.domain.login.repository.IAccessTokenSaver
-import com.surf2024.geobuddies.domain.login.repository.IRefreshTokenRepository
+import com.surf2024.geobuddies.domain.login.repository.IRefreshAccessTokenRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -15,10 +14,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RefreshTokenViewModel @Inject constructor(
-    private val refreshTokenRepository: IRefreshTokenRepository,
+    private val refreshTokenRepository: IRefreshAccessTokenRepository,
     private val accessTokenSaver: IAccessTokenSaver,
-    private val tokenProvider: ITokenRepository,
-): ViewModel() {
+) : ViewModel() {
 
     private val refreshTokenDisposable = CompositeDisposable()
 
@@ -36,32 +34,33 @@ class RefreshTokenViewModel @Inject constructor(
 
     fun refreshAccessToken() {
         refreshTokenDisposable.clear()
-        val disposable = refreshTokenRepository.refreshAccessToken()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ accessToken ->
-                if (accessToken.isSuccessful) {
-                    if (accessToken.body()?.accessToken != null) {
-                        Log.d("RefreshProcess", "Get successful: ${accessToken.body()?.accessToken}")
-                        setNewAccessToken(accessToken.body()!!.accessToken)
+        val disposable =
+            refreshTokenRepository.refreshAccessToken().observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ accessToken ->
+                    if (accessToken.isSuccessful) {
+                        if (accessToken.body()?.accessToken != null) {
+                            Log.d(
+                                "RefreshProcess",
+                                "Get successful: ${accessToken.body()?.accessToken}"
+                            )
+                            setNewAccessToken(accessToken.body()!!.accessToken)
+                        } else {
+                            setError()
+                        }
                     } else {
+                        Log.e("RefreshProcess", "Failed to get access token")
                         setError()
                     }
-                } else {
-                    Log.e("RefreshProcess", "Failed to get access token")
-                    setError()
-                }
-            },
-            { error ->
-                Log.e("RefreshProcess", "Get failed", error)
+                }, { error ->
+                    Log.e("RefreshProcess", "Get failed", error)
 
-                if (error is HttpException) {
-                    Log.d("RefreshProcess", "HTTP Error: ${error.code()}")
-                }
-                else {
-                    Log.d("RefreshProcess", "Error: ${error.message}")
-                }
-                setError()
-            })
+                    if (error is HttpException) {
+                        Log.d("RefreshProcess", "HTTP Error: ${error.code()}")
+                    } else {
+                        Log.d("RefreshProcess", "Error: ${error.message}")
+                    }
+                    setError()
+                })
         refreshTokenDisposable.add(disposable)
     }
 
@@ -73,16 +72,16 @@ class RefreshTokenViewModel @Inject constructor(
         }
     }
 
-    private fun setNewAccessToken(response: String){
+    private fun setNewAccessToken(response: String) {
         _newAccessToken.value = response
     }
 
-    private fun setAccessTokenSavedSuccessful(){
+    private fun setAccessTokenSavedSuccessful() {
         _accessTokenSaved.value = true
     }
 
-    private fun setError(){
-        if (_error.value != true){
+    private fun setError() {
+        if (_error.value != true) {
             _error.value = true
         }
     }

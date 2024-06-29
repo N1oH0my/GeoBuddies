@@ -4,4 +4,5 @@ import com.surf2024.geobuddies.domain.login.entity.UserInfoModel
 
 interface IUserInfoRepository {
     fun getUserInfo(): UserInfoModel?
+
 }

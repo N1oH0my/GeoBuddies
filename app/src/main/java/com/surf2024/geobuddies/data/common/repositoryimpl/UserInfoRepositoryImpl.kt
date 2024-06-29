@@ -9,9 +9,9 @@ import com.surf2024.geobuddies.domain.login.entity.UserInfoModel
 import javax.inject.Inject
 
 class UserInfoRepositoryImpl @Inject constructor(
-    private val encryptedSharedPreferences: SharedPreferences,
-    private val gson: Gson
-): IUserInfoRepository {
+    private val encryptedSharedPreferences: SharedPreferences, private val gson: Gson
+) : IUserInfoRepository {
+
     override fun getUserInfo(): UserInfoModel? {
         return try {
             val json = encryptedSharedPreferences.getString(USER_INFO_KEY, null)

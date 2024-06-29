@@ -20,8 +20,7 @@ class RefreshTokenFragment : Fragment() {
     private lateinit var refreshTokenViewModel: RefreshTokenViewModel
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_refresh_token, container, false)
     }

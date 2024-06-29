@@ -16,6 +16,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object UserInfoModule {
+
     @Provides
     @Singleton
     fun provideTokenRepositoryImpl(
@@ -34,4 +35,5 @@ object UserInfoModule {
         Log.d("Hilt", "Creating UserInfoRepositoryImpl instance")
         return UserInfoRepositoryImpl(encryptedSharedPreferences, gson)
     }
+
 }
