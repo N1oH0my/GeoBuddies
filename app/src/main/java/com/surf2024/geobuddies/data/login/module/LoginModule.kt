@@ -18,6 +18,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object LoginModule {
+
     @Provides
     @Singleton
     fun provideLoginService(
@@ -48,4 +49,5 @@ object LoginModule {
         Log.d("Hilt", "Creating LoginValidator client instance")
         return LoginValidatorRepositoryImpl()
     }
+
 }
