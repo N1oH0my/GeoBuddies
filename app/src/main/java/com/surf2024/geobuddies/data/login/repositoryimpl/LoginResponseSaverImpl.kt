@@ -3,8 +3,9 @@ package com.surf2024.geobuddies.data.login.repositoryimpl
 import android.content.SharedPreferences
 import android.util.Log
 import com.google.gson.Gson
-import com.surf2024.geobuddies.domain.common.entity.TokenKeys.ACCESS_TOKEN_KEY
-import com.surf2024.geobuddies.domain.common.entity.TokenKeys.USER_INFO_KEY
+import com.surf2024.geobuddies.domain.common.entity.UserInfoKeys.ACCESS_TOKEN_KEY
+import com.surf2024.geobuddies.domain.common.entity.UserInfoKeys.REFRESH_TOKEN_KEY
+import com.surf2024.geobuddies.domain.common.entity.UserInfoKeys.USER_INFO_KEY
 import com.surf2024.geobuddies.domain.login.entity.LoginResponse
 import com.surf2024.geobuddies.domain.login.entity.UserInfoModel
 import com.surf2024.geobuddies.domain.login.repository.ILoginResponseSaver
@@ -23,6 +24,7 @@ class LoginResponseSaverImpl @Inject constructor(
         Log.d("encryptedSharedPreferences", "LoginResponse get successful.")
         return try {
             Log.d("encryptedSharedPreferences", "Saving access token: ${loginResponse.accessToken}")
+            Log.d("encryptedSharedPreferences", "Saving refresh token: ${loginResponse.refreshToken}")
             Log.d("encryptedSharedPreferences", "Saving user info: name = ${loginResponse.name}, email = ${loginResponse.email}, avatarUrl = ${loginResponse.avatarUrl}")
             val userInfo = UserInfoModel(
                 name = loginResponse.name ?: "",
@@ -31,6 +33,7 @@ class LoginResponseSaverImpl @Inject constructor(
             )
             with(sharedPreferences.edit()) {
                 putString(ACCESS_TOKEN_KEY, loginResponse.accessToken)
+                putString(REFRESH_TOKEN_KEY, loginResponse.refreshToken)
                 putString(USER_INFO_KEY, gson.toJson(userInfo))
                 apply()
             }
