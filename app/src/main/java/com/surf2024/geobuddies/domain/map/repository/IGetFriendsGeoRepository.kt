@@ -5,4 +5,5 @@ import io.reactivex.rxjava3.core.Single
 
 interface IGetFriendsGeoRepository {
     fun getFriendsGeo(): Single<List<FriendGeoModel>>
+
 }

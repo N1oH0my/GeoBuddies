@@ -3,7 +3,6 @@
 
     <!--> Api strings <-->
     <string name="register_url">api/v1/auth/register</string>
-
     <string name="brand_name">GeoBuddies</string>
 
     <!--> registration fragment <-->
@@ -20,7 +19,6 @@
     <string name="forgot_password">Forgot password</string>
     <string name="google">Google</string>
     <string name="yandex">Яндекс</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="the_field_must_not_be_empty">The field must not be empty</string>
 
@@ -40,7 +38,25 @@
     <!--> common error <-->
     <string name="error_part_1">smth went wrong...</string>
     <string name="error_part_2">try again later</string>
+    <string name="menu_my_friends">My friends</string>
+    <string name="menu_add_friends">Add friends</string>
+    <string name="menu_invites">Invites</string>
+    <string name="menu_logout">Logout</string>
 
+    <!--> AlertDialog location <-->
+    <string name="title_why_location_permission_needed">Location permission</string>
+    <string name="msg_why_location_permission_needed">This app requires location permission to display you on a map and share your coordinates with your friends.\nDo you want to grant this permission?</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 
+    <!--> Location permission messages <-->
+    <string name="location_permission_denied">Location permission denied</string>
+    <string name="location_permission_granted">Location permission granted</string>
+    <!--> Location get messages <-->
+    <string name="failed_to_get_location">Failed to get location</string>
+
+    <!--> greeting messages <-->
+    <string name="hello">Hello!</string>
+    <string name="welcome_to_the_geo_buddies">Welcome to the GeoBuddies!</string>
 
 </resources>

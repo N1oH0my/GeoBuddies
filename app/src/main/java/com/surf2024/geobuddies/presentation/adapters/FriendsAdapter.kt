@@ -10,14 +10,18 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.surf2024.geobuddies.R
+import com.surf2024.geobuddies.domain.common.utility.IButtonAnimationHelper
 import com.surf2024.geobuddies.domain.friends.entity.FriendModel
 import com.surf2024.geobuddies.domain.friends.usecases.IOnFriendRemoveClickListener
 import de.hdodenhof.circleimageview.CircleImageView
+import javax.inject.Inject
 
 class FriendsAdapter(
     private val context: Context,
+    private val buttonAnimationHelper: IButtonAnimationHelper,
     private val listener: IOnFriendRemoveClickListener
 ) : ListAdapter<FriendModel, FriendsAdapter.FriendsViewHolder>(FriendsAdapter.FriendDiffCallback()) {
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -54,6 +58,8 @@ class FriendsAdapter(
         fun bind(data: FriendModel) {
             userName.text = data.name
             userEmail.text = data.email
+
+            buttonAnimationHelper.setTouchAnimation(crossIcon)
         }
 
         fun hideCrossIcon() {

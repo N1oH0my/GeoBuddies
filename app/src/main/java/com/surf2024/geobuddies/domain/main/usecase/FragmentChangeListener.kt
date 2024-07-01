@@ -7,7 +7,15 @@ interface FragmentChangeListener {
     fun onRegistrationBack()
     fun onLoginComplete()
     fun onSignUpClicked()
-    fun onSearchFriendClose()
-    fun onInvitesClose()
+
     fun onFriendsClose()
+    fun onFriendsSearchClose()
+    fun onInvitesClose()
+    fun onMapClose()
+
+    fun openFriends()
+    fun openFriendsSearch()
+    fun openInvites()
+
+    fun onLogOut()
 }

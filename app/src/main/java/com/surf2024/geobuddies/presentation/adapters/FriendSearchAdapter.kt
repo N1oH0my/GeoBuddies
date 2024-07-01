@@ -10,12 +10,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.surf2024.geobuddies.R
+import com.surf2024.geobuddies.domain.common.utility.IButtonAnimationHelper
 import com.surf2024.geobuddies.domain.friendsearch.entity.FoundFriendModel
 import com.surf2024.geobuddies.domain.friendsearch.usecases.IOnFriendItemClickListener
 import de.hdodenhof.circleimageview.CircleImageView
+import javax.inject.Inject
 
 class FriendSearchAdapter(
     private val context: Context,
+    private val buttonAnimationHelper: IButtonAnimationHelper,
     private val listener: IOnFriendItemClickListener
 ) : ListAdapter<FoundFriendModel, FriendSearchAdapter.FriendSearchViewHolder>(SearchDiffCallback()) {
 
@@ -53,6 +56,8 @@ class FriendSearchAdapter(
         fun bind(data: FoundFriendModel) {
             userName.text = data.name
             userEmail.text = data.email
+
+            buttonAnimationHelper.setTouchAnimation(addIcon)
         }
 
     }

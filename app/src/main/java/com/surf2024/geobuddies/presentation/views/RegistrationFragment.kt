@@ -13,14 +13,19 @@ import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.databinding.FragmentRegistrationBinding
+import com.surf2024.geobuddies.domain.common.utility.IButtonAnimationHelper
 import com.surf2024.geobuddies.domain.main.usecase.FragmentChangeListener
 import com.surf2024.geobuddies.domain.registration.repository.IRegistrationInputReadHelperRepository
 import com.surf2024.geobuddies.domain.registration.repositoryimpl.RegistrationInputReadHelperRepositoryImpl
 import com.surf2024.geobuddies.presentation.viewmodels.RegistrationViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class RegistrationFragment : Fragment() {
+
+    @Inject
+    lateinit var buttonAnimationHelper: IButtonAnimationHelper
 
     private val binding by viewBinding(FragmentRegistrationBinding::bind)
 
@@ -50,11 +55,12 @@ class RegistrationFragment : Fragment() {
 
         overrideOnBackPressed()
 
-        Log.d("Hilt", "Creating registrationViewModel client instance")
-        registrationViewModel = ViewModelProvider(this)[RegistrationViewModel::class.java]
-
+        initRegistrationViewModel()
         initObserversRegistrationViewModel()
+
         initListenerSignUpButton()
+
+        setButtonTouchAnimation()
 
     }
 
@@ -65,6 +71,11 @@ class RegistrationFragment : Fragment() {
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+    }
+
+    private fun initRegistrationViewModel() {
+        Log.d("Hilt", "Creating registrationViewModel client instance")
+        registrationViewModel = ViewModelProvider(this)[RegistrationViewModel::class.java]
     }
 
     private fun initListenerSignUpButton(){
@@ -91,6 +102,10 @@ class RegistrationFragment : Fragment() {
         }
     }
 
+    private fun setButtonTouchAnimation() {
+        buttonAnimationHelper.setTouchAnimation(binding.backRegistrationButton)
+        buttonAnimationHelper.setTouchAnimation(binding.signUpRegistrationButton)
+    }
 
     private fun registerUser() {
 

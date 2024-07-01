@@ -15,12 +15,13 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.databinding.FragmentAcceptDenyInvitesBinding
-import com.surf2024.geobuddies.domain.invites.entities.InviteModel
+import com.surf2024.geobuddies.domain.common.utility.IButtonAnimationHelper
 import com.surf2024.geobuddies.domain.invites.usecases.IOnInviteClickListener
 import com.surf2024.geobuddies.domain.main.usecase.FragmentChangeListener
-import com.surf2024.geobuddies.presentation.adapters.InvitesRVAdapter
+import com.surf2024.geobuddies.presentation.adapters.InvitesAdapter
 import com.surf2024.geobuddies.presentation.viewmodels.AcceptDenyInvitesViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class AcceptDenyInvitesFragment : Fragment(), IOnInviteClickListener {
@@ -31,13 +32,16 @@ class AcceptDenyInvitesFragment : Fragment(), IOnInviteClickListener {
                 arguments = Bundle().apply {}
             }
     }
+    @Inject
+    lateinit var buttonAnimationHelper: IButtonAnimationHelper
+
     private lateinit var invitesCloseListener: FragmentChangeListener
 
     private val binding by viewBinding(FragmentAcceptDenyInvitesBinding::bind)
     private lateinit var invitesViewModel: AcceptDenyInvitesViewModel
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: InvitesRVAdapter
+    private lateinit var adapter: InvitesAdapter
 
     private var lastAcceptDenyPosition: Int = 0
 
@@ -90,7 +94,7 @@ class AcceptDenyInvitesFragment : Fragment(), IOnInviteClickListener {
     private fun initRecyclerView(){
         recyclerView = binding.invitesRecyclerview
         recyclerView.layoutManager = LinearLayoutManager(context)
-        adapter = InvitesRVAdapter( requireContext(), this)
+        adapter = InvitesAdapter( requireContext(), buttonAnimationHelper, this)
         recyclerView.adapter = adapter
     }
 

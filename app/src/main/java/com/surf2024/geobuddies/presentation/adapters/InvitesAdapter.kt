@@ -10,14 +10,17 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.surf2024.geobuddies.R
+import com.surf2024.geobuddies.domain.common.utility.IButtonAnimationHelper
 import com.surf2024.geobuddies.domain.invites.entities.InviteModel
 import com.surf2024.geobuddies.domain.invites.usecases.IOnInviteClickListener
 import de.hdodenhof.circleimageview.CircleImageView
 
-class InvitesRVAdapter(
+class InvitesAdapter(
     private val context: Context,
+    private val buttonAnimationHelper: IButtonAnimationHelper,
     private val listener: IOnInviteClickListener
-) : ListAdapter<Pair<InviteModel, Boolean>, InvitesRVAdapter.InvitesViewHolder>(InviteDiffCallback()) {
+) : ListAdapter<Pair<InviteModel, Boolean>, InvitesAdapter.InvitesViewHolder>(InviteDiffCallback()) {
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -26,7 +29,7 @@ class InvitesRVAdapter(
         return InvitesViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: InvitesRVAdapter.InvitesViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: InvitesAdapter.InvitesViewHolder, position: Int) {
         val data = getItem(position)
         holder.bind(data)
     }
@@ -62,6 +65,9 @@ class InvitesRVAdapter(
             userName.text = data.first.name
             userEmail.text = data.first.email
 
+            buttonAnimationHelper.setTouchAnimation(addIcon)
+            buttonAnimationHelper.setTouchAnimation(crossIcon)
+
             if (data.second){
                 addIcon.setImageResource(R.drawable.ic_send_invite)
                 hideCrossIcon()
@@ -96,4 +102,5 @@ class InvitesRVAdapter(
     fun reload(data: List<Pair<InviteModel, Boolean>>){
         submitList(data)
     }
+
 }

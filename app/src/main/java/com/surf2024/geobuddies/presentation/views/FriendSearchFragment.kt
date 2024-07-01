@@ -17,16 +17,21 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.databinding.FragmentFriendSearchBinding
+import com.surf2024.geobuddies.domain.common.utility.IButtonAnimationHelper
 import com.surf2024.geobuddies.domain.friendsearch.entity.FoundFriendModel
 import com.surf2024.geobuddies.domain.friendsearch.usecases.IOnFriendItemClickListener
 import com.surf2024.geobuddies.domain.main.usecase.FragmentChangeListener
 import com.surf2024.geobuddies.presentation.adapters.FriendSearchAdapter
 import com.surf2024.geobuddies.presentation.viewmodels.FriendSearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class FriendSearchFragment : Fragment(), IOnFriendItemClickListener {
+
+    @Inject
+    lateinit var buttonAnimationHelper: IButtonAnimationHelper
 
     private lateinit var friendSearchCloseListener: FragmentChangeListener
 
@@ -88,7 +93,7 @@ class FriendSearchFragment : Fragment(), IOnFriendItemClickListener {
         recyclerView = binding.foudFriendRecyclerview
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        adapter = FriendSearchAdapter(requireContext(), this)
+        adapter = FriendSearchAdapter(requireContext(), buttonAnimationHelper, this)
         recyclerView.adapter = adapter
     }
 
@@ -125,7 +130,7 @@ class FriendSearchFragment : Fragment(), IOnFriendItemClickListener {
     }
 
     private fun onSearchFriendClose() {
-        friendSearchCloseListener.onSearchFriendClose()
+        friendSearchCloseListener.onFriendsSearchClose()
     }
     private fun showNoUsersFound() {
         activity?.let { showToast(it.getString(R.string.no_users_found)) }

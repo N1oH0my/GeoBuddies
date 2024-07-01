@@ -5,11 +5,13 @@
         <item name="android:textColor">@color/field_text_color_dark_theme</item>
         <item name="android:fontFamily">@font/tilda_sans_light</item>
     </style>
+
     <style name="InviteUserNameTextDarkMode">
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">@color/field_text_color_dark_theme</item>
         <item name="android:fontFamily">@font/tilda_sans_light</item>
     </style>
+
     <style name="InviteUserEmailTextDarkMode">
         <item name="android:textSize">10sp</item>
         <item name="android:textColor">@color/field_text_color_dark_theme</item>
@@ -49,5 +51,22 @@
         <item name="android:fontFamily">@font/urbanist_regular</item>
     </style>
 
+    <style name="MenuUserNameTextDarkMode">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/field_text_color_dark_theme</item>
+        <item name="android:fontFamily">@font/tilda_sans_light</item>
+    </style>
+
+    <style name="MenuUserEmailTextDarkMode">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/field_text_color_dark_theme</item>
+        <item name="android:fontFamily">@font/tilda_sans_light</item>
+    </style>
+
+    <style name="MenuSectionsText">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/field_text_color_dark_theme</item>
+        <item name="android:fontFamily">@font/tilda_sans_light</item>
+    </style>
 
 </resources>
