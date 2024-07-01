@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
@@ -84,6 +85,23 @@ class FriendSearchFragment : Fragment(), IOnFriendItemClickListener {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 
+    private fun EditText.onDone(callback: () -> Unit) {
+        try {
+            imeOptions = EditorInfo.IME_ACTION_DONE
+            maxLines = 1
+            setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == KeyEvent.KEYCODE_ENTER) {
+                    callback()
+                    true
+                } else {
+                    false
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     private fun initFriendSearchViewModel() {
         Log.d("Hilt", "Creating friendSearchViewModel client instance")
         friendSearchViewModel = ViewModelProvider(this)[FriendSearchViewModel::class.java]
@@ -98,13 +116,11 @@ class FriendSearchFragment : Fragment(), IOnFriendItemClickListener {
     }
 
     private fun initListenerSearchFriendField() {
-        binding.editTextSearch.editText?.setOnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE || event.action == KeyEvent.ACTION_DOWN) {
-                val userNameOrEmail = binding.editTextSearch.editText?.text.toString()
-                friendSearchViewModel.findFriend(userNameOrEmail)
-                true
-            } else {
-                false
+        binding.editTextSearch.editText?.onDone {
+            val userNameOrEmail = binding.editTextSearch.editText?.text?.toString()
+            userNameOrEmail?.let {
+                Log.d("editTextSearchOnDone", "Searching for: $it")
+                friendSearchViewModel.findFriend(it)
             }
         }
     }
@@ -132,6 +148,7 @@ class FriendSearchFragment : Fragment(), IOnFriendItemClickListener {
     private fun onSearchFriendClose() {
         friendSearchCloseListener.onFriendsSearchClose()
     }
+
     private fun showNoUsersFound() {
         activity?.let { showToast(it.getString(R.string.no_users_found)) }
     }

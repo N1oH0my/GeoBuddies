@@ -36,10 +36,10 @@ class MapPinsDrawerImpl(
     }
 
     override fun moveCameraToUser() {
-        if (placemarkUser != null) {
+        placemarkUser?.let { user ->
             mapView.mapWindow.map.move(
                 CameraPosition(
-                    Point(placemarkUser!!.geometry.latitude, placemarkUser!!.geometry.longitude),
+                    Point(user.geometry.latitude, user.geometry.longitude),
                     17.0f,
                     0.0f,
                     0.0f
@@ -64,15 +64,15 @@ class MapPinsDrawerImpl(
     }
 
     private fun bindUser(data: UserGeoModel) {
-        if (placemarkUser != null) {
-            if (!areUserContentsTheSame(placemarkUser!!, data)) {
-                placemarkUser?.isVisible = false
+        placemarkUser?.let { existingUser ->
+            if (!areUserContentsTheSame(existingUser, data)) {
+                existingUser.isVisible = false
                 changePlacemarkUser(data)
-                placemarkUser?.setVisible(true, Animation(Animation.Type.SMOOTH, 0.5f), null)
+                existingUser.setVisible(true, Animation(Animation.Type.SMOOTH, 0.5f), null)
             }
-        } else {
+        } ?: run {
             val newPlacemarkUser = getNewPlacemarkUser(data)
-            placemarkUser?.setVisible(true, Animation(Animation.Type.SMOOTH, 0.5f), null)
+            newPlacemarkUser.setVisible(true, Animation(Animation.Type.SMOOTH, 0.5f), null)
             placemarkUser = newPlacemarkUser
             moveCameraToUser()
         }
