@@ -29,6 +29,7 @@
             android:paddingStart="15dp"
             android:hint="Поиск..."
             android:drawablePadding="10dp"
+            android:imeOptions="actionDone"
             android:inputType="text"
             android:maxLines="1"
             android:paddingVertical="0dp"

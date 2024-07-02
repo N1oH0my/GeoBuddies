@@ -43,7 +43,9 @@ class RefreshTokenViewModel @Inject constructor(
                                 "RefreshProcess",
                                 "Get successful: ${accessToken.body()?.accessToken}"
                             )
-                            setNewAccessToken(accessToken.body()!!.accessToken)
+                            accessToken.body()?.let { body ->
+                                setNewAccessToken(body.accessToken)
+                            }
                         } else {
                             setError()
                         }

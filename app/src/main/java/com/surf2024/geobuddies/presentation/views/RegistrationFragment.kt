@@ -103,8 +103,10 @@ class RegistrationFragment : Fragment() {
     }
 
     private fun setButtonTouchAnimation() {
-        buttonAnimationHelper.setTouchAnimation(binding.backRegistrationButton)
-        buttonAnimationHelper.setTouchAnimation(binding.signUpRegistrationButton)
+        with(buttonAnimationHelper) {
+            setTouchAnimation(binding.backRegistrationButton)
+            setTouchAnimation(binding.signUpRegistrationButton)
+        }
     }
 
     private fun registerUser() {

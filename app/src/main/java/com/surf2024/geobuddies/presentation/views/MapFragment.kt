@@ -173,12 +173,14 @@ class MapFragment : Fragment() {
     }
 
     private fun setButtonTouchAnimation() {
-        buttonAnimationHelper.setTouchAnimation(binding.btnFindUserPin)
-        buttonAnimationHelper.setTouchAnimation(binding.btnToggleMenu)
-        buttonAnimationHelper.setTouchAnimation(binding.menuFriendsImageview)
-        buttonAnimationHelper.setTouchAnimation(binding.menuAddFriendsImageview)
-        buttonAnimationHelper.setTouchAnimation(binding.menuInvitesImageview)
-        buttonAnimationHelper.setTouchAnimation(binding.menuLogoutImageview)
+        with(buttonAnimationHelper) {
+            setTouchAnimation(binding.btnFindUserPin)
+            setTouchAnimation(binding.btnToggleMenu)
+            setTouchAnimation(binding.menuFriendsImageview)
+            setTouchAnimation(binding.menuAddFriendsImageview)
+            setTouchAnimation(binding.menuInvitesImageview)
+            setTouchAnimation(binding.menuLogoutImageview)
+        }
     }
 
     private fun initListeners() {
@@ -262,10 +264,10 @@ class MapFragment : Fragment() {
 
     //////////////////// task scheduler ////////////////////////////////////////////////////////////
     private fun startScheduler() {
-        if (scheduler == null || scheduler!!.isShutdown) {
+        if (scheduler == null || scheduler?.isShutdown == true) {
             scheduler = Executors.newScheduledThreadPool(1)
         }
-        if (scheduledFuture == null || scheduledFuture!!.isCancelled) {
+        if (scheduledFuture == null || scheduledFuture?.isCancelled == true) {
             scheduledFuture = scheduler.scheduleAtFixedRate({
                 try {
                     Log.d("Scheduler", "Updating user and friends' geo")
@@ -343,21 +345,22 @@ class MapFragment : Fragment() {
 
     //////////////////// pins //////////////////////////////////////////////////////////////////////
     private fun generateFriendsPins() {
-        if (mapInfoViewModel.friendList.value != null && mapLocationViewModel.friendsGeoList.value != null) {
-
-            friendsPinsGenerator.generateFriendsPins(
-                friendList = mapInfoViewModel.friendList.value!!,
-                friendsGeoList = mapLocationViewModel.friendsGeoList.value!!,
-
-                { friendsPinsList ->
-                    pinsDrawer.friendsReload(friendsPinsList)
-                },
-                {
-                    getFriends()
-                },
-                {
-                    showError()
-                })
+        mapInfoViewModel.friendList.value?.let { friendList ->
+            mapLocationViewModel.friendsGeoList.value?.let { friendsGeoList ->
+                friendsPinsGenerator.generateFriendsPins(
+                    friendList = friendList,
+                    friendsGeoList = friendsGeoList,
+                    onSuccess = { friendsPinsList ->
+                        pinsDrawer.friendsReload(friendsPinsList)
+                    },
+                    onDifferentSizesFailure = {
+                        getFriends()
+                    },
+                    onFailure = {
+                        showError()
+                    }
+                )
+            }
         }
     }
 
