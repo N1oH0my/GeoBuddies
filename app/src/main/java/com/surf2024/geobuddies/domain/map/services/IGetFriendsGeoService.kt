@@ -5,7 +5,7 @@ import io.reactivex.rxjava3.core.Single
 import retrofit2.http.GET
 
 interface IGetFriendsGeoService {
-    @GET("/api/v1/geo/friends/get")
+    @GET("/api/users/geo/getFriendsGeo/")
     fun getFriendsGeo(): Single<List<FriendGeoModel>>
 
 }

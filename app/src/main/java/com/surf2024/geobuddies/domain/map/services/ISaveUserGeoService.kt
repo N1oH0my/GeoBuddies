@@ -7,7 +7,7 @@ import retrofit2.http.POST
 
 
 interface ISaveUserGeoService {
-    @POST("/api/v1/geo/save")
+    @POST("/api/users/geo/save/")
     fun saveGeo(@Body userGeo: UserGeoModel): Completable
 
 }

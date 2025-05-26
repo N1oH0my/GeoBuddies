@@ -4,6 +4,5 @@ data class FriendModel(
     val id: Int,
     val name: String,
     val email: String,
-    val avatarUrl: String,
-    val birthDay: String,
+    val avatarUrl: String?,
 )

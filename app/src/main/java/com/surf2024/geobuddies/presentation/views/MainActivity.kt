@@ -31,7 +31,6 @@ class MainActivity : AppCompatActivity(), FragmentChangeListener, RefreshAccessT
         setLocationLanguage("en")
 
         runRefreshTokenFragment()
-
     }
 
     override fun onSignUpClicked() {

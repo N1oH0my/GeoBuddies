@@ -9,6 +9,8 @@ import com.surf2024.geobuddies.domain.friends.entity.FriendModel
 import com.surf2024.geobuddies.domain.friends.repository.IFriendsRepository
 import com.surf2024.geobuddies.domain.login.entity.UserInfoModel
 import com.surf2024.geobuddies.domain.login.repository.ITokensSaver
+import com.surf2024.geobuddies.domain.map.entity.GetAvatarResponseModel
+import com.surf2024.geobuddies.domain.map.repository.IAvatarRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -19,6 +21,7 @@ import javax.inject.Inject
 class MapInfoViewModel @Inject constructor(
     private val getFriendRepository: IFriendsRepository,
     private val getUserInfoRepository: IUserInfoRepository,
+    private val avatarRepository: IAvatarRepository,
     private val accessTokenSaver: ITokensSaver,
 ) : ViewModel() {
 
@@ -39,6 +42,31 @@ class MapInfoViewModel @Inject constructor(
     private val _serverError = MutableLiveData<Boolean>()
     val serverError: LiveData<Boolean>
         get() = _serverError
+
+    private val avatarDisposable = CompositeDisposable()
+
+    private val _isGetAvatarSuccess = MutableLiveData<GetAvatarResponseModel>()
+    val getAvatarSuccess: LiveData<GetAvatarResponseModel>
+        get() = _isGetAvatarSuccess
+
+    fun getAvatar(url: String) {
+        avatarDisposable.clear()
+        val disposable = avatarRepository.getAvatar(url)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ byteArray ->
+                Log.d("GetAvatarProcess", "Get successful: $byteArray")
+                setGetAvatarSuccess(byteArray)
+            }, { error ->
+                Log.e("GetAvatarProcess", "Get failed", error)
+                if (error is HttpException) {
+                    Log.d("GetAvatarProcess", "HTTP Error: ${error.code()}")
+                } else {
+                    Log.d("GetAvatarProcess", "Error: ${error.message}")
+                }
+                setServerError()
+            })
+        avatarDisposable.add(disposable)
+    }
 
     fun getFriends() {
         friendsDisposable.clear()
@@ -74,6 +102,10 @@ class MapInfoViewModel @Inject constructor(
         } else {
             setServerError()
         }
+    }
+
+    private fun setGetAvatarSuccess(result: GetAvatarResponseModel) {
+        _isGetAvatarSuccess.value = result
     }
 
     private fun setFriendList(data: List<FriendModel>) {

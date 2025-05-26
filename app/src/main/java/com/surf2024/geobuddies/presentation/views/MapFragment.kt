@@ -3,6 +3,7 @@ package com.surf2024.geobuddies.presentation.views
 import android.Manifest
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,7 +19,6 @@ import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.data.map.utilityImpl.MapPinsDrawerImpl
 import com.surf2024.geobuddies.databinding.FragmentMapBinding
 import com.surf2024.geobuddies.domain.common.utility.IButtonAnimationHelper
-import com.surf2024.geobuddies.domain.common.utilityimpl.ButtonAnimationHelperImpl
 import com.surf2024.geobuddies.domain.login.entity.UserInfoModel
 import com.surf2024.geobuddies.domain.main.usecase.FragmentChangeListener
 import com.surf2024.geobuddies.domain.map.utility.IFriendsPinsGenerator
@@ -38,19 +38,20 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MapFragment : Fragment() {
-
-    private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-            showPermissionGrantedMessage()
-        } else {
-            showPermissionDeniedMessage()
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission(),
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                showPermissionGrantedMessage()
+            } else {
+                showPermissionDeniedMessage()
+            }
         }
-    }
 
     @Inject
     lateinit var buttonAnimationHelper: IButtonAnimationHelper
+
     @Inject
     lateinit var friendsPinsGenerator: IFriendsPinsGenerator
 
@@ -72,14 +73,12 @@ class MapFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_map, container, false)
-    }
+        savedInstanceState: Bundle?,
+    ): View? = inflater.inflate(R.layout.fragment_map, container, false)
 
     override fun onViewCreated(
         view: View,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -139,15 +138,16 @@ class MapFragment : Fragment() {
     }
 
     private fun overrideOnBackPressed() {
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                closeMap()
+        val callback =
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    closeMap()
+                }
             }
-        }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 
-    //////////////////// init /////////////////////////////////////////////////////////////////////
+    // ////////////////// init /////////////////////////////////////////////////////////////////////
     private fun initMapInfoViewModel() {
         Log.d("Hilt", "Creating MapViewModel client instance")
         mapInfoViewModel = ViewModelProvider(this)[MapInfoViewModel::class.java]
@@ -165,7 +165,7 @@ class MapFragment : Fragment() {
     }
 
     private fun initMapPinsDrawer() {
-        pinsDrawer = MapPinsDrawerImpl(mapView, binding.customMapPinView)
+        pinsDrawer = MapPinsDrawerImpl(mapView, binding.customMapPinView, requireContext())
     }
 
     private fun initMapMenuAnimationHelper() {
@@ -221,10 +221,13 @@ class MapFragment : Fragment() {
         binding.idMenuPart2.setOnClickListener {}
     }
 
-    //////////////////// observers /////////////////////////////////////////////////////////////////
+    // ////////////////// observers /////////////////////////////////////////////////////////////////
     private fun initMapInfoViewModelObservers() {
         mapInfoViewModel.user.observe(viewLifecycleOwner) { user ->
             setUserInfo(user)
+        }
+        mapInfoViewModel.getAvatarSuccess.observe(viewLifecycleOwner) { byteArrayModel ->
+            setProfileImageFromByteArray(byteArrayModel.imageFile)
         }
         mapInfoViewModel.friendList.observe(viewLifecycleOwner) {
             updateFriendsGeo()
@@ -242,7 +245,7 @@ class MapFragment : Fragment() {
             saveUserGeo(userGeoModel.latitude, userGeoModel.longitude)
         }
         mapLocationViewModel.userGeoSaved.observe(viewLifecycleOwner) {
-            mapLocationViewModel.currentUserGeo.value?.let { pinsDrawer.userReload(it) }
+            mapLocationViewModel.currentUserGeo.value?.let { pinsDrawer.userReload(it, mapInfoViewModel.user?.value?.avatarUrl ?: "") }
         }
         mapLocationViewModel.friendsGeoList.observe(viewLifecycleOwner) {
             generateFriendsPins()
@@ -262,20 +265,21 @@ class MapFragment : Fragment() {
         mapLocationViewModel.permissionsFailure.observe(viewLifecycleOwner) {}
     }
 
-    //////////////////// task scheduler ////////////////////////////////////////////////////////////
+    // ////////////////// task scheduler ////////////////////////////////////////////////////////////
     private fun startScheduler() {
         if (scheduler == null || scheduler?.isShutdown == true) {
             scheduler = Executors.newScheduledThreadPool(1)
         }
         if (scheduledFuture == null || scheduledFuture?.isCancelled == true) {
-            scheduledFuture = scheduler.scheduleAtFixedRate({
-                try {
-                    Log.d("Scheduler", "Updating user and friends' geo")
-                    updateLocations()
-                } catch (e: Exception) {
-                    Log.e("Scheduler", "Error in scheduled task: ${e.message}", e)
-                }
-            }, 0, 5, TimeUnit.SECONDS)
+            scheduledFuture =
+                scheduler.scheduleAtFixedRate({
+                    try {
+                        Log.d("Scheduler", "Updating user and friends' geo")
+                        updateLocations()
+                    } catch (e: Exception) {
+                        Log.e("Scheduler", "Error in scheduled task: ${e.message}", e)
+                    }
+                }, 0, 5, TimeUnit.SECONDS)
         } else {
             Log.d("Scheduler", "Scheduler is already running.")
         }
@@ -307,7 +311,7 @@ class MapFragment : Fragment() {
         Log.d("Scheduler", "Scheduler stopped.")
     }
 
-    //////////////////// permission ////////////////////////////////////////////////////////////////
+    // ////////////////// permission ////////////////////////////////////////////////////////////////
     private fun checkLocationPermission() {
         mapLocationViewModel.checkLocationPermission(this)
     }
@@ -316,7 +320,7 @@ class MapFragment : Fragment() {
         requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
     }
 
-    //////////////////// location //////////////////////////////////////////////////////////////////
+    // ////////////////// location //////////////////////////////////////////////////////////////////
     private fun updateLocations() {
         updateFriendsGeo()
         updateCurrentUserLocation()
@@ -330,11 +334,14 @@ class MapFragment : Fragment() {
         mapLocationViewModel.getFriendsGeo()
     }
 
-    private fun saveUserGeo(latitude: Double, longitude: Double) {
+    private fun saveUserGeo(
+        latitude: Double,
+        longitude: Double,
+    ) {
         mapLocationViewModel.saveUserGeo(latitude = latitude, longitude = longitude)
     }
 
-    //////////////////// additional info ///////////////////////////////////////////////////////////
+    // ////////////////// additional info ///////////////////////////////////////////////////////////
     private fun getFriends() {
         mapInfoViewModel.getFriends()
     }
@@ -343,7 +350,7 @@ class MapFragment : Fragment() {
         mapInfoViewModel.getUserInfo()
     }
 
-    //////////////////// pins //////////////////////////////////////////////////////////////////////
+    // ////////////////// pins //////////////////////////////////////////////////////////////////////
     private fun generateFriendsPins() {
         mapInfoViewModel.friendList.value?.let { friendList ->
             mapLocationViewModel.friendsGeoList.value?.let { friendsGeoList ->
@@ -358,18 +365,18 @@ class MapFragment : Fragment() {
                     },
                     onFailure = {
                         showError()
-                    }
+                    },
                 )
             }
         }
     }
 
-    //////////////////// animations ////////////////////////////////////////////////////////////////
+    // ////////////////// animations ////////////////////////////////////////////////////////////////
     private fun animateMapMenu() {
         animationHelper.animateMapMenu()
     }
 
-    //////////////////// fragments change //////////////////////////////////////////////////////////
+    // ////////////////// fragments change //////////////////////////////////////////////////////////
     private fun closeMap() {
         fragmentsTapListener.onMapClose()
     }
@@ -390,15 +397,23 @@ class MapFragment : Fragment() {
         fragmentsTapListener.onLogOut()
     }
 
-    //////////////////// memory ////////////////////////////////////////////////////////////////////
+    // ////////////////// memory ////////////////////////////////////////////////////////////////////
     private fun resetToken() {
         mapInfoViewModel.resetRefreshToken()
     }
 
-    //////////////////// other IU fun //////////////////////////////////////////////////////////////
+    // ////////////////// other IU fun //////////////////////////////////////////////////////////////
     private fun setUserInfo(user: UserInfoModel) {
         binding.menuUserName.text = user.name
         binding.menuUserEmail.text = user.email
+        mapInfoViewModel.getAvatar(user.avatarUrl)
+    }
+
+    private fun setProfileImageFromByteArray(imageFile: ByteArray) {
+        if (imageFile.isNotEmpty()) {
+            val bitmap = BitmapFactory.decodeByteArray(imageFile, 0, imageFile.size)
+            binding.menuProfileImage.setImageBitmap(bitmap)
+        }
     }
 
     private fun showToast(message: String) {
@@ -432,16 +447,18 @@ class MapFragment : Fragment() {
 
     private fun showPermissionExplanation() {
         activity?.let {
-            AlertDialog.Builder(requireContext())
-                .setTitle(it.getString(R.string.title_why_location_permission_needed)).setMessage(
-                    it.getString(R.string.msg_why_location_permission_needed)
+            AlertDialog
+                .Builder(requireContext())
+                .setTitle(it.getString(R.string.title_why_location_permission_needed))
+                .setMessage(
+                    it.getString(R.string.msg_why_location_permission_needed),
                 ).setPositiveButton(it.getString(R.string.ok)) { _, _ ->
                     requestLocationPermission()
                 }.setNegativeButton(it.getString(R.string.cancel)) { dialog, _ ->
                     dialog.dismiss()
                     showPermissionDeniedMessage()
-                }.create().show()
+                }.create()
+                .show()
         }
     }
-
 }

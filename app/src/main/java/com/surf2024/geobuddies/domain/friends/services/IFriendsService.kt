@@ -5,6 +5,6 @@ import io.reactivex.rxjava3.core.Single
 import retrofit2.http.GET
 
 interface IFriendsService {
-    @GET("/api/v1/friend/get/myfriens")
+    @GET("/api/users/friends/")
     fun getFriends(): Single<List<FriendModel>>
 }

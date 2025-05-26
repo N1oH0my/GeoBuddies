@@ -5,8 +5,8 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface IDenyInviteService {
-    @POST("/api/v1/friend/invite/decline/{userId}")
+    @POST("/api/users/invites/decline/{senderId}")
     fun denyInvite(
-        @Path("userId") userId: Int
+        @Path("senderId") userId: Int
     ): Completable
 }

@@ -1,18 +1,20 @@
 [versions]
-agp = "8.3.1"
-kotlin = "1.9.0"
-coreKtx = "1.12.0"
+agp = "8.9.0"
+gradle = "8.8.2"
+kotlin = "2.1.0"
+coreKtx = "1.16.0"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
-appcompat = "1.6.1"
+appcompat = "1.7.0"
 material = "1.11.0"
-activity = "1.8.0"
+activity = "1.10.1"
 constraintlayout = "2.1.4"
 rxjava = "2.2.21"
 viewbindingpropertydelegateFull = "1.5.9"
-dagger = "2.51.1"
-daggerCompiler = "2.51.1"
+hilt = "2.56.1"
+dagger = "2.55"
+daggerCompiler = "2.55"
 retrofit = "2.11.0"
 retrofit-adapter = "2.11.0"
 converterGson = "2.11.0"
@@ -20,15 +22,15 @@ lifecycleViewmodelKtx = "2.7.0"
 lifecycleLivedataKtx = "2.7.0"
 parent = "3.14.9"
 cicerone = "7.1"
-roomRuntime = "2.6.0"
-roomCompiler = "2.6.0"
-roomRxjava2 = "2.6.0"
+roomRuntime = "2.7.1"
+roomCompiler = "2.7.1"
+roomRxjava2 = "2.7.1"
 hiltAndroid = "2.51.1"
 hiltAndroidCompiler = "2.51.1"
 rxandroid = "3.0.2"
 roomRxjava3 = "2.6.1"
-hiltCompiler-version = "2.51.1"
-hilt-android-version = "2.51.1"
+hiltCompiler-version = "2.56.1"
+hilt-android-version = "2.56.1"
 mapsMobile = "4.6.1-navikit"
 automotivenavigation = "4.6.1"
 roadevents = "4.6.1"
@@ -58,9 +60,6 @@ gson = {group = "com.google.code.gson", name = "gson", version = "2.10.1" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 
-hilt-android = {group = "com.google.dagger", name = "hilt-android", version.ref = "hilt-android-version" }
-hilt-android-compiler = {group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hiltCompiler-version" }
-
 circle-view={group="de.hdodenhof", name="circleimageview", version="3.1.0"}
 
 
@@ -77,9 +76,12 @@ roadevents = { group = "com.yandex.mapkit.styling", name = "roadevents", version
 search = { group = "com.yandex.android", name = "search", version.ref = "search" }
 compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "compiler" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 

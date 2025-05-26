@@ -7,9 +7,9 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface IFriendSearchService {
-    @GET("/api/v1/user/find/{userNameOrEmail}")
+    @GET("/api/users/search/{nameOrEmail}")
     fun findFriend(
-        @Path("userNameOrEmail") userNameOrEmail: String
+        @Path("nameOrEmail") userNameOrEmail: String
     ): Single<Response<List<FoundFriendModel>>>
 
 }

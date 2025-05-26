@@ -7,7 +7,7 @@ import retrofit2.http.POST
 
 interface IRefreshAccessTokenService {
 
-    @POST("/api/v1/auth/refresh-token")
+    @POST("/api/auth/login/withRefreshToken/")
     fun refreshToken(): Single<Response<AccessTokenResponse>>
 
 }

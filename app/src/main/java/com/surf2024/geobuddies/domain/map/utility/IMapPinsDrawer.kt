@@ -5,7 +5,7 @@ import com.surf2024.geobuddies.domain.map.entity.UserGeoModel
 
 interface IMapPinsDrawer {
     fun friendsReload(data: List<FriendPinModel>)
-    fun userReload(data: UserGeoModel)
+    fun userReload(data: UserGeoModel, avatarUrl: String)
     fun moveCameraToUser()
 
 }

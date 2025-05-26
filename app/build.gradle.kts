@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.surf2024.geobuddies"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.surf2024.geobuddies"
@@ -63,10 +63,14 @@ androidComponents {
 
 dependencies {
 
+    configurations.all {
+        exclude(group = "com.google.auto", module = "auto-common")
+        exclude(group = "com.google.auto.value", module = "auto-value")
+    }
+
     implementation(libs.maps.mobile)
     implementation(libs.automotivenavigation)
     implementation(libs.roadevents)
-    kapt(libs.compiler)
     implementation(libs.glide)
     val activity_version = "1.9.0"
     val security_version = "1.1.0-alpha03"
@@ -94,7 +98,7 @@ dependencies {
     implementation(libs.circle.view)
 
     implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
+    kapt(libs.hilt.compiler)
 
     // Activity ktx
     implementation("androidx.activity:activity-ktx:$activity_version")

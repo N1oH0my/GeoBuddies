@@ -6,6 +6,6 @@ import retrofit2.Response
 import retrofit2.http.GET
 
 interface IInvitesService {
-    @GET("/api/v1/friend/invite/getinvites")
+    @GET("/api/users/invites/toUser/")
     fun getAllInvites(): Single<List<InviteModel>>
 }

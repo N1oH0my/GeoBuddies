@@ -5,8 +5,8 @@ import retrofit2.http.DELETE
 import retrofit2.http.Path
 
 interface IFriendDeleteService {
-    @DELETE("/api/v1/friend/delete/{friendId}")
+    @DELETE("/api/users/friends/delete/{userId}")
     fun deleteFriend(
-        @Path("friendId") friendId: Int
+        @Path("userId") friendId: Int
     ): Completable
 }

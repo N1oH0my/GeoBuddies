@@ -5,8 +5,8 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface IAcceptInviteService {
-    @POST("/api/v1/friend/invite/accepted/{userId}")
+    @POST("/api/users/invites/accept/{senderId}")
     fun acceptInvite(
-        @Path("userId") userId: Int
+        @Path("senderId") userId: Int
     ): Completable
 }

@@ -1,10 +1,13 @@
 package com.surf2024.geobuddies.data.map.utilityImpl
 
+import android.content.Context
 import android.graphics.PointF
 import android.view.View
+import com.surf2024.geobuddies.R
 import com.surf2024.geobuddies.domain.map.entity.FriendPinModel
 import com.surf2024.geobuddies.domain.map.entity.UserGeoModel
 import com.surf2024.geobuddies.domain.map.utility.IMapPinsDrawer
+import com.surf2024.geobuddies.presentation.feature.CustomMapPinView
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
@@ -12,11 +15,13 @@ import com.yandex.mapkit.map.IconStyle
 import com.yandex.mapkit.map.PlacemarkMapObject
 import com.yandex.mapkit.map.TextStyle
 import com.yandex.mapkit.mapview.MapView
+import com.yandex.runtime.image.ImageProvider
 import com.yandex.runtime.ui_view.ViewProvider
 
 class MapPinsDrawerImpl(
     val mapView: MapView,
     val pinView: View,
+    val context: Context
 ) : IMapPinsDrawer {
 
     private val friendsGeoMap = HashMap<Int, PlacemarkMapObject>()
@@ -31,8 +36,8 @@ class MapPinsDrawerImpl(
         }
     }
 
-    override fun userReload(data: UserGeoModel) {
-        bindUser(data)
+    override fun userReload(data: UserGeoModel, avatarUrl: String) {
+        bindUser(data, avatarUrl)
     }
 
     override fun moveCameraToUser() {
@@ -63,15 +68,15 @@ class MapPinsDrawerImpl(
         }
     }
 
-    private fun bindUser(data: UserGeoModel) {
+    private fun bindUser(data: UserGeoModel, avatarUrl: String) {
         placemarkUser?.let { existingUser ->
             if (!areUserContentsTheSame(existingUser, data)) {
                 existingUser.isVisible = false
-                changePlacemarkUser(data)
+                changePlacemarkUser(data, avatarUrl)
                 existingUser.setVisible(true, Animation(Animation.Type.SMOOTH, 0.5f), null)
             }
         } ?: run {
-            val newPlacemarkUser = getNewPlacemarkUser(data)
+            val newPlacemarkUser = getNewPlacemarkUser(data, avatarUrl)
             newPlacemarkUser.setVisible(true, Animation(Animation.Type.SMOOTH, 0.5f), null)
             placemarkUser = newPlacemarkUser
             moveCameraToUser()
@@ -94,10 +99,13 @@ class MapPinsDrawerImpl(
 
     private fun getNewPlacemarkFriend(data: FriendPinModel): PlacemarkMapObject {
         val point = Point(data.latitude, data.longitude)
+        val newPinView = CustomMapPinView(_context = context)
+        val result = newPinView.viewModel.getAvatar(data.avatarUrl)
+        newPinView.setProfileImageFromByteArray(result.imageFile)
         val newPlacemarkFriend = mapView.mapWindow.map.mapObjects.addPlacemark().apply {
             geometry = point
             userData = data
-            setView(ViewProvider(pinView), IconStyle().apply {
+            setView(ViewProvider(newPinView), IconStyle().apply {
                 anchor = PointF(0.5f, 1.0f)
                 scale = 0.9f
             })
@@ -116,10 +124,13 @@ class MapPinsDrawerImpl(
 
     private fun changePlacemarkFriend(data: FriendPinModel) {
         val point = Point(data.latitude, data.longitude)
+        val newPinView = CustomMapPinView(_context = context)
+        val result = newPinView.viewModel.getAvatar(data.avatarUrl)
+        newPinView.setProfileImageFromByteArray(result.imageFile)
         friendsGeoMap[data.userId]?.apply {
             geometry = point
             userData = data
-            setView(ViewProvider(pinView), IconStyle().apply {
+            setView(ViewProvider(newPinView), IconStyle().apply {
                 anchor = PointF(0.5f, 1.0f)
                 scale = 0.9f
             })
@@ -134,11 +145,13 @@ class MapPinsDrawerImpl(
         }
     }
 
-    private fun getNewPlacemarkUser(data: UserGeoModel): PlacemarkMapObject {
+    private fun getNewPlacemarkUser(data: UserGeoModel, avatarUrl: String): PlacemarkMapObject {
         val point = Point(data.latitude, data.longitude)
+        val newPinView = CustomMapPinView(_context = context)
+        newPinView.setProfileImageFromUrl(avatarUrl)
         val newPlacemarkUser = mapView.mapWindow.map.mapObjects.addPlacemark().apply {
             geometry = point
-            setView(ViewProvider(pinView), IconStyle().apply {
+            setView(ViewProvider(newPinView), IconStyle().apply {
                 anchor = PointF(0.5f, 1.0f)
                 scale = 0.9f
             })
@@ -154,11 +167,13 @@ class MapPinsDrawerImpl(
         return newPlacemarkUser
     }
 
-    private fun changePlacemarkUser(data: UserGeoModel) {
+    private fun changePlacemarkUser(data: UserGeoModel, avatarUrl: String) {
         val point = Point(data.latitude, data.longitude)
+        val newPinView = CustomMapPinView(_context = context)
+        newPinView.setProfileImageFromUrl(avatarUrl)
         placemarkUser?.apply {
             geometry = point
-            setView(ViewProvider(pinView), IconStyle().apply {
+            setView(ViewProvider(newPinView), IconStyle().apply {
                 anchor = PointF(0.5f, 1.0f)
                 scale = 0.9f
             })
